@@ -109,9 +109,9 @@ const loop = [...sites, ...sites];
 const esc = s => s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 track.innerHTML = loop.map((s,i)=>`
   <article class="wcard">
-    <div class="ph">
-      <iframe class="preview" src="${esc(s[0])}" loading="lazy" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
-    </div>
+    <a class="ph ph-${esc((s[2]||'').toLowerCase().split(' ')[0])}" href="${esc(s[0])}" target="_blank" rel="noopener" aria-label="${esc(s[1])}">
+      <span class="ph-label">${esc(s[1])}</span>
+    </a>
     <div class="meta">
       <span class="num">№ ${String((i%sites.length)+1).padStart(2,'0')} / ${String(sites.length).padStart(2,'0')}</span>
       <h3>${esc(s[1])}</h3>
@@ -225,21 +225,3 @@ fill('run1', COL1); fill('run2', COL2); fill('run3', COL3);
   sec.classList.add('paused');
 })();
 
-/* Unload Work iframes when far from the viewport, restore when approaching.
-   Keeps ~30 live embeds from painting & running scripts continuously. */
-(function(){
-  if (!('IntersectionObserver' in window)) return;
-  const frames = document.querySelectorAll('#work iframe.preview');
-  frames.forEach(f => { f.dataset.src = f.getAttribute('src'); });
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries){
-      const f = e.target;
-      if (e.isIntersecting){
-        if (!f.src || f.src.endsWith('about:blank')) f.src = f.dataset.src;
-      } else {
-        if (f.src && !f.src.endsWith('about:blank')) f.src = 'about:blank';
-      }
-    }
-  }, {root: null, rootMargin: '300px 400px', threshold: 0});
-  frames.forEach(f => io.observe(f));
-})();

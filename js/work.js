@@ -61,8 +61,8 @@ templates.forEach((t, i) => {
   card.dataset.genre = genre;
   card.dataset.index = i;
   card.innerHTML = `
-    <div class="preview-wrap" onclick="selectTemplate(${i})">
-      <iframe src="${esc(file)}" loading="lazy" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
+    <div class="preview-wrap ph-${genre}" onclick="selectTemplate(${i})">
+      <span class="ph-label">${esc(name)}</span>
     </div>
     <div class="card-body">
       <span class="num">No ${num} / ${String(templates.length).padStart(2,'0')}</span>
@@ -82,34 +82,6 @@ templates.forEach((t, i) => {
   grid.appendChild(card);
 });
 
-/* Scale iframes to fit card width */
-function scaleIframes(){
-  document.querySelectorAll('.tpl-card .preview-wrap').forEach(wrap => {
-    const w = wrap.offsetWidth;
-    const scale = w / 1440;
-    const iframe = wrap.querySelector('iframe');
-    if(iframe) iframe.style.transform = `scale(${scale})`;
-  });
-}
-window.addEventListener('resize', scaleIframes);
-setTimeout(scaleIframes, 100);
-
-/* Lazy load / unload iframes */
-if('IntersectionObserver' in window){
-  const frames = document.querySelectorAll('.tpl-card iframe');
-  frames.forEach(f => { f.dataset.src = f.getAttribute('src'); });
-  const io = new IntersectionObserver((entries) => {
-    for(const e of entries){
-      const f = e.target;
-      if(e.isIntersecting){
-        if(!f.src || f.src.endsWith('about:blank')) f.src = f.dataset.src;
-      } else {
-        if(f.src && !f.src.endsWith('about:blank')) f.src = 'about:blank';
-      }
-    }
-  }, {rootMargin:'300px 0px', threshold:0});
-  frames.forEach(f => io.observe(f));
-}
 
 /* Populate template selector — first option is custom, then templates */
 const sel = document.getElementById('templateSelect');

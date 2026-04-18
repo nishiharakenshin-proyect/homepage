@@ -8,7 +8,10 @@
       "Bash(git branch *)",
       "Bash(git remote *)",
       "Bash(git push *)",
-      "Bash(git -c user.email=you@example.com -c user.name=you commit -m \"Compress images and fix center.jpg case\")"
+      "Bash(git -c user.email=you@example.com -c user.name=you commit -m \"Compress images and fix center.jpg case\")",
+      "Bash(cat /Users/kenshinnishihara/Desktop/test/portfolio/css/portfolio.css /Users/kenshinnishihara/Desktop/test/portfolio/css/index.css)",
+      "Read(//tmp/**)",
+      "Bash(git -c user.email=you@example.com -c user.name=you commit -m \"Perf: replace iframe previews with CSS placeholders; shrink images\")"
     ]
   }
 }
