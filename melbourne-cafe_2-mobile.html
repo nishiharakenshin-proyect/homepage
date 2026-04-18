@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#1A1A1A" />
+<title>NEUE — Minimalist Specialty Coffee · Melbourne · Mobile</title>
+<meta name="description" content="NEUE is a minimalist specialty coffee house in Melbourne's CBD. The essence of urban silence." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root{
+  --cream:#F5F3EF;
+  --cream-2:#EDE9E3;
+  --cream-3:#E4DED4;
+  --white:#FFFFFF;
+  --charcoal:#1A1A1A;
+  --charcoal-2:#2C2C2C;
+  --muted:#888580;
+  --muted-2:#B5B0A8;
+  --accent:#C4A882;
+  --accent-d:#A88C66;
+  --line:rgba(26,26,26,0.08);
+  --line-2:rgba(26,26,26,0.16);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{background:#0a0a09; overflow-x:hidden;}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  color:var(--charcoal);
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:"ss01","cv11";
+  line-height:1.55;
+}
+a{color:inherit; text-decoration:none;}
+button{border:0; cursor:pointer; font-family:inherit; background:transparent;}
+img{display:block; max-width:100%; height:auto;}
+::-webkit-scrollbar{width:0; height:0;}
+:focus-visible{outline:1px solid var(--accent); outline-offset:2px;}
+
+/* ── Stage (desktop ambient) ────────── */
+.stage{
+  min-height:100vh; width:100%;
+  background:
+    radial-gradient(1100px 700px at 18% 8%, rgba(196,168,130,0.22), transparent 60%),
+    radial-gradient(900px 700px at 85% 90%, rgba(245,243,239,0.08), transparent 60%),
+    radial-gradient(500px 400px at 50% 50%, rgba(168,140,102,0.10), transparent 70%),
+    #0a0a09;
+  display:flex; justify-content:center; align-items:flex-start;
+  position:relative; overflow:hidden;
+}
+.stage::before{
+  content:""; position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(245,243,239,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245,243,239,0.03) 1px, transparent 1px);
+  background-size:80px 80px;
+  mask-image:radial-gradient(ellipse at center, black 30%, transparent 72%);
+  pointer-events:none;
+}
+.phone{
+  width:100%; max-width:440px; position:relative; z-index:2;
+  background:var(--cream); min-height:100vh;
+  box-shadow: 0 60px 140px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.03);
+}
+@media (min-width:768px){
+  .stage{padding:40px 0;}
+  .phone{
+    border-radius:46px;
+    min-height:calc(100vh - 80px);
+    overflow:hidden;
+    border:10px solid #080807;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.04) inset,
+      0 40px 120px rgba(0,0,0,0.7),
+      0 0 220px rgba(196,168,130,0.18);
+  }
+  .phone::before{
+    content:""; position:absolute; top:14px; left:50%; transform:translateX(-50%);
+    width:110px; height:28px; background:#000; border-radius:20px; z-index:60;
+  }
+  .stage-meta{display:block;}
+}
+.stage-meta{
+  display:none; position:fixed; font-family:'Inter',sans-serif; font-weight:400;
+  color:rgba(245,243,239,0.42);
+  font-size:10px; letter-spacing:0.25em; text-transform:uppercase; z-index:10;
+}
+.meta-tl{top:22px; left:28px;}
+.meta-tr{top:22px; right:28px;}
+.meta-bl{bottom:22px; left:28px;}
+.meta-br{bottom:22px; right:28px;}
+.meta-dot{display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--accent); margin-right:6px; vertical-align:middle; animation:mpulse 2s ease-in-out infinite;}
+@keyframes mpulse{0%,100%{opacity:1} 50%{opacity:0.3}}
+
+/* ── Progress line ────────── */
+#progress{position:fixed; top:0; left:0; height:2px; width:0; background:var(--charcoal); z-index:90; max-width:440px; transition:width .08s linear;}
+@media(min-width:768px){#progress{left:50%; transform:translateX(-50%);}}
+
+/* ── Status bar ────────── */
+.statusbar{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 22px 4px; font-family:'Inter',sans-serif; font-weight:500;
+  font-size:12px; color:var(--charcoal);
+}
+.status-r{display:flex; gap:6px; align-items:center;}
+
+/* ── Top nav ────────── */
+.topbar{
+  position:sticky; top:0; z-index:50;
+  background:linear-gradient(180deg, rgba(245,243,239,0.95), rgba(245,243,239,0.6) 85%, transparent);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  padding:14px 22px; display:flex; justify-content:space-between; align-items:center;
+}
+.brand{font-family:'Inter',sans-serif; font-size:15px; font-weight:500; letter-spacing:0.5em; text-indent:0.5em;}
+.menu-btn{
+  width:42px; height:42px; border-radius:0; border:1px solid var(--line-2);
+  display:flex; align-items:center; justify-content:center; background:transparent;
+  transition:background 0.3s;
+}
+.menu-btn span{display:block; width:16px; height:1px; background:var(--charcoal); position:relative;}
+.menu-btn span::before,.menu-btn span::after{content:""; position:absolute; left:0; width:100%; height:1px; background:var(--charcoal); transition:transform 0.4s;}
+.menu-btn span::before{top:-5px;}
+.menu-btn span::after{top:5px;}
+.menu-btn.open{background:var(--charcoal);}
+.menu-btn.open span{background:transparent;}
+.menu-btn.open span::before,.menu-btn.open span::after{background:var(--cream);}
+.menu-btn.open span::before{transform:translateY(5px) rotate(45deg);}
+.menu-btn.open span::after{transform:translateY(-5px) rotate(-45deg);}
+
+/* ── Drawer (within phone) ────────── */
+.drawer{
+  position:absolute; top:0; right:0; bottom:0; left:0;
+  background:var(--charcoal); color:var(--cream);
+  padding:100px 32px 40px;
+  transform:translateY(-101%); transition:transform 0.8s cubic-bezier(.85,0,.15,1);
+  z-index:40; display:flex; flex-direction:column;
+}
+.drawer.open{transform:translateY(0);}
+.drawer .d-num{font-size:10px; font-weight:500; letter-spacing:0.3em; color:var(--muted-2); margin-bottom:26px;}
+.drawer a{
+  display:flex; justify-content:space-between; align-items:baseline;
+  padding:22px 0;
+  border-bottom:1px solid rgba(245,243,239,0.1);
+  font-family:'Inter',sans-serif; font-size:40px; font-weight:200; letter-spacing:-0.02em;
+  transition:color 0.3s, transform 0.6s, opacity 0.6s;
+  transform:translateY(18px); opacity:0;
+}
+.drawer a .num{font-size:10px; font-weight:400; letter-spacing:0.3em; color:var(--muted-2);}
+.drawer.open a{transform:translateY(0); opacity:1;}
+.drawer.open a:nth-of-type(1){transition-delay:0.2s;}
+.drawer.open a:nth-of-type(2){transition-delay:0.27s;}
+.drawer.open a:nth-of-type(3){transition-delay:0.34s;}
+.drawer.open a:nth-of-type(4){transition-delay:0.41s;}
+.drawer a:hover{color:var(--accent);}
+.drawer .d-foot{margin-top:auto; font-size:10px; font-weight:400; letter-spacing:0.25em; color:var(--muted-2); display:flex; justify-content:space-between;}
+
+/* ── Hero ────────── */
+.hero{
+  position:relative; height:100vh; min-height:620px; overflow:hidden;
+  color:var(--cream); background:var(--charcoal);
+  display:flex; flex-direction:column; justify-content:space-between;
+  padding:20px 22px 28px;
+}
+.hero-bg{position:absolute; inset:0; z-index:0;}
+.hero-bg img{width:100%; height:100%; object-fit:cover; transform:scale(1.06); transition:transform 1.6s ease;}
+.hero-bg::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(26,26,26,0.45) 0%, rgba(26,26,26,0.15) 40%, rgba(26,26,26,0.75) 100%);
+}
+.hero-top, .hero-mid, .hero-bot{position:relative; z-index:2;}
+.hero-top{display:flex; justify-content:space-between; align-items:flex-start; padding-top:60px;}
+.hero-micro{font-size:10px; font-weight:400; letter-spacing:0.3em; text-transform:uppercase; color:rgba(245,243,239,0.7);}
+.hero-mid{margin:auto 0;}
+.hero-sub{font-size:11px; font-weight:400; letter-spacing:0.35em; color:rgba(245,243,239,0.75); margin-bottom:20px;}
+.hero-title{
+  font-size:88px; font-weight:200; line-height:0.92; letter-spacing:-0.04em;
+  text-transform:uppercase;
+  color:var(--cream);
+}
+.hero-title .line{display:block; overflow:hidden;}
+.hero-title .line > span{display:inline-block;}
+.hero-tag{
+  margin-top:26px; font-size:13px; font-weight:300; letter-spacing:0.02em;
+  color:rgba(245,243,239,0.75); max-width:260px; line-height:1.5;
+}
+.hero-bot{display:flex; justify-content:space-between; align-items:flex-end;}
+.scroll-ind{display:flex; flex-direction:column; align-items:center; gap:10px;}
+.scroll-ind .rod{
+  width:1px; height:40px; background:linear-gradient(180deg, rgba(245,243,239,0.8), transparent);
+  position:relative; overflow:hidden;
+}
+.scroll-ind .rod::after{
+  content:""; position:absolute; top:-40px; left:0; width:1px; height:20px;
+  background:var(--cream); animation:scr 2s ease-in-out infinite;
+}
+@keyframes scr{0%{top:-40px;} 100%{top:100%;}}
+
+/* ── Section chrome ────────── */
+.sec{padding:80px 22px; position:relative; background:var(--cream);}
+.sec.alt{background:var(--cream-2);}
+.sec-num{font-size:10px; font-weight:500; letter-spacing:0.3em; color:var(--muted-2); text-transform:uppercase;}
+.sec h2{
+  font-family:'Inter',sans-serif; font-weight:200; font-size:56px; line-height:0.95;
+  letter-spacing:-0.04em; text-transform:uppercase;
+  margin-top:32px;
+}
+.sec h2 em{font-style:normal; color:var(--accent-d);}
+.accent-line{height:1px; background:var(--charcoal); width:56px; transform-origin:left; transform:scaleX(0); transition:transform 1.1s cubic-bezier(.2,.9,.3,1);}
+.accent-line.in{transform:scaleX(1);}
+
+/* ── Philosophy ────────── */
+.quote{
+  font-size:30px; font-weight:200; letter-spacing:-0.02em; line-height:1.15;
+  margin-top:28px;
+}
+.quote br + span, .quote .br2{display:block; color:var(--accent-d);}
+.phil-body{margin-top:40px;}
+.phil-body p{font-size:15px; font-weight:300; color:var(--charcoal-2); margin-top:24px; line-height:1.6;}
+
+/* ── Showcase ────────── */
+.showcase{padding:0; background:var(--cream);}
+.showcase-grid{display:flex; flex-direction:column; gap:2px;}
+.show-item{
+  position:relative; aspect-ratio:4/5; overflow:hidden;
+  clip-path:inset(12% 12% 12% 12%); transition:clip-path 1.6s cubic-bezier(.76,0,.24,1);
+}
+.show-item.in{clip-path:inset(0 0 0 0);}
+.show-item img{width:100%; height:100%; object-fit:cover; transition:transform 8s linear;}
+.show-item.in img{transform:scale(1.08);}
+.show-cap{
+  position:absolute; bottom:20px; left:22px;
+  font-size:10px; font-weight:500; letter-spacing:0.3em; color:var(--cream);
+  text-transform:uppercase;
+  padding:8px 14px; background:rgba(26,26,26,0.45); backdrop-filter:blur(8px);
+}
+
+/* ── Marquee ────────── */
+.marquee{
+  background:var(--charcoal); color:var(--cream);
+  padding:22px 0; overflow:hidden; white-space:nowrap;
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+.marquee-track{
+  display:inline-flex; gap:48px; animation:mar 30s linear infinite;
+  font-size:13px; font-weight:300; letter-spacing:0.3em; text-transform:uppercase;
+}
+.marquee-track span{display:inline-flex; align-items:center; gap:48px;}
+.marquee-track .dot{width:5px; height:5px; border-radius:50%; background:var(--accent); display:inline-block;}
+@keyframes mar{to{transform:translateX(-50%);}}
+
+/* ── Menu ────────── */
+.menu-list{margin-top:40px;}
+.menu-group{margin-bottom:32px;}
+.menu-group-label{font-size:10px; font-weight:500; letter-spacing:0.3em; color:var(--accent-d); text-transform:uppercase; padding-bottom:14px; border-bottom:1px solid var(--line-2);}
+.menu-item{
+  display:flex; justify-content:space-between; align-items:baseline; gap:18px;
+  padding:20px 0; border-bottom:1px solid var(--line);
+  transition:padding 0.4s;
+  position:relative;
+}
+.menu-item::before{
+  content:""; position:absolute; left:-22px; top:0; bottom:0; width:3px;
+  background:var(--accent); transform:scaleY(0); transform-origin:center;
+  transition:transform 0.4s cubic-bezier(.2,.9,.3,1);
+}
+.menu-item:hover{padding-left:14px;}
+.menu-item:hover::before{transform:scaleY(1);}
+.menu-l{flex:1;}
+.menu-name{font-size:20px; font-weight:300; letter-spacing:-0.01em; display:block;}
+.menu-desc{font-size:10px; font-weight:500; letter-spacing:0.2em; color:var(--muted); text-transform:uppercase; margin-top:6px; display:block;}
+.menu-price{font-size:16px; font-weight:400; color:var(--charcoal); flex-shrink:0;}
+
+/* ── Visit / Coordinates ────────── */
+.visit-grid{display:grid; grid-template-columns:1fr 1fr; gap:32px 18px; margin-top:48px;}
+.visit-item h5{font-size:10px; font-weight:500; letter-spacing:0.3em; color:var(--muted); text-transform:uppercase; margin-bottom:14px;}
+.visit-item p{font-size:13px; font-weight:300; color:var(--charcoal-2); line-height:1.6;}
+.visit-item p + p{margin-top:10px;}
+.visit-item a{display:block; font-size:13px; font-weight:400; color:var(--charcoal); padding:4px 0; transition:color 0.3s;}
+.visit-item a:hover{color:var(--accent-d);}
+
+.coord-card{
+  margin-top:36px; border:1px solid var(--line-2); padding:0;
+  background:var(--charcoal); color:var(--cream); position:relative; overflow:hidden;
+  aspect-ratio:5/4;
+}
+.coord-card svg{width:100%; height:100%; display:block;}
+.coord-label{
+  position:absolute; top:18px; left:18px;
+  font-size:9px; font-weight:500; letter-spacing:0.3em; color:var(--accent);
+  text-transform:uppercase;
+}
+.coord-n{
+  position:absolute; bottom:18px; right:18px;
+  font-size:9px; font-weight:400; letter-spacing:0.3em; color:rgba(245,243,239,0.5);
+}
+
+/* ── Footer ────────── */
+footer{
+  background:var(--charcoal); color:var(--cream);
+  padding:80px 22px 140px; position:relative;
+}
+.foot-brand{
+  font-family:'Inter',sans-serif; font-weight:100; font-size:92px; line-height:0.85;
+  letter-spacing:-0.04em; text-transform:uppercase;
+}
+.foot-brand em{font-style:normal; color:var(--accent);}
+.foot-meta{display:grid; grid-template-columns:1fr 1fr; gap:28px 16px; margin-top:48px;}
+.foot-lbl{font-size:9px; font-weight:500; letter-spacing:0.3em; color:var(--muted-2); text-transform:uppercase; margin-bottom:8px;}
+.foot-val{font-size:13px; font-weight:300; color:var(--cream); line-height:1.6;}
+.foot-val a{display:block; color:rgba(245,243,239,0.75); transition:color 0.3s; padding:2px 0;}
+.foot-val a:hover{color:var(--accent);}
+.foot-rule{height:1px; background:rgba(245,243,239,0.1); margin:44px 0 20px;}
+.foot-bot{
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  font-size:9px; font-weight:400; letter-spacing:0.3em; color:var(--muted-2); text-transform:uppercase;
+}
+
+/* ── Sticky visit bar ────────── */
+.visitbar{
+  position:fixed; bottom:0; left:0; right:0; z-index:80;
+  padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+  pointer-events:none;
+  display:flex; justify-content:center;
+}
+.visitbar-inner{
+  pointer-events:auto;
+  width:100%; max-width:412px;
+  background:rgba(26,26,26,0.92);
+  backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px);
+  border:1px solid rgba(245,243,239,0.1);
+  padding:12px 12px 12px 20px;
+  display:flex; align-items:center; gap:12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.visitbar .left{font-size:11px; font-weight:400; color:rgba(245,243,239,0.7); letter-spacing:0.15em; text-transform:uppercase; line-height:1.4; flex:1;}
+.visitbar .left b{color:var(--cream); font-weight:500;}
+.visitbar .cta{
+  background:var(--cream); color:var(--charcoal); font-size:11px; font-weight:500;
+  padding:12px 18px; white-space:nowrap; letter-spacing:0.25em; text-transform:uppercase;
+  display:flex; align-items:center; gap:8px;
+  transition:background 0.3s, color 0.3s;
+}
+.visitbar .cta:hover{background:var(--accent); color:var(--charcoal);}
+@media (min-width:768px){
+  .visitbar{padding:12px 0; bottom:28px;}
+  .visitbar-inner{max-width:416px;}
+}
+
+/* ── Loader ────────── */
+#loader{
+  position:fixed; inset:0; background:var(--charcoal); z-index:200;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; gap:26px;
+}
+#loader .l-brand{font-size:14px; font-weight:500; letter-spacing:0.5em; text-indent:0.5em; color:var(--cream); opacity:0;}
+#loader .l-line{width:180px; height:1px; background:rgba(245,243,239,0.15); transform-origin:left; transform:scaleX(0);}
+#loader .l-meta{font-size:9px; font-weight:400; letter-spacing:0.3em; color:var(--muted-2); text-transform:uppercase; opacity:0;}
+
+/* ── Reveal ────────── */
+[data-r]{opacity:0; transform:translateY(28px); transition:opacity 1s cubic-bezier(.2,.9,.3,1), transform 1s cubic-bezier(.2,.9,.3,1);}
+[data-r="fade"]{transform:none;}
+[data-r].in{opacity:1; transform:none;}
+
+/* char split for title */
+.char{display:inline-block; transform:translateY(110%);}
+[data-r].in .char{transform:translateY(0); transition:transform 1s cubic-bezier(.2,.9,.3,1);}
+[data-r].in .char:nth-child(1){transition-delay:.02s;}
+[data-r].in .char:nth-child(2){transition-delay:.05s;}
+[data-r].in .char:nth-child(3){transition-delay:.08s;}
+[data-r].in .char:nth-child(4){transition-delay:.11s;}
+[data-r].in .char:nth-child(5){transition-delay:.14s;}
+[data-r].in .char:nth-child(6){transition-delay:.17s;}
+[data-r].in .char:nth-child(7){transition-delay:.20s;}
+[data-r].in .char:nth-child(8){transition-delay:.23s;}
+[data-r].in .char:nth-child(9){transition-delay:.26s;}
+[data-r].in .char:nth-child(10){transition-delay:.29s;}
+</style>
+</head>
+<body>
+
+<!-- ───── Loader ───── -->
+<div id="loader">
+  <span class="l-brand">NEUE</span>
+  <div class="l-line"></div>
+  <span class="l-meta">melbourne · 2026</span>
+</div>
+
+<!-- ───── Stage meta (desktop only) ───── -->
+<div class="stage-meta meta-tl"><span class="meta-dot"></span>Mobile-first · 375+</div>
+<div class="stage-meta meta-tr">viewing · neue.coffee</div>
+<div class="stage-meta meta-bl">© 2026 neue coffee roasters</div>
+<div class="stage-meta meta-br">little collins · cbd</div>
+
+<div id="progress"></div>
+
+<div class="stage">
+  <main class="phone">
+
+    <!-- ───── Status bar ───── -->
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="status-r">
+        <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 8h2V5H1v3zm4 0h2V3H5v5zm4 0h2V1H9v7zm4 0h2V0h-2v8z" fill="currentColor"/></svg>
+        <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M7 2.5a4.8 4.8 0 0 1 3.4 1.4l1-1a6.2 6.2 0 0 0-8.8 0l1 1A4.8 4.8 0 0 1 7 2.5zM2 2l1 1a5.8 5.8 0 0 1 8 0l1-1a7.2 7.2 0 0 0-10 0zm5 3a2.4 2.4 0 0 0-1.7.7l1.7 1.7 1.7-1.7A2.4 2.4 0 0 0 7 5z" fill="currentColor"/></svg>
+        <span>100</span>
+      </div>
+    </div>
+
+    <!-- ───── Top nav ───── -->
+    <header class="topbar">
+      <div class="brand">NEUE.</div>
+      <button class="menu-btn" id="menuBtn" aria-label="Menu"><span></span></button>
+    </header>
+
+    <!-- ───── Drawer ───── -->
+    <nav class="drawer" id="drawer">
+      <div class="d-num">INDEX · 04</div>
+      <a href="#hero"><span>Origin</span><span class="num">00</span></a>
+      <a href="#philosophy"><span>About</span><span class="num">01</span></a>
+      <a href="#menu-section"><span>Selection</span><span class="num">02</span></a>
+      <a href="#visit-section"><span>Visit</span><span class="num">03</span></a>
+      <div class="d-foot">
+        <span>MON–FRI · 07:00–15:00</span>
+        <span>MELB · VIC</span>
+      </div>
+    </nav>
+
+    <!-- ───── Hero ───── -->
+    <section class="hero" id="hero">
+      <div class="hero-bg">
+        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1400&auto=format&fit=crop" alt="NEUE Coffee interior" />
+      </div>
+      <div class="hero-top">
+        <span class="hero-micro">00 · ORIGIN</span>
+        <span class="hero-micro">EST. 2026</span>
+      </div>
+      <div class="hero-mid">
+        <p class="hero-sub" data-r>SPECIALTY COFFEE — MELBOURNE CBD</p>
+        <h1 class="hero-title" data-r>
+          <span class="line"><span class="char">N</span><span class="char">E</span><span class="char">U</span><span class="char">E</span></span>
+          <span class="line"><span class="char">C</span><span class="char">O</span><span class="char">F</span><span class="char">F</span><span class="char">E</span><span class="char">E</span><span class="char">.</span></span>
+        </h1>
+        <p class="hero-tag" data-r>The essence of urban silence, poured slow.</p>
+      </div>
+      <div class="hero-bot">
+        <span class="hero-micro">27° · CBD</span>
+        <div class="scroll-ind"><span class="hero-micro">SCROLL</span><div class="rod"></div></div>
+      </div>
+    </section>
+
+    <!-- ───── Philosophy ───── -->
+    <section class="sec" id="philosophy">
+      <span class="sec-num">01 / PHILOSOPHY</span>
+      <div class="accent-line" data-r="fade" style="margin-top:24px;"></div>
+      <h3 class="quote" data-r>In the noise of the city,<br/><span class="br2">we found transparency.</span></h3>
+      <div class="phil-body">
+        <p data-r>Based in Melbourne's evolving CBD, NEUE is an exercise in reduction. We believe that by removing the unnecessary, we create space for the extraordinary.</p>
+        <p data-r>Every bean is a reflection of this quiet precision — sourced with care, roasted with intention, served with stillness.</p>
+      </div>
+    </section>
+
+    <!-- ───── Showcase ───── -->
+    <section class="showcase">
+      <div class="showcase-grid">
+        <div class="show-item" data-r="fade">
+          <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=900&auto=format&fit=crop" alt="Pour-over ritual" loading="lazy">
+          <span class="show-cap">POUR-OVER RITUAL</span>
+        </div>
+        <div class="show-item" data-r="fade">
+          <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=900&auto=format&fit=crop" alt="Melbourne laneway cafe" loading="lazy">
+          <span class="show-cap">MELBOURNE CBD</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── Marquee ───── -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>SINGLE ORIGIN <span class="dot"></span> POUR OVER <span class="dot"></span> SPECIALTY ROAST <span class="dot"></span> COLD BREW <span class="dot"></span> PASTRIES <span class="dot"></span> MINIMALISM <span class="dot"></span></span>
+        <span>SINGLE ORIGIN <span class="dot"></span> POUR OVER <span class="dot"></span> SPECIALTY ROAST <span class="dot"></span> COLD BREW <span class="dot"></span> PASTRIES <span class="dot"></span> MINIMALISM <span class="dot"></span></span>
+      </div>
+    </div>
+
+    <!-- ───── Menu ───── -->
+    <section class="sec alt" id="menu-section">
+      <span class="sec-num">02 / CURATION</span>
+      <h2 data-r>Selec<em>tion.</em></h2>
+      <div class="accent-line" data-r="fade" style="margin-top:24px;"></div>
+
+      <div class="menu-list">
+        <div class="menu-group">
+          <div class="menu-group-label">Coffee</div>
+          <div class="menu-item" data-r>
+            <div class="menu-l">
+              <span class="menu-name">Filter / V60</span>
+              <span class="menu-desc">Ethiopia Geisha — Floral Notes</span>
+            </div>
+            <span class="menu-price">$11.0</span>
+          </div>
+          <div class="menu-item" data-r>
+            <div class="menu-l">
+              <span class="menu-name">Magic</span>
+              <span class="menu-desc">Double Ristretto — Silky Texture</span>
+            </div>
+            <span class="menu-price">$5.5</span>
+          </div>
+          <div class="menu-item" data-r>
+            <div class="menu-l">
+              <span class="menu-name">Batch Brew</span>
+              <span class="menu-desc">Rotating Single Origin</span>
+            </div>
+            <span class="menu-price">$5.0</span>
+          </div>
+          <div class="menu-item" data-r>
+            <div class="menu-l">
+              <span class="menu-name">Neue Cold</span>
+              <span class="menu-desc">18Hr Steeped — Cacao Notes</span>
+            </div>
+            <span class="menu-price">$7.5</span>
+          </div>
+        </div>
+
+        <div class="menu-group">
+          <div class="menu-group-label">Atelier</div>
+          <div class="menu-item" data-r>
+            <div class="menu-l">
+              <span class="menu-name">Salted Caramel Kouign-Amann</span>
+              <span class="menu-desc">Daily Baked At The Atelier</span>
+            </div>
+            <span class="menu-price">$9.0</span>
+          </div>
+          <div class="menu-item" data-r>
+            <div class="menu-l">
+              <span class="menu-name">Burnt Miso Brownie</span>
+              <span class="menu-desc">Umami — Dark Chocolate</span>
+            </div>
+            <span class="menu-price">$7.0</span>
+          </div>
+          <div class="menu-item" data-r>
+            <div class="menu-l">
+              <span class="menu-name">Yuzu Financier</span>
+              <span class="menu-desc">Brown Butter — Citrus</span>
+            </div>
+            <span class="menu-price">$6.0</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── Visit ───── -->
+    <section class="sec" id="visit-section">
+      <span class="sec-num">03 / VISIT</span>
+      <h2 data-r>Coordi<em>nates.</em></h2>
+      <div class="accent-line" data-r="fade" style="margin-top:24px;"></div>
+
+      <div class="visit-grid">
+        <div class="visit-item" data-r>
+          <h5>Location</h5>
+          <p>42 Little Collins St<br/>Melbourne VIC 3000<br/>Australia</p>
+        </div>
+        <div class="visit-item" data-r>
+          <h5>Service</h5>
+          <p>MON — FRI<br/>07:00 — 15:00</p>
+          <p>SAT — SUN<br/>08:00 — 14:00</p>
+        </div>
+        <div class="visit-item" data-r>
+          <h5>Digital</h5>
+          <a href="#">Instagram ↗</a>
+          <a href="#">Enquiries ↗</a>
+          <a href="#">Press ↗</a>
+        </div>
+        <div class="visit-item" data-r>
+          <h5>Roastery</h5>
+          <p>Private tastings<br/>by appointment</p>
+          <a href="#" style="margin-top:10px;">Book ↗</a>
+        </div>
+      </div>
+
+      <div class="coord-card" data-r="fade">
+        <span class="coord-label">37.8136° S · 144.9631° E</span>
+        <svg viewBox="0 0 400 320" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <pattern id="neueGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M40 0H0V40" fill="none" stroke="rgba(245,243,239,0.05)" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="400" height="320" fill="#1A1A1A"/>
+          <rect width="400" height="320" fill="url(#neueGrid)"/>
+          <g stroke="rgba(245,243,239,0.1)" stroke-width="0.8">
+            <line x1="0" y1="110" x2="400" y2="95"/>
+            <line x1="0" y1="210" x2="400" y2="220"/>
+            <line x1="100" y1="0" x2="130" y2="320"/>
+            <line x1="260" y1="0" x2="290" y2="320"/>
+          </g>
+          <rect x="0" y="150" width="400" height="6" fill="rgba(196,168,130,0.18)"/>
+          <rect x="182" y="0" width="6" height="320" fill="rgba(196,168,130,0.12)"/>
+          <text x="12" y="145" font-size="8" fill="rgba(245,243,239,0.32)" font-family="Inter" letter-spacing="2" font-weight="500">LITTLE COLLINS ST</text>
+          <text x="194" y="16" font-size="8" fill="rgba(245,243,239,0.32)" font-family="Inter" letter-spacing="2" font-weight="500">ELIZABETH ST</text>
+          <g transform="translate(200,155)">
+            <circle cx="0" cy="0" r="22" fill="#C4A882" opacity="0.2">
+              <animate attributeName="r" values="18;40;18" dur="2.8s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.35;0;0.35" dur="2.8s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="0" cy="0" r="7" fill="#C4A882"/>
+            <circle cx="0" cy="0" r="2.5" fill="#1A1A1A"/>
+          </g>
+          <text x="220" y="152" font-size="10" fill="#F5F3EF" font-family="Inter" font-weight="500" letter-spacing="3">NEUE.</text>
+          <text x="220" y="166" font-size="7" fill="rgba(245,243,239,0.5)" font-family="Inter" letter-spacing="2">42 LITTLE COLLINS</text>
+        </svg>
+        <span class="coord-n">N ↑</span>
+      </div>
+    </section>
+
+    <!-- ───── Footer ───── -->
+    <footer>
+      <div class="foot-brand" data-r>Neue<em>.</em></div>
+
+      <div class="foot-meta">
+        <div>
+          <div class="foot-lbl">Café</div>
+          <div class="foot-val">42 Little Collins<br/>Melbourne 3000</div>
+        </div>
+        <div>
+          <div class="foot-lbl">Contact</div>
+          <div class="foot-val"><a href="mailto:hello@neue.coffee">hello@neue.coffee</a><a href="tel:+610000000000">03 0000 0000</a></div>
+        </div>
+        <div>
+          <div class="foot-lbl">Navigate</div>
+          <div class="foot-val"><a href="#philosophy">About</a><a href="#menu-section">Selection</a><a href="#visit-section">Visit</a></div>
+        </div>
+        <div>
+          <div class="foot-lbl">Digital</div>
+          <div class="foot-val"><a href="#">Instagram</a><a href="#">Newsletter</a><a href="#">Press</a></div>
+        </div>
+      </div>
+
+      <div class="foot-rule"></div>
+
+      <div class="foot-bot">
+        <span>© 2026 · NEUE COFFEE ROASTERS</span>
+        <span>VIC · AU</span>
+      </div>
+    </footer>
+
+  </main>
+</div>
+
+<!-- ───── Sticky visit bar ───── -->
+<div class="visitbar" id="visitbar">
+  <div class="visitbar-inner">
+    <div class="left"><b>Open now</b> · 07:00 — 15:00<br/>Little Collins · CBD</div>
+    <a href="#visit-section" class="cta">Visit <svg width="10" height="10" viewBox="0 0 12 12"><path d="M2 6h7m-2-2 2 2-2 2" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  </div>
+</div>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+// ── Loader ─────────────────────────────
+window.addEventListener('load', () => {
+  const tl = gsap.timeline({
+    onComplete: () => { document.getElementById('loader').style.display = 'none'; init(); }
+  });
+  tl.to('#loader .l-brand', { opacity:1, duration:0.6, ease:'power2.out' })
+    .to('#loader .l-line', { scaleX:1, duration:0.9, ease:'power2.inOut' }, '-=0.2')
+    .to('#loader .l-meta', { opacity:1, duration:0.5, ease:'power2.out' }, '-=0.4')
+    .to('#loader', { yPercent:-100, duration:1, ease:'expo.inOut', delay:0.3 });
+});
+
+function init(){
+  // ── Progress ───────
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const p = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('progress').style.width = p + '%';
+  }, { passive: true });
+
+  // ── Reveal ───────
+  const revealObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); revealObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('[data-r]').forEach(el => revealObs.observe(el));
+  document.querySelectorAll('.accent-line').forEach(el => revealObs.observe(el));
+
+  // ── Drawer ───────
+  const btn = document.getElementById('menuBtn');
+  const drawer = document.getElementById('drawer');
+  btn.addEventListener('click', () => {
+    const open = drawer.classList.toggle('open');
+    btn.classList.toggle('open', open);
+  });
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    drawer.classList.remove('open'); btn.classList.remove('open');
+  }));
+
+  // ── Visit bar ───────
+  const bar = document.getElementById('visitbar');
+  gsap.set(bar, { y: 100, opacity: 0 });
+  ScrollTrigger.create({
+    start: 400,
+    onEnter: () => gsap.to(bar, { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' })
+  });
+
+  // ── Hero parallax ───────
+  gsap.to('.hero-bg img', {
+    yPercent: 18, ease: 'none',
+    scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+  });
+
+  // ── Smooth anchors ───────
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id === '#' || id.length < 2) return;
+      const target = document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 10, behavior: 'smooth' });
+    });
+  });
+}
+</script>
+</body>
+</html>
