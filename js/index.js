@@ -64,29 +64,20 @@ function toggleMenu(force){
 }
 menuBtn.addEventListener('click',()=>toggleMenu());
 
-/* App video: warm up the decoder on idle (so the first-frame decode hitch
-   happens off-screen, not when the user scrolls to it), then lazy-play only
-   while the element is visible. */
+/* App video: only fetch & play when the section is visible. */
 (function(){
   const v = document.getElementById('appVideo'); if (!v) return;
-
-  // Warm the decoder once the browser is idle. Play+pause primes the first
-  // keyframe so a later play() doesn't block the main thread during scroll.
-  const warm = () => {
-    try {
-      v.muted = true;
-      const p = v.play();
-      if (p && p.then) p.then(()=>{ v.pause(); v.currentTime = 0; }).catch(()=>{});
-      else { v.pause(); }
-    } catch(_){}
+  let loaded = false;
+  const load = () => {
+    if (loaded) return; loaded = true;
+    const s = document.createElement('source');
+    s.src = v.dataset.src; s.type = 'video/mp4';
+    v.appendChild(s); v.load();
   };
-  if ('requestIdleCallback' in window) requestIdleCallback(warm, {timeout: 1500});
-  else setTimeout(warm, 800);
-
-  if (!('IntersectionObserver' in window)){ v.play().catch(()=>{}); return; }
+  if (!('IntersectionObserver' in window)){ load(); v.play().catch(()=>{}); return; }
   const io = new IntersectionObserver((entries)=>{
     for (const e of entries){
-      if (e.isIntersecting) v.play().catch(()=>{});
+      if (e.isIntersecting){ load(); v.play().catch(()=>{}); }
       else v.pause();
     }
   }, {threshold: 0.15, rootMargin: '200px 0px'});
@@ -202,7 +193,7 @@ const COL3 = [
 ];
 function fill(id, list){
   const el = document.getElementById(id);
-  const tiles = list.map(src => `<div class="tile"><img src="${src}" alt="" loading="lazy" decoding="async"></div>`).join('');
+  const tiles = list.map(src => `<div class="tile"><img src="${src}" alt="" width="280" height="370" loading="lazy" decoding="async"></div>`).join('');
   el.innerHTML = tiles + tiles; /* duplicate for seamless loop */
 }
 fill('run1', COL1); fill('run2', COL2); fill('run3', COL3);
