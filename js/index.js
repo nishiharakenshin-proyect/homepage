@@ -107,17 +107,20 @@ const track = document.getElementById('webTrack');
 const marquee = track.parentElement;
 const loop = [...sites, ...sites];
 const esc = s => s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-track.innerHTML = loop.map((s,i)=>`
+track.innerHTML = loop.map((s,i)=>{
+  const thumb = 'img/thumbs/' + s[0].replace(/\.html$/,'') + '.jpg';
+  return `
   <article class="wcard">
-    <a class="ph ph-${esc((s[2]||'').toLowerCase().split(' ')[0])}" href="${esc(s[0])}" target="_blank" rel="noopener" aria-label="${esc(s[1])}">
-      <span class="ph-label">${esc(s[1])}</span>
+    <a class="ph" href="${esc(s[0])}" target="_blank" rel="noopener" aria-label="${esc(s[1])}">
+      <img src="${esc(thumb)}" alt="${esc(s[1])}" loading="lazy" decoding="async" width="720" height="450">
     </a>
     <div class="meta">
       <span class="num">№ ${String((i%sites.length)+1).padStart(2,'0')} / ${String(sites.length).padStart(2,'0')}</span>
       <h3>${esc(s[1])}</h3>
       <p>${esc(s[2])}</p>
     </div>
-  </article>`).join('');
+  </article>`;
+}).join('');
 
 /* Auto-scroll + manual swipe/drag/wheel. Seamless loop via duplicated track. */
 (function(){

@@ -11,7 +11,9 @@
       "Bash(git -c user.email=you@example.com -c user.name=you commit -m \"Compress images and fix center.jpg case\")",
       "Bash(cat /Users/kenshinnishihara/Desktop/test/portfolio/css/portfolio.css /Users/kenshinnishihara/Desktop/test/portfolio/css/index.css)",
       "Read(//tmp/**)",
-      "Bash(git -c user.email=you@example.com -c user.name=you commit -m \"Perf: replace iframe previews with CSS placeholders; shrink images\")"
+      "Bash(git -c user.email=you@example.com -c user.name=you commit -m \"Perf: replace iframe previews with CSS placeholders; shrink images\")",
+      "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --screenshot=/tmp/test.png --window-size=1440,900 --hide-scrollbars \"file:///Users/kenshinnishihara/Desktop/test/portfolio/melbourne-cafe_1.html\")",
+      "Bash(git -c user.email=you@example.com -c user.name=you commit -m \"Use template KV screenshots as thumbnails \\(no more iframes\\)\")"
     ]
   }
 }

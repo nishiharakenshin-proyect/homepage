@@ -60,9 +60,10 @@ templates.forEach((t, i) => {
   card.className = 'tpl-card';
   card.dataset.genre = genre;
   card.dataset.index = i;
+  const thumb = 'img/thumbs/' + file.replace(/\.html$/,'') + '.jpg';
   card.innerHTML = `
-    <div class="preview-wrap ph-${genre}" onclick="selectTemplate(${i})">
-      <span class="ph-label">${esc(name)}</span>
+    <div class="preview-wrap" onclick="selectTemplate(${i})">
+      <img src="${esc(thumb)}" alt="${esc(name)}" loading="lazy" decoding="async" width="720" height="450">
     </div>
     <div class="card-body">
       <span class="num">No ${num} / ${String(templates.length).padStart(2,'0')}</span>

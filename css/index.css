@@ -78,30 +78,9 @@
 .marquee.dragging{cursor:grabbing}
 .track{display:flex;gap:14px;width:max-content;will-change:transform}
 .wcard{width:260px;flex:0 0 auto;background:var(--light);border:1px solid color-mix(in srgb, var(--dark) 10%, transparent);border-radius:2px;overflow:hidden;box-shadow:0 16px 30px -20px rgba(20,20,19,.2)}
-.wcard .ph{
-  display:grid;place-items:center;aspect-ratio:16/10;position:relative;overflow:hidden;
-  background:linear-gradient(135deg,color-mix(in srgb,var(--green) 18%,var(--light)),color-mix(in srgb,var(--green) 4%,var(--light)));
-  text-decoration:none;color:inherit;
-}
-.wcard .ph::before{
-  content:"";position:absolute;inset:0;
-  background-image:
-    linear-gradient(90deg,color-mix(in srgb,var(--dark) 8%,transparent) 1px,transparent 1px),
-    linear-gradient(color-mix(in srgb,var(--dark) 8%,transparent) 1px,transparent 1px);
-  background-size:20px 20px;opacity:.5;
-}
-.wcard .ph .ph-label{
-  position:relative;font-family:var(--d);font-size:20px;letter-spacing:-.02em;color:var(--dark);
-  padding:8px 14px;background:color-mix(in srgb,var(--light) 92%,transparent);
-  border-radius:999px;box-shadow:0 6px 16px -10px rgba(20,20,19,.25);
-}
-.wcard .ph-melbourne{background:linear-gradient(135deg,#efe3d0,#f7f1e4)}
-.wcard .ph-restaurant{background:linear-gradient(135deg,#e5dccf,#f1e9d8)}
-.wcard .ph-shopify{background:linear-gradient(135deg,#d9e3dc,#eef3ec)}
-.wcard .ph-donut,.wcard .ph-bakery{background:linear-gradient(135deg,#e6dbe3,#f4ecf1)}
-.wcard .ph-furniture{background:linear-gradient(135deg,#dcd3c6,#ece5d6)}
-.wcard .ph-hair{background:linear-gradient(135deg,#d7dee7,#ebf0f4)}
-.wcard .ph-outdoor{background:linear-gradient(135deg,#d8e1d2,#eaf0e6)}
+.wcard .ph{aspect-ratio:16/10;background:#fff;position:relative;overflow:hidden;display:block}
+.wcard .ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s var(--ease)}
+.wcard:hover .ph img{transform:scale(1.03)}
 .wcard .ph .pc{display:none;position:absolute;inset:10px 80px 10px 10px;background:var(--dark);border-radius:3px;grid-template-rows:14px 1fr}
 .wcard .ph .pc::before{content:"";background:linear-gradient(90deg,var(--yellow),var(--yellow) 8px, transparent 8px, transparent 16px, var(--green) 16px, var(--green) 24px, transparent 24px, transparent 32px, var(--light) 32px, var(--light) 40px);display:block;border-bottom:1px solid color-mix(in srgb, var(--light) 20%, transparent)}
 .wcard .ph .pc::after{content:"";background:

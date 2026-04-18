@@ -39,29 +39,9 @@
   transform:translateY(-3px);
   box-shadow:0 18px 36px -18px rgba(20,20,19,.28);
 }
-.tpl-card .preview-wrap{
-  aspect-ratio:16/10;overflow:hidden;position:relative;cursor:pointer;
-  display:grid;place-items:center;
-  background:linear-gradient(135deg,color-mix(in srgb,var(--green) 18%,var(--light)),color-mix(in srgb,var(--green) 4%,var(--light)));
-  border-bottom:1px solid color-mix(in srgb,var(--dark) 8%,transparent);
-}
-.tpl-card .preview-wrap::before{
-  content:"";position:absolute;inset:0;
-  background-image:
-    linear-gradient(90deg,color-mix(in srgb,var(--dark) 8%,transparent) 1px,transparent 1px),
-    linear-gradient(color-mix(in srgb,var(--dark) 8%,transparent) 1px,transparent 1px);
-  background-size:24px 24px;opacity:.5;
-}
-.tpl-card .preview-wrap .ph-label{
-  position:relative;font-family:var(--d);font-size:22px;letter-spacing:-.02em;color:var(--dark);
-  padding:10px 16px;background:color-mix(in srgb,var(--light) 92%,transparent);
-  border-radius:999px;box-shadow:0 8px 20px -12px rgba(20,20,19,.25);
-}
-.tpl-card .preview-wrap.ph-cafe,.tpl-card .preview-wrap.ph-bakery{background:linear-gradient(135deg,#efe3d0,#f7f1e4)}
-.tpl-card .preview-wrap.ph-restaurant{background:linear-gradient(135deg,#e5dccf,#f1e9d8)}
-.tpl-card .preview-wrap.ph-shop{background:linear-gradient(135deg,#d9e3dc,#eef3ec)}
-.tpl-card .preview-wrap.ph-salon{background:linear-gradient(135deg,#e6dbe3,#f4ecf1)}
-.tpl-card .preview-wrap.ph-outdoor{background:linear-gradient(135deg,#d8e1d2,#eaf0e6)}
+.tpl-card .preview-wrap{aspect-ratio:16/10;overflow:hidden;position:relative;background:#fff;cursor:pointer}
+.tpl-card .preview-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s var(--ease)}
+.tpl-card:hover .preview-wrap img{transform:scale(1.03)}
 .tpl-card .card-body{padding:14px 12px 10px;display:flex;flex-direction:column;gap:8px;flex:1}
 .tpl-card .num{
   font-family:var(--m);font-size:9px;letter-spacing:.16em;color:var(--orange);text-transform:uppercase;
