@@ -1,0 +1,1233 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WANDERER — vol.09 Into the Ridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Noto+Serif+JP:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #f5f0e8;
+  --cream-dark: #ece5d6;
+  --ink: #1a1a18;
+  --ink-soft: #3a3a35;
+  --navy: #1c2a3a;
+  --rust: #b8552e;
+  --sage: #6b7c5e;
+  --sand: #c8b99a;
+  --sky: #8ba4b8;
+  --white: #fefcf8;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { background: var(--cream); color: var(--ink); -webkit-font-smoothing: antialiased; }
+body { overflow-x: hidden; font-family: 'DM Sans', 'Hiragino Kaku Gothic ProN', sans-serif; }
+::selection { background: var(--rust); color: var(--cream); }
+a { color: inherit; text-decoration: none; }
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.serif { font-family: 'Cormorant Garamond', 'Noto Serif JP', serif; }
+.serif-jp { font-family: 'Noto Serif JP', serif; font-weight: 300; }
+.sans { font-family: 'DM Sans', sans-serif; }
+.caps { text-transform: uppercase; letter-spacing: .12em; }
+
+/* ====== LOADER ====== */
+.loader {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--navy);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 20px;
+  transition: opacity 1s, visibility 1s;
+}
+.loader.gone { opacity: 0; visibility: hidden; }
+.loader-vol {
+  font-family: 'DM Sans', sans-serif; font-size: 10px;
+  letter-spacing: .3em; text-transform: uppercase;
+  color: var(--sand); opacity: .7;
+}
+.loader-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 6vw, 48px); font-weight: 300;
+  color: var(--cream); letter-spacing: .06em;
+}
+.loader-bar {
+  width: 120px; height: 1px; background: rgba(200,185,154,.3);
+  position: relative; overflow: hidden;
+}
+.loader-bar::after {
+  content: ''; position: absolute; inset: 0;
+  background: var(--sand);
+  animation: loadFill 2s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes loadFill { from { transform: scaleX(0); transform-origin: left; } to { transform: scaleX(1); transform-origin: left; } }
+
+/* ====== COVER / KV ====== */
+.cover {
+  position: relative;
+  min-height: 100svh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  background: var(--navy);
+  color: var(--cream);
+}
+.cover-bg {
+  position: absolute; inset: 0; z-index: 0;
+}
+.cover-bg img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: brightness(.55) contrast(1.05);
+}
+.cover-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(28,42,58,.6) 0%,
+    rgba(28,42,58,.15) 40%,
+    rgba(28,42,58,.1) 60%,
+    rgba(28,42,58,.7) 100%
+  );
+}
+
+/* masthead */
+.cover-masthead {
+  position: relative; z-index: 2;
+  padding: 20px 24px 0;
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.masthead-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(42px, 12vw, 72px);
+  font-weight: 300; letter-spacing: .15em;
+  line-height: 1; color: var(--cream);
+}
+.masthead-right {
+  text-align: right; padding-top: 8px;
+}
+.masthead-vol {
+  font-family: 'DM Sans', sans-serif; font-size: 9px;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--sand); margin-bottom: 4px;
+}
+.masthead-issue {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 9vw, 56px);
+  font-weight: 300; line-height: 1;
+  color: var(--cream);
+}
+.masthead-sub {
+  font-family: 'DM Sans', sans-serif; font-size: 8px;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--sand); margin-top: 2px;
+}
+
+/* cover body */
+.cover-body {
+  position: relative; z-index: 2;
+  flex: 1; display: flex; flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 24px 32px;
+}
+.cover-tag {
+  font-family: 'DM Sans', sans-serif; font-size: 9px;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--sand); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.cover-tag::before {
+  content: ''; width: 28px; height: 1px; background: var(--sand);
+}
+.cover-headline {
+  font-family: 'Noto Serif JP', serif;
+  font-weight: 200;
+  font-size: clamp(32px, 8.5vw, 60px);
+  line-height: 1.35;
+  letter-spacing: .04em;
+  margin-bottom: 16px;
+  max-width: 14em;
+}
+.cover-headline em {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-weight: 300;
+  font-size: 1.1em;
+  color: var(--sand);
+}
+.cover-desc {
+  font-size: 12px; line-height: 1.7;
+  color: rgba(245,240,232,.7);
+  max-width: 36ch; margin-bottom: 20px;
+}
+.cover-lines {
+  display: flex; flex-wrap: wrap; gap: 8px 16px;
+  margin-bottom: 24px;
+}
+.cover-line {
+  font-family: 'DM Sans', sans-serif; font-size: 10px;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--cream); opacity: .65;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(245,240,232,.2);
+}
+.cover-scroll {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: 9px;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--sand); opacity: .6;
+  animation: coverPulse 2.5s ease-in-out infinite;
+}
+.cover-scroll .arrow {
+  width: 1px; height: 24px; background: var(--sand);
+  position: relative;
+}
+.cover-scroll .arrow::after {
+  content: ''; position: absolute; bottom: 0; left: -3px;
+  width: 7px; height: 7px;
+  border-right: 1px solid var(--sand);
+  border-bottom: 1px solid var(--sand);
+  transform: rotate(45deg);
+}
+@keyframes coverPulse { 0%,100% { opacity: .4; } 50% { opacity: .8; } }
+
+/* cover sidebar coverlines (desktop) */
+.cover-sidebar {
+  display: none;
+  position: absolute; right: 28px; top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  writing-mode: vertical-rl;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px; font-style: italic;
+  letter-spacing: .06em;
+  color: rgba(245,240,232,.5);
+  gap: 20px;
+}
+
+/* ====== NAV ====== */
+.nav-bar {
+  position: sticky; top: 0; z-index: 90;
+  background: var(--cream);
+  border-bottom: 1px solid rgba(26,26,24,.1);
+  padding: 0 24px;
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 52px;
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px; font-weight: 400;
+  letter-spacing: .12em;
+}
+.nav-links { display: none; gap: 28px; }
+.nav-links a {
+  font-size: 10px; letter-spacing: .14em;
+  text-transform: uppercase; font-weight: 500;
+  position: relative; padding: 4px 0;
+}
+.nav-links a::after {
+  content: ''; position: absolute; left: 0; bottom: 0;
+  width: 100%; height: 1px; background: var(--ink);
+  transform: scaleX(0); transform-origin: right;
+  transition: transform .4s cubic-bezier(.7,0,.2,1);
+}
+.nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+.nav-ham {
+  background: none; border: none; cursor: pointer;
+  width: 28px; height: 20px; position: relative;
+}
+.nav-ham span {
+  display: block; width: 100%; height: 1.5px;
+  background: var(--ink); position: absolute; left: 0;
+  transition: .3s;
+}
+.nav-ham span:nth-child(1) { top: 0; }
+.nav-ham span:nth-child(2) { top: 9px; }
+.nav-ham span:nth-child(3) { top: 18px; }
+.nav-ham.open span:nth-child(1) { top: 9px; transform: rotate(45deg); }
+.nav-ham.open span:nth-child(2) { opacity: 0; }
+.nav-ham.open span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
+
+/* mobile menu overlay */
+.mob-menu {
+  position: fixed; inset: 0; z-index: 89;
+  background: var(--navy); color: var(--cream);
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center; gap: 0;
+  opacity: 0; visibility: hidden;
+  transition: opacity .5s, visibility .5s;
+}
+.mob-menu.open { opacity: 1; visibility: visible; }
+.mob-menu a {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 7vw, 42px);
+  font-weight: 300; font-style: italic;
+  padding: 14px 0;
+  opacity: 0; transform: translateY(16px);
+  transition: opacity .5s, transform .5s;
+}
+.mob-menu.open a {
+  opacity: 1; transform: none;
+}
+.mob-menu.open a:nth-child(1) { transition-delay: .1s; }
+.mob-menu.open a:nth-child(2) { transition-delay: .15s; }
+.mob-menu.open a:nth-child(3) { transition-delay: .2s; }
+.mob-menu.open a:nth-child(4) { transition-delay: .25s; }
+.mob-menu.open a:nth-child(5) { transition-delay: .3s; }
+.mob-menu.open a:nth-child(6) { transition-delay: .35s; }
+.mob-menu-foot {
+  position: absolute; bottom: 32px; left: 0; right: 0;
+  text-align: center;
+  font-size: 9px; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--sand); opacity: .5;
+}
+
+/* ====== SECTION COMMON ====== */
+.sec-pad { padding: 80px 24px; }
+.sec-head {
+  margin-bottom: 48px;
+}
+.sec-num {
+  font-family: 'DM Sans', sans-serif; font-size: 9px;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--ink-soft); opacity: .5;
+  margin-bottom: 10px;
+}
+.sec-title {
+  font-family: 'Noto Serif JP', serif;
+  font-weight: 300;
+  font-size: clamp(26px, 6.5vw, 44px);
+  line-height: 1.35; letter-spacing: .02em;
+}
+.sec-title em {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-weight: 400;
+  color: var(--rust);
+}
+.sec-rule {
+  width: 40px; height: 1px;
+  background: var(--ink); opacity: .2;
+  margin-top: 16px;
+}
+
+/* ====== EDITOR'S NOTE ====== */
+.editors {
+  background: var(--white);
+  border-bottom: 1px solid rgba(26,26,24,.08);
+}
+.editors-inner {
+  max-width: 640px;
+}
+.editors-head {
+  font-family: 'DM Sans', sans-serif; font-size: 9px;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--rust); margin-bottom: 24px;
+}
+.editors-quote {
+  font-family: 'Noto Serif JP', serif;
+  font-weight: 200;
+  font-size: clamp(20px, 5vw, 32px);
+  line-height: 1.7; letter-spacing: .04em;
+  margin-bottom: 24px;
+  color: var(--ink);
+}
+.editors-body {
+  font-size: 14px; line-height: 1.9;
+  color: var(--ink-soft);
+  margin-bottom: 24px;
+}
+.editors-sign {
+  display: flex; align-items: center; gap: 14px;
+  font-family: 'DM Sans', sans-serif; font-size: 10px;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.editors-sign::before {
+  content: ''; width: 24px; height: 1px; background: var(--ink);
+}
+
+/* ====== FEATURE ====== */
+.feature {
+  background: var(--navy); color: var(--cream);
+  position: relative; overflow: hidden;
+}
+.feature-img {
+  width: 100%; aspect-ratio: 3/4;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.feature-img img { transition: transform 8s ease-out; }
+.feature-img:hover img { transform: scale(1.04); }
+.feature-tag {
+  font-family: 'DM Sans', sans-serif; font-size: 9px;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--sand); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.feature-tag::before {
+  content: ''; width: 20px; height: 1px; background: var(--sand);
+}
+.feature-title {
+  font-family: 'Noto Serif JP', serif;
+  font-weight: 200;
+  font-size: clamp(24px, 6vw, 42px);
+  line-height: 1.45; letter-spacing: .03em;
+  margin-bottom: 20px;
+}
+.feature-title em {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-weight: 300;
+  color: var(--sand);
+}
+.feature-body {
+  font-size: 14px; line-height: 1.9;
+  color: rgba(245,240,232,.75);
+  max-width: 560px;
+}
+.feature-body p { margin-bottom: 18px; }
+.feature-body .drop {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px; float: left; line-height: .8;
+  padding: 4px 8px 0 0; font-style: italic;
+  color: var(--sand);
+}
+.feature-pull {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(22px, 5vw, 32px);
+  font-style: italic; font-weight: 300;
+  line-height: 1.5;
+  color: var(--cream);
+  border-left: 2px solid var(--rust);
+  padding: 12px 0 12px 20px;
+  margin: 32px 0;
+}
+.feature-caption {
+  font-family: 'DM Sans', sans-serif; font-size: 10px;
+  letter-spacing: .06em;
+  color: rgba(245,240,232,.45);
+  margin-top: 8px; font-style: italic;
+}
+.feature-page {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px; letter-spacing: .1em;
+  color: rgba(245,240,232,.3);
+  margin-top: 32px;
+}
+
+/* ====== PRODUCTS / FIELD PICKS ====== */
+.picks { background: var(--cream); }
+.picks-grid {
+  display: grid; grid-template-columns: 1fr;
+  gap: 40px;
+}
+.pick-card {
+  position: relative;
+  border-bottom: 1px solid rgba(26,26,24,.1);
+  padding-bottom: 32px;
+}
+.pick-img {
+  width: 100%; aspect-ratio: 4/5;
+  overflow: hidden; margin-bottom: 18px;
+  background: var(--cream-dark);
+}
+.pick-img img {
+  transition: transform .7s cubic-bezier(.2,.8,.2,1);
+}
+.pick-card:hover .pick-img img { transform: scale(1.03); }
+.pick-num {
+  font-family: 'DM Sans', sans-serif; font-size: 9px;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--ink-soft); opacity: .4;
+  margin-bottom: 8px;
+}
+.pick-name {
+  font-family: 'Noto Serif JP', serif;
+  font-weight: 300;
+  font-size: clamp(18px, 4.5vw, 24px);
+  line-height: 1.3; margin-bottom: 4px;
+}
+.pick-en {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-size: 14px;
+  color: var(--rust); margin-bottom: 10px;
+}
+.pick-desc {
+  font-size: 13px; line-height: 1.7;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+  max-width: 40ch;
+}
+.pick-meta {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  font-family: 'DM Sans', sans-serif; font-size: 10px;
+  letter-spacing: .06em; color: var(--ink-soft);
+}
+.pick-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-style: italic;
+  color: var(--ink);
+}
+
+/* ====== FIELD REPORT ====== */
+.report {
+  background: var(--cream-dark);
+  border-top: 1px solid rgba(26,26,24,.08);
+  border-bottom: 1px solid rgba(26,26,24,.08);
+}
+.report-hero {
+  width: 100%; aspect-ratio: 16/10;
+  overflow: hidden; margin-bottom: 32px;
+}
+.report-cols {
+  display: grid; grid-template-columns: 1fr; gap: 32px;
+}
+.report-side {
+  font-family: 'DM Sans', sans-serif; font-size: 10px;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-soft); line-height: 2;
+}
+.report-side .label { color: var(--rust); margin-bottom: 2px; }
+.report-text h3 {
+  font-family: 'Noto Serif JP', serif;
+  font-weight: 300;
+  font-size: clamp(22px, 5.5vw, 36px);
+  line-height: 1.4; margin-bottom: 20px;
+}
+.report-text h3 em {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; color: var(--rust);
+}
+.report-text p {
+  font-size: 14px; line-height: 1.9;
+  color: var(--ink-soft); margin-bottom: 16px;
+}
+
+/* ====== ESSENTIALS GRID ====== */
+.essentials { background: var(--white); }
+.ess-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.ess-card { position: relative; }
+.ess-img {
+  aspect-ratio: 1/1;
+  overflow: hidden; margin-bottom: 10px;
+  background: var(--cream-dark);
+}
+.ess-img img {
+  transition: transform .6s;
+}
+.ess-card:hover .ess-img img { transform: scale(1.04); }
+.ess-tag {
+  font-family: 'DM Sans', sans-serif; font-size: 8px;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--sage); margin-bottom: 4px;
+}
+.ess-name {
+  font-family: 'Noto Serif JP', serif;
+  font-weight: 400; font-size: 13px;
+  line-height: 1.35; margin-bottom: 2px;
+}
+.ess-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px; font-style: italic;
+  color: var(--ink-soft);
+}
+
+/* ====== JOURNAL SECTION ====== */
+.journal {
+  background: var(--navy); color: var(--cream);
+}
+.journal-grid {
+  display: grid; grid-template-columns: 1fr; gap: 32px;
+}
+.j-card {}
+.j-img {
+  width: 100%; aspect-ratio: 16/10;
+  overflow: hidden; margin-bottom: 14px;
+}
+.j-tag {
+  font-family: 'DM Sans', sans-serif; font-size: 9px;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--sand); margin-bottom: 6px;
+}
+.j-title {
+  font-family: 'Noto Serif JP', serif;
+  font-weight: 300; font-size: 18px;
+  line-height: 1.45; margin-bottom: 6px;
+}
+.j-excerpt {
+  font-size: 12px; line-height: 1.7;
+  color: rgba(245,240,232,.6);
+}
+.j-date {
+  font-family: 'DM Sans', sans-serif; font-size: 9px;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--sand); opacity: .5;
+  margin-top: 10px;
+}
+
+/* ====== SUBSCRIBE ====== */
+.subscribe {
+  background: var(--rust); color: var(--cream);
+  text-align: center;
+}
+.sub-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 7vw, 48px);
+  font-weight: 300; font-style: italic;
+  line-height: 1.2; margin-bottom: 12px;
+}
+.sub-desc {
+  font-size: 13px; line-height: 1.7;
+  opacity: .85; margin-bottom: 28px;
+  max-width: 32ch; margin-left: auto; margin-right: auto;
+}
+.sub-form {
+  display: flex; flex-direction: column; gap: 10px;
+  max-width: 320px; margin: 0 auto;
+}
+.sub-form input {
+  background: rgba(245,240,232,.15);
+  border: 1px solid rgba(245,240,232,.3);
+  padding: 14px 16px; color: var(--cream);
+  font-family: 'DM Sans', sans-serif; font-size: 14px;
+  outline: none;
+}
+.sub-form input::placeholder { color: rgba(245,240,232,.5); }
+.sub-form input:focus { border-color: var(--cream); }
+.sub-form button {
+  background: var(--cream); color: var(--rust);
+  border: none; padding: 14px;
+  font-family: 'DM Sans', sans-serif; font-size: 11px;
+  letter-spacing: .14em; text-transform: uppercase;
+  font-weight: 700; cursor: pointer;
+  transition: background .3s;
+}
+.sub-form button:hover { background: var(--sand); }
+
+/* ====== FOOTER ====== */
+.footer {
+  background: var(--ink); color: var(--cream);
+  padding: 60px 24px 32px;
+}
+.foot-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 10vw, 64px);
+  font-weight: 300; letter-spacing: .12em;
+  margin-bottom: 32px;
+  color: rgba(245,240,232,.8);
+}
+.foot-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 28px; margin-bottom: 40px;
+}
+.foot-col h5 {
+  font-family: 'DM Sans', sans-serif; font-size: 9px;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--rust); margin-bottom: 14px;
+}
+.foot-col ul { list-style: none; }
+.foot-col li {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px; font-style: italic;
+  line-height: 2; color: rgba(245,240,232,.65);
+}
+.foot-col a { transition: color .3s; }
+.foot-col a:hover { color: var(--sand); }
+.foot-bottom {
+  padding-top: 20px;
+  border-top: 1px solid rgba(245,240,232,.1);
+  display: flex; flex-wrap: wrap;
+  justify-content: space-between; gap: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: 9px;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(245,240,232,.35);
+}
+
+/* ====== REVEAL ====== */
+.reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity .9s cubic-bezier(.2,.8,.2,1), transform .9s cubic-bezier(.2,.8,.2,1);
+}
+.reveal.in { opacity: 1; transform: none; }
+.reveal-d1 { transition-delay: .1s; }
+.reveal-d2 { transition-delay: .2s; }
+.reveal-d3 { transition-delay: .3s; }
+
+/* ====== PAGE NUMBER DECO ====== */
+.page-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px; letter-spacing: .08em;
+  opacity: .25; margin-top: 40px;
+}
+
+/* ====== RESPONSIVE: DESKTOP ====== */
+@media (min-width: 768px) {
+  .sec-pad { padding: 100px 40px; }
+
+  .cover-masthead { padding: 28px 40px 0; }
+  .cover-body { padding: 0 40px 48px; }
+  .cover-sidebar { display: flex; }
+  .cover-headline { font-size: clamp(40px, 5.5vw, 60px); }
+
+  .nav-links { display: flex; }
+  .nav-ham { display: none; }
+  .nav-bar { padding: 0 40px; }
+  .nav-inner { height: 56px; }
+
+  .editors-inner { margin: 0 auto; }
+
+  .feature .sec-pad {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+  .feature-img { aspect-ratio: 3/5; margin-bottom: 0; position: sticky; top: 80px; }
+
+  .picks-grid { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .pick-img { aspect-ratio: 3/4; }
+
+  .report-cols {
+    grid-template-columns: 200px 1fr;
+    gap: 48px;
+  }
+
+  .ess-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+
+  .journal-grid { grid-template-columns: repeat(3, 1fr); gap: 28px; }
+
+  .foot-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (min-width: 1100px) {
+  .sec-pad { padding: 120px 60px; }
+  .cover-masthead { padding: 36px 60px 0; }
+  .cover-body { padding: 0 60px 56px; }
+  .nav-bar { padding: 0 60px; }
+  .picks-grid { gap: 40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ====== LOADER ====== -->
+<div class="loader" id="loader">
+  <div class="loader-vol">Outdoor & Goods</div>
+  <div class="loader-title">WANDERER</div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- ====== COVER / KV ====== -->
+<section class="cover" id="top">
+  <div class="cover-bg">
+    <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=80"
+         alt="Mountain ridge at dawn">
+  </div>
+
+  <div class="cover-masthead">
+    <div>
+      <div class="masthead-logo">WANDERER</div>
+    </div>
+    <div class="masthead-right">
+      <div class="masthead-vol">Volume</div>
+      <div class="masthead-issue">09</div>
+      <div class="masthead-sub">Spring / Summer 2026</div>
+    </div>
+  </div>
+
+  <div class="cover-body">
+    <div class="cover-tag">Special Feature</div>
+    <h1 class="cover-headline">
+      稜線の向こうへ、<br>
+      <em>Into the Ridge.</em>
+    </h1>
+    <p class="cover-desc">
+      山と道具と、そのあいだにある物語。<br>
+      使い込むほどに馴染む、フィールドのための日用品。
+    </p>
+    <div class="cover-lines">
+      <span class="cover-line">Field Picks — 12 Items</span>
+      <span class="cover-line">Interview: 山と道</span>
+      <span class="cover-line">Report: Aomori Trail</span>
+    </div>
+    <div class="cover-scroll">
+      <div class="arrow"></div>
+      Scroll
+    </div>
+  </div>
+
+  <div class="cover-sidebar">
+    <span>An outdoor journal — since 2018</span>
+    <span>Melbourne · Tokyo · Portland</span>
+  </div>
+</section>
+
+<!-- ====== NAV ====== -->
+<nav class="nav-bar" id="navBar">
+  <div class="nav-inner">
+    <a href="#top" class="nav-logo">WANDERER</a>
+    <div class="nav-links">
+      <a href="#feature">Feature</a>
+      <a href="#picks">Field Picks</a>
+      <a href="#report">Report</a>
+      <a href="#essentials">Essentials</a>
+      <a href="#journal">Journal</a>
+      <a href="#subscribe">Newsletter</a>
+    </div>
+    <button class="nav-ham" id="navHam" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- mobile menu -->
+<div class="mob-menu" id="mobMenu">
+  <a href="#feature">Feature</a>
+  <a href="#picks">Field Picks</a>
+  <a href="#report">Report</a>
+  <a href="#essentials">Essentials</a>
+  <a href="#journal">Journal</a>
+  <a href="#subscribe">Newsletter</a>
+  <div class="mob-menu-foot">WANDERER vol.09 · Spring/Summer 2026</div>
+</div>
+
+<!-- ====== EDITOR'S NOTE ====== -->
+<section class="editors sec-pad" id="editors">
+  <div class="editors-inner">
+    <div class="editors-head reveal">Editor's Note</div>
+    <div class="editors-quote reveal">
+      道具は、持ち主の歩いた距離を<br>静かに覚えている。
+    </div>
+    <div class="editors-body reveal">
+      <p>9号目のWANDERERをお届けします。今号の特集は「稜線の向こうへ」。山岳地帯のフィールドで実際にテストした道具たちを中心に、使い込むことで初めて完成するプロダクトを紹介します。派手さはいりません。ただ、確かなものを。</p>
+    </div>
+    <div class="editors-sign reveal">Kenshin Nishihara — Editor in Chief</div>
+  </div>
+</section>
+
+<!-- ====== FEATURE ====== -->
+<section class="feature" id="feature">
+  <div class="sec-pad">
+    <div>
+      <div class="feature-img reveal">
+        <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=900&q=80"
+             alt="Hiker on mountain trail with backpack">
+        <div class="feature-caption">Photo: Aomori Ridge, April 2026 — tested at 2,400m</div>
+      </div>
+    </div>
+    <div>
+      <div class="sec-num reveal">Feature — pp. 04–18</div>
+      <div class="feature-tag reveal">特集</div>
+      <h2 class="feature-title reveal">
+        使い込むほどに<br>
+        手に馴染む道具たち。<br>
+        <em>Tools that age<br>with grace.</em>
+      </h2>
+      <div class="feature-body">
+        <p class="reveal"><span class="drop">山</span>の道具に求めるものは何だろうか。軽さか、強さか、それとも美しさか。この問いに正解はない。ただひとつ確かなのは、良い道具は使い手とともに時間を重ねるということだ。</p>
+        <div class="feature-pull reveal">良い道具は、使い手の体温で少しずつ形を変える。一年後には、あなただけの道具になっている。</div>
+        <p class="reveal">WANDERERが選ぶフィールドギアは、大量生産の対極にある。手仕事の跡が残り、経年変化を愉しめる素材で作られたもの。壊れたら直して、直せなくなるまで使い続けるもの。そういう道具を、今号では12点集めました。</p>
+        <p class="reveal">春の青森、夏の北アルプス、秋の屋久島。それぞれのフィールドで実際にテストした記録とともに紹介します。</p>
+      </div>
+      <div class="page-num reveal">pp. 04–05</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== FIELD PICKS ====== -->
+<section class="picks sec-pad" id="picks">
+  <div class="sec-head">
+    <div class="sec-num reveal">Field Picks — pp. 19–36</div>
+    <h2 class="sec-title reveal">
+      今号の<em>12</em>選。<br>
+      <em>Curated for the trail.</em>
+    </h2>
+    <div class="sec-rule reveal"></div>
+  </div>
+
+  <div class="picks-grid">
+
+    <article class="pick-card reveal">
+      <div class="pick-img">
+        <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80"
+             alt="Canvas backpack">
+      </div>
+      <div class="pick-num">No. 001</div>
+      <h3 class="pick-name">帆布デイパック</h3>
+      <div class="pick-en">Waxed Canvas Day Pack — 22L</div>
+      <p class="pick-desc">倉敷帆布を蜜蝋で仕上げた防水デイパック。使い込むほどに独特のドレープが生まれる。</p>
+      <div class="pick-meta">
+        <span class="pick-price">¥ 28,600</span>
+        <span>22L / 580g</span>
+      </div>
+    </article>
+
+    <article class="pick-card reveal">
+      <div class="pick-img">
+        <img src="https://images.unsplash.com/photo-1510672981848-a1c4f1cb5ccf?auto=format&fit=crop&w=800&q=80"
+             alt="Camping lantern">
+      </div>
+      <div class="pick-num">No. 002</div>
+      <h3 class="pick-name">真鍮オイルランタン</h3>
+      <div class="pick-en">Brass Oil Lantern — S</div>
+      <p class="pick-desc">新潟の金属加工職人が一点ずつ仕上げる真鍮ランタン。火を灯すたびに深みを増す。</p>
+      <div class="pick-meta">
+        <span class="pick-price">¥ 16,500</span>
+        <span>210g / 8h burn</span>
+      </div>
+    </article>
+
+    <article class="pick-card reveal">
+      <div class="pick-img">
+        <img src="https://images.unsplash.com/photo-1624628639856-100bf817fd35?auto=format&fit=crop&w=800&q=80"
+             alt="Enamel mug on rock">
+      </div>
+      <div class="pick-num">No. 003</div>
+      <h3 class="pick-name">琺瑯マグカップ</h3>
+      <div class="pick-en">Enamel Field Mug — 350ml</div>
+      <p class="pick-desc">栃木の琺瑯工房で焼き上げた二重焼きマグ。欠けてもなお、味わいが増す。</p>
+      <div class="pick-meta">
+        <span class="pick-price">¥ 3,300</span>
+        <span>350ml / 185g</span>
+      </div>
+    </article>
+
+    <article class="pick-card reveal">
+      <div class="pick-img">
+        <img src="https://images.unsplash.com/photo-1571687949921-1306bfb24b72?auto=format&fit=crop&w=800&q=80"
+             alt="Leather field notebook">
+      </div>
+      <div class="pick-num">No. 004</div>
+      <h3 class="pick-name">フィールドノート</h3>
+      <div class="pick-en">Leather Field Notebook — A6</div>
+      <p class="pick-desc">姫路産タンニン鞣し革のカバー。耐水紙のリフィル交換式。GPS座標のグリッド付き。</p>
+      <div class="pick-meta">
+        <span class="pick-price">¥ 8,800</span>
+        <span>A6 / 120 pages</span>
+      </div>
+    </article>
+
+    <article class="pick-card reveal">
+      <div class="pick-img">
+        <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=800&q=80"
+             alt="Tent at dawn">
+      </div>
+      <div class="pick-num">No. 005</div>
+      <h3 class="pick-name">山岳テント 一人用</h3>
+      <div class="pick-en">Alpine Solo Tent — 1P</div>
+      <p class="pick-desc">ダイニーマ生地と航空アルミポールの組み合わせ。1.2kgを切る超軽量設計。</p>
+      <div class="pick-meta">
+        <span class="pick-price">¥ 68,000</span>
+        <span>1P / 1,180g</span>
+      </div>
+    </article>
+
+    <article class="pick-card reveal">
+      <div class="pick-img">
+        <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80"
+             alt="Wooden cutlery set">
+      </div>
+      <div class="pick-num">No. 006</div>
+      <h3 class="pick-name">白樺カトラリーセット</h3>
+      <div class="pick-en">Birch Cutlery Set</div>
+      <p class="pick-desc">飛騨高山の木工作家による白樺のスプーンとフォーク。使うほどにオイルが馴染む。</p>
+      <div class="pick-meta">
+        <span class="pick-price">¥ 4,400</span>
+        <span>Spoon + Fork / 32g</span>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="page-num reveal">pp. 19–30</div>
+</section>
+
+<!-- ====== FIELD REPORT ====== -->
+<section class="report sec-pad" id="report">
+  <div class="sec-head">
+    <div class="sec-num reveal">Field Report — pp. 37–44</div>
+    <h2 class="sec-title reveal">
+      青森、春の稜線を歩く。<br>
+      <em>Walking the Aomori Ridge.</em>
+    </h2>
+    <div class="sec-rule reveal"></div>
+  </div>
+
+  <div class="report-hero reveal">
+    <img src="https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=1400&q=80"
+         alt="Mountain ridge trail at sunrise">
+  </div>
+
+  <div class="report-cols">
+    <div class="report-side reveal">
+      <div class="label">Report</div>
+      <div>Filed: Aomori</div>
+      <div>April 3–7, 2026</div>
+      <div>Distance: 48km</div>
+      <div>Elevation: +2,840m</div>
+      <div style="margin-top:16px">
+        <div class="label">Photographer</div>
+        <div>Takumi Sato</div>
+      </div>
+      <div style="margin-top:16px">
+        <div class="label">Writer</div>
+        <div>Nao Yamamoto</div>
+      </div>
+    </div>
+    <div class="report-text">
+      <h3 class="reveal">四月の青森には、<br>まだ雪が残っている。<br>その白さの中を<em>歩く。</em></h3>
+      <p class="reveal">桜の季節に山に入るのは、少し変わっているかもしれない。でも、四月の八甲田の稜線には、街では出会えない静けさがある。残雪の上を歩くブーツの音だけが、谷に響く。</p>
+      <p class="reveal">今回のレポートでは、WANDERER編集部が実際に4泊5日で歩いた48kmのルートを、持参した道具のレビューとともにお届けします。帆布デイパック、真鍮ランタン、琺瑯マグ——すべて本号のフィールドピックスで紹介しているアイテムです。</p>
+      <p class="reveal">道具は山で使って初めて本当の顔を見せる。そして山は、道具を通して初めて手に触れることができる。この循環を、写真と言葉で記録しました。</p>
+    </div>
+  </div>
+
+  <div class="page-num reveal">pp. 37–38</div>
+</section>
+
+<!-- ====== ESSENTIALS GRID ====== -->
+<section class="essentials sec-pad" id="essentials">
+  <div class="sec-head">
+    <div class="sec-num reveal">Essentials — pp. 45–52</div>
+    <h2 class="sec-title reveal">
+      日常にも、<em>山</em>にも。<br>
+      <em>Everyday carry.</em>
+    </h2>
+    <div class="sec-rule reveal"></div>
+  </div>
+
+  <div class="ess-grid">
+    <div class="ess-card reveal">
+      <div class="ess-img">
+        <img src="https://images.unsplash.com/photo-1585916420730-d7f95e942d43?auto=format&fit=crop&w=600&q=80"
+             alt="Linen tote bag">
+      </div>
+      <div class="ess-tag">Bag</div>
+      <div class="ess-name">リネントートバッグ</div>
+      <div class="ess-price">¥ 5,500</div>
+    </div>
+    <div class="ess-card reveal">
+      <div class="ess-img">
+        <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=600&q=80"
+             alt="Ceramic cup">
+      </div>
+      <div class="ess-tag">Tableware</div>
+      <div class="ess-name">手捻り湯呑み</div>
+      <div class="ess-price">¥ 3,800</div>
+    </div>
+    <div class="ess-card reveal">
+      <div class="ess-img">
+        <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=600&q=80"
+             alt="Incense set">
+      </div>
+      <div class="ess-tag">Fragrance</div>
+      <div class="ess-name">白檀のお香セット</div>
+      <div class="ess-price">¥ 2,200</div>
+    </div>
+    <div class="ess-card reveal">
+      <div class="ess-img">
+        <img src="https://images.unsplash.com/photo-1611791484670-ce19b801d192?auto=format&fit=crop&w=600&q=80"
+             alt="Wool blanket">
+      </div>
+      <div class="ess-tag">Textile</div>
+      <div class="ess-name">ウールブランケット</div>
+      <div class="ess-price">¥ 14,300</div>
+    </div>
+    <div class="ess-card reveal">
+      <div class="ess-img">
+        <img src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?auto=format&fit=crop&w=600&q=80"
+             alt="Beeswax candle">
+      </div>
+      <div class="ess-tag">Light</div>
+      <div class="ess-name">蜜蝋キャンドル</div>
+      <div class="ess-price">¥ 1,800</div>
+    </div>
+    <div class="ess-card reveal">
+      <div class="ess-img">
+        <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=600&q=80"
+             alt="Journal book">
+      </div>
+      <div class="ess-tag">Stationery</div>
+      <div class="ess-name">活版印刷ジャーナル</div>
+      <div class="ess-price">¥ 2,800</div>
+    </div>
+    <div class="ess-card reveal">
+      <div class="ess-img">
+        <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&q=80"
+             alt="Brass keyring">
+      </div>
+      <div class="ess-tag">Accessory</div>
+      <div class="ess-name">真鍮キーリング</div>
+      <div class="ess-price">¥ 4,200</div>
+    </div>
+    <div class="ess-card reveal">
+      <div class="ess-img">
+        <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=600&q=80"
+             alt="Thermos bottle">
+      </div>
+      <div class="ess-tag">Drinkware</div>
+      <div class="ess-name">ステンレスボトル</div>
+      <div class="ess-price">¥ 6,600</div>
+    </div>
+  </div>
+
+  <div class="page-num reveal">pp. 45–52</div>
+</section>
+
+<!-- ====== JOURNAL ====== -->
+<section class="journal sec-pad" id="journal">
+  <div class="sec-head">
+    <div class="sec-num reveal" style="color:var(--sand);opacity:.5">From the Journal</div>
+    <h2 class="sec-title reveal" style="color:var(--cream)">
+      読む、歩く、<em>考える。</em>
+    </h2>
+    <div class="sec-rule reveal" style="background:var(--cream)"></div>
+  </div>
+
+  <div class="journal-grid">
+    <article class="j-card reveal">
+      <div class="j-img">
+        <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80"
+             alt="Snowy mountain peak">
+      </div>
+      <div class="j-tag">Essay</div>
+      <h3 class="j-title">静かな山の、静かな朝のこと。</h3>
+      <p class="j-excerpt">山小屋を出て、まだ誰も歩いていないトレイルに最初の足跡をつける。その瞬間のことを書きたかった。</p>
+      <div class="j-date">March 12, 2026</div>
+    </article>
+    <article class="j-card reveal">
+      <div class="j-img">
+        <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80"
+             alt="Forest trail with sunlight">
+      </div>
+      <div class="j-tag">Interview</div>
+      <h3 class="j-title">山と道・夏目彰に聞く、道具のミニマリズム。</h3>
+      <p class="j-excerpt">「本当に必要なものだけを持って山に入ると、山が近くなる」。ULハイキングの先駆者が語る哲学。</p>
+      <div class="j-date">February 28, 2026</div>
+    </article>
+    <article class="j-card reveal">
+      <div class="j-img">
+        <img src="https://images.unsplash.com/photo-1533240332313-0db49b459ad6?auto=format&fit=crop&w=800&q=80"
+             alt="Campfire at dusk">
+      </div>
+      <div class="j-tag">Photo Essay</div>
+      <h3 class="j-title">焚き火と、その向こう側。</h3>
+      <p class="j-excerpt">屋久島の河原で過ごした三夜。焚き火の写真と、火を見つめながら考えたことの断片。</p>
+      <div class="j-date">January 15, 2026</div>
+    </article>
+  </div>
+
+  <div class="page-num reveal" style="color:rgba(245,240,232,.2)">pp. 53–64</div>
+</section>
+
+<!-- ====== SUBSCRIBE ====== -->
+<section class="subscribe sec-pad" id="subscribe">
+  <div class="sub-title reveal">Next issue,<br>delivered.</div>
+  <p class="sub-desc reveal">次号のWANDERERをお届けします。季刊発行、年4回。道具と旅の記録を、あなたのポストへ。</p>
+  <form class="sub-form reveal" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Subscribed ✓';">
+    <input type="email" placeholder="your@email.com" required>
+    <button type="submit">Subscribe — Free</button>
+  </form>
+</section>
+
+<!-- ====== FOOTER ====== -->
+<footer class="footer">
+  <div class="foot-logo">WANDERER</div>
+  <div class="foot-grid">
+    <div class="foot-col">
+      <h5>Shop</h5>
+      <ul>
+        <li><a href="#picks">Field Picks</a></li>
+        <li><a href="#essentials">Essentials</a></li>
+        <li><a href="#">All Products</a></li>
+        <li><a href="#">Gift Cards</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>Read</h5>
+      <ul>
+        <li><a href="#journal">Journal</a></li>
+        <li><a href="#feature">Features</a></li>
+        <li><a href="#report">Field Reports</a></li>
+        <li><a href="#">Back Issues</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>About</h5>
+      <ul>
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">The Team</a></li>
+        <li><a href="#">Stockists</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>Visit</h5>
+      <ul>
+        <li>3-14 Smith St</li>
+        <li>Fitzroy VIC 3065</li>
+        <li>Melbourne, Australia</li>
+        <li style="margin-top:8px">Wed–Sun 11:00–18:00</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© WANDERER 2026 · vol. 09</span>
+    <span>Melbourne · Tokyo · Portland</span>
+  </div>
+</footer>
+
+<script>
+// Loader
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('loader').classList.add('gone'), 2200);
+});
+
+// Nav hamburger
+const ham = document.getElementById('navHam');
+const mob = document.getElementById('mobMenu');
+ham.addEventListener('click', () => {
+  ham.classList.toggle('open');
+  mob.classList.toggle('open');
+  document.body.style.overflow = mob.classList.contains('open') ? 'hidden' : '';
+});
+mob.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    ham.classList.remove('open');
+    mob.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+
+// Reveal on scroll
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Smooth anchor scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href');
+    if (id.length < 2) return;
+    const t = document.querySelector(id);
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+
+// Parallax cover bg on scroll
+const coverBg = document.querySelector('.cover-bg img');
+if (coverBg && window.innerWidth > 768) {
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y < window.innerHeight * 1.5) {
+      coverBg.style.transform = `scale(1.05) translateY(${y * 0.15}px)`;
+    }
+  }, { passive: true });
+}
+</script>
+</body>
+</html>

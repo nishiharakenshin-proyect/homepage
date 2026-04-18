@@ -1,0 +1,801 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MASA — A Mexican Kitchen in Melbourne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;900&family=Archivo+Black&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ==========================================
+   MASA — Mobile-first, Mexican Kitchen
+   ========================================== */
+:root {
+  --cream: #f5f0e0;
+  --ink: #1a1410;
+  --chili: #b5121b;
+  --terra: #c4501c;
+  --verde: #1a5632;
+  --maiz: #e8b419;
+  --mole: #3d1a0e;
+  --sky: #5a9bab;
+  --pad: 24px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Archivo", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: var(--ink);
+  background: var(--cream);
+  overflow-x: hidden;
+}
+::selection { background: var(--chili); color: var(--cream); }
+a { color: inherit; text-decoration: none; }
+img, svg { display: block; }
+.serif { font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-weight: 400; }
+.black { font-family: "Archivo Black", sans-serif; text-transform: uppercase; letter-spacing: -.02em; line-height: .88; }
+.mono { font-family: "Archivo", monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 500; }
+
+/* ============ LOADER ============ */
+.loader {
+  position: fixed; inset: 0; z-index: 9999;
+  display: grid; place-items: center;
+  background: var(--cream);
+  transition: opacity .6s ease, visibility .6s ease;
+}
+.loader.gone { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-mosaic {
+  display: grid; grid-template-columns: repeat(4, 48px); grid-template-rows: repeat(2, 48px); gap: 4px;
+}
+.loader-mosaic div { animation: mosaic-pop 1.2s ease-in-out infinite; }
+.loader-mosaic div:nth-child(1) { background: var(--chili); animation-delay: 0s; }
+.loader-mosaic div:nth-child(2) { background: var(--terra); animation-delay: .08s; }
+.loader-mosaic div:nth-child(3) { background: var(--maiz); animation-delay: .16s; }
+.loader-mosaic div:nth-child(4) { background: var(--verde); animation-delay: .24s; }
+.loader-mosaic div:nth-child(5) { background: var(--mole); animation-delay: .32s; }
+.loader-mosaic div:nth-child(6) { background: var(--sky); animation-delay: .40s; }
+.loader-mosaic div:nth-child(7) { background: var(--chili); animation-delay: .48s; }
+.loader-mosaic div:nth-child(8) { background: var(--terra); animation-delay: .56s; }
+@keyframes mosaic-pop {
+  0%, 100% { transform: scale(.5); opacity: .3; }
+  50% { transform: scale(1); opacity: 1; }
+}
+.loader-label {
+  position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+  font-family: "Archivo", monospace; font-size: 11px; letter-spacing: .25em; text-transform: uppercase;
+}
+
+/* ============ NAV ============ */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px var(--pad);
+  mix-blend-mode: difference; color: var(--cream);
+}
+.topbar .logo { font-family: "Archivo Black", sans-serif; font-size: 22px; letter-spacing: -.02em; display: flex; align-items: center; gap: 8px; }
+.topbar .logo .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--chili); }
+.topbar .desk-nav { display: none; align-items: center; gap: 26px; }
+.topbar .desk-nav a { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 500; position: relative; }
+.topbar .desk-nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 2px; background: var(--cream); transform: scaleX(0); transition: transform .35s; transform-origin: right; }
+.topbar .desk-nav a:hover::after { transform: scaleX(1); transform-origin: left; }
+.topbar .desk-book { display: none; background: var(--chili); color: var(--cream); padding: 12px 20px; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; mix-blend-mode: normal; }
+.hamburger {
+  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+  background: none; border: none; cursor: pointer; position: relative; mix-blend-mode: normal;
+}
+.hamburger span, .hamburger span::before, .hamburger span::after {
+  display: block; width: 22px; height: 2px; background: var(--cream); position: absolute; transition: all .3s;
+}
+.hamburger span::before { content: ""; top: -7px; position: absolute; width: 22px; }
+.hamburger span::after { content: ""; top: 7px; position: absolute; width: 22px; }
+.hamburger.open span { background: transparent; }
+.hamburger.open span::before { top: 0; transform: rotate(45deg); }
+.hamburger.open span::after { top: 0; transform: rotate(-45deg); }
+
+/* Mobile overlay */
+.mobile-menu {
+  position: fixed; inset: 0; z-index: 99;
+  display: flex; flex-direction: column;
+  transform: translateY(-100%); transition: transform .5s cubic-bezier(.4, 0, .2, 1);
+}
+.mobile-menu.open { transform: translateY(0); }
+.mobile-menu a {
+  flex: 1; display: flex; align-items: center; padding-left: var(--pad);
+  font-family: "Archivo Black", sans-serif; font-size: 28px; text-transform: uppercase; letter-spacing: -.01em;
+  text-decoration: none; transition: opacity .3s;
+}
+.mobile-menu a:active { opacity: .7; }
+.mobile-menu a:nth-child(1) { background: var(--chili); color: var(--cream); }
+.mobile-menu a:nth-child(2) { background: var(--verde); color: var(--cream); }
+.mobile-menu a:nth-child(3) { background: var(--maiz); color: var(--ink); }
+.mobile-menu a:nth-child(4) { background: var(--ink); color: var(--cream); }
+.mobile-menu a:nth-child(5) { background: var(--mole); color: var(--cream); }
+.mobile-menu a:nth-child(6) { background: var(--terra); color: var(--ink); }
+
+/* ============ HERO — Chili full-bleed (like original ORTO beet) ============ */
+.hero {
+  min-height: 100svh; background: var(--chili); color: var(--cream);
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 140px var(--pad) 40px; position: relative; overflow: hidden;
+}
+.hero-name {
+  font-family: "Archivo Black", sans-serif; font-size: 28vw; line-height: .82;
+  text-transform: uppercase; letter-spacing: -.04em;
+}
+.hero-sub { font-family: "Instrument Serif", serif; font-style: italic; font-size: 22px; margin-top: 12px; }
+.hero-meta { font-family: "Archivo", monospace; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; margin-top: 16px; opacity: .8; }
+/* Interior photo inside hero — same width as text content */
+.hero-photo { margin-top: 32px; border-radius: 4px; overflow: hidden; }
+.hero-photo img { width: 100%; height: auto; aspect-ratio: 16/7; object-fit: cover; display: block; }
+.hero-tonight {
+  font-family: "Instrument Serif", serif; font-style: italic; font-size: 17px;
+  margin-top: auto; padding-top: 28px; opacity: .85;
+}
+.hero-arrow {
+  text-align: center; margin-top: 20px;
+  animation: float-arrow 2s ease-in-out infinite;
+}
+.hero-arrow svg { display: inline-block; width: 28px; height: 28px; }
+@keyframes float-arrow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+
+
+/* ============ MANIFESTO — Verde ============ */
+.manifesto {
+  min-height: 100svh; background: var(--verde); color: var(--cream);
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 80px var(--pad);
+}
+.manifesto-big {
+  font-family: "Archivo Black", sans-serif; font-size: clamp(38px, 10vw, 90px);
+  line-height: .9; text-transform: uppercase; letter-spacing: -.03em; margin-bottom: 28px;
+}
+.manifesto-body { font-size: 16px; line-height: 1.65; max-width: 38ch; margin-bottom: 40px; opacity: .9; }
+.manifesto-stats {
+  display: flex; gap: 20px; flex-wrap: wrap;
+  font-family: "Archivo Black", sans-serif; font-size: 14px; text-transform: uppercase; letter-spacing: .04em;
+}
+.manifesto-stats span {
+  padding: 10px 18px; border: 1.5px solid rgba(245,240,224,.4); border-radius: 999px;
+}
+
+/* ============ SIGNATURE PLATES ============ */
+.plates { background: var(--cream); padding: 80px var(--pad); }
+.plates-header { margin-bottom: 48px; padding-bottom: 20px; border-bottom: 2px solid var(--ink); }
+.plates-header h2 {
+  font-family: "Archivo Black", sans-serif; font-size: clamp(42px, 10vw, 120px);
+  line-height: .88; text-transform: uppercase; letter-spacing: -.03em;
+}
+.plates-header .sub { font-family: "Archivo", monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; margin-top: 10px; opacity: .6; }
+
+.plates-list { display: flex; flex-direction: column; gap: 0; }
+.plate-card {
+  padding: 32px 0; border-bottom: 1.5px solid rgba(26,20,16,.15);
+  display: flex; flex-direction: column;
+}
+.plate-card:first-child { border-top: 1.5px solid rgba(26,20,16,.15); }
+.plate-num { font-family: "Archivo", monospace; font-size: 10px; letter-spacing: .16em; opacity: .5; margin-bottom: 12px; }
+.plate-img-wrap { width: 100%; aspect-ratio: 4/3; margin: 0 auto 20px; border-radius: 4px; overflow: hidden; }
+.plate-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.plate-name { font-family: "Archivo Black", sans-serif; font-size: 28px; line-height: .95; text-transform: uppercase; letter-spacing: -.02em; }
+.plate-spanish { font-family: "Instrument Serif", serif; font-style: italic; font-size: 17px; color: var(--verde); margin-top: 4px; }
+.plate-desc { font-size: 14px; line-height: 1.55; opacity: .7; margin-top: 10px; }
+.plate-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
+.plate-price { font-family: "Archivo Black", sans-serif; font-size: 22px; }
+.plate-tag {
+  font-family: "Archivo", sans-serif; font-size: 10px; letter-spacing: .12em;
+  text-transform: uppercase; font-weight: 600; padding: 5px 12px; border-radius: 999px; color: var(--cream);
+}
+.plate-tag.spicy { background: var(--chili); }
+.plate-tag.gf { background: var(--terra); }
+.plate-tag.vg { background: var(--verde); }
+.plate-tag.new { background: var(--mole); }
+.plate-tag.house { background: var(--ink); }
+.plate-tag.cool { background: var(--sky); color: var(--ink); }
+
+/* ============ FULL MENU — Ink ============ */
+.full-menu { background: var(--ink); color: var(--cream); padding: 80px var(--pad); }
+.full-menu-header { margin-bottom: 40px; padding-bottom: 16px; border-bottom: 1px solid rgba(245,240,224,.2); }
+.full-menu-header h2 {
+  font-family: "Archivo Black", sans-serif; font-size: clamp(40px, 10vw, 120px);
+  line-height: .88; text-transform: uppercase; letter-spacing: -.03em;
+}
+.full-menu-header h2 em { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; color: var(--maiz); }
+.full-menu-header .sub { font-family: "Archivo", monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; margin-top: 8px; color: var(--maiz); }
+
+.menu-course { margin-bottom: 36px; }
+.course-label {
+  font-family: "Archivo", monospace; font-size: 10px; letter-spacing: .16em;
+  text-transform: uppercase; font-weight: 600; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.course-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.menu-item {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 12px 0; border-bottom: 1px solid rgba(245,240,224,.1);
+}
+.menu-item-name { font-family: "Archivo Black", sans-serif; font-size: 18px; text-transform: uppercase; letter-spacing: -.01em; }
+.menu-item-name em { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; text-transform: none; }
+.menu-item-price { font-family: "Archivo Black", sans-serif; font-size: 16px; white-space: nowrap; margin-left: 16px; }
+
+/* ============ ORIGINS — Maiz ============ */
+.origins { background: var(--maiz); color: var(--ink); padding: 80px var(--pad); }
+.origins-header { margin-bottom: 40px; padding-bottom: 16px; border-bottom: 2px solid var(--ink); }
+.origins-header h2 {
+  font-family: "Archivo Black", sans-serif; font-size: clamp(38px, 9vw, 110px);
+  line-height: .88; text-transform: uppercase; letter-spacing: -.03em;
+}
+.origins-header .sub { font-family: "Archivo", monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; margin-top: 8px; }
+.origins-list { display: flex; flex-direction: column; gap: 0; }
+.origin-card {
+  padding: 24px 0 24px 20px; border-bottom: 1px solid rgba(26,20,16,.2);
+  border-left: 4px solid var(--chili); position: relative;
+}
+.origin-card:nth-child(2) { border-left-color: var(--verde); }
+.origin-card:nth-child(3) { border-left-color: var(--terra); }
+.origin-card:nth-child(4) { border-left-color: var(--mole); }
+.origin-card:nth-child(5) { border-left-color: var(--ink); }
+.origin-card:nth-child(6) { border-left-color: var(--sky); }
+.origin-num { font-family: "Archivo Black", sans-serif; font-size: 40px; line-height: .85; color: var(--chili); margin-bottom: 8px; }
+.origin-card:nth-child(2) .origin-num { color: var(--verde); }
+.origin-card:nth-child(3) .origin-num { color: var(--terra); }
+.origin-card:nth-child(4) .origin-num { color: var(--mole); }
+.origin-card:nth-child(5) .origin-num { color: var(--ink); }
+.origin-card:nth-child(6) .origin-num { color: var(--sky); }
+.origin-name { font-family: "Archivo Black", sans-serif; font-size: 20px; text-transform: uppercase; letter-spacing: -.01em; margin-bottom: 2px; }
+.origin-place { font-family: "Instrument Serif", serif; font-style: italic; font-size: 15px; color: var(--verde); margin-bottom: 10px; }
+.origin-crop { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; opacity: .65; line-height: 1.7; }
+
+/* ============ RESERVATION — Chili ============ */
+.reservation { background: var(--chili); color: var(--cream); padding: 80px var(--pad); }
+.reservation h2 {
+  font-family: "Archivo Black", sans-serif; font-size: clamp(38px, 9vw, 90px);
+  line-height: .88; text-transform: uppercase; letter-spacing: -.03em; margin-bottom: 10px;
+}
+.reservation h2 em { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; color: var(--maiz); }
+.reservation > p { font-size: 15px; line-height: 1.6; max-width: 42ch; margin-bottom: 32px; opacity: .9; }
+
+.book-form { background: var(--cream); color: var(--ink); padding: 28px 24px; border-radius: 4px; }
+.form-row { margin-bottom: 20px; }
+.form-row label {
+  display: block; font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+  font-weight: 600; margin-bottom: 8px; opacity: .55;
+}
+.form-row input, .form-row select {
+  width: 100%; border: none; border-bottom: 1.5px solid var(--ink);
+  background: transparent; padding: 10px 0; font-family: "Archivo", sans-serif;
+  font-size: 16px; color: var(--ink); outline: none; border-radius: 0;
+  -webkit-appearance: none; min-height: 44px;
+}
+.form-row input::placeholder { color: rgba(26,20,16,.35); }
+.form-row-half { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.form-row-half .form-row { margin-bottom: 0; }
+.guest-picker { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-top: 6px; }
+.guest-picker button {
+  min-height: 48px; background: transparent; border: 1.5px solid var(--ink);
+  font-family: "Archivo Black", sans-serif; font-size: 15px; cursor: pointer; transition: all .25s;
+}
+.guest-picker button.on { background: var(--ink); color: var(--cream); }
+.submit-btn {
+  width: 100%; background: var(--verde); color: var(--cream); border: none;
+  padding: 18px; font-family: "Archivo Black", sans-serif; font-size: 15px;
+  letter-spacing: .08em; text-transform: uppercase; cursor: pointer;
+  transition: background .3s; margin-top: 8px; min-height: 56px;
+}
+.submit-btn:hover { background: var(--ink); }
+
+/* ============ HOURS — Verde ============ */
+.hours-section {
+  background: var(--verde); color: var(--cream); padding: 80px var(--pad);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.hours-section h2 {
+  font-family: "Archivo Black", sans-serif; font-size: clamp(38px, 9vw, 80px);
+  line-height: .88; text-transform: uppercase; letter-spacing: -.02em; margin-bottom: 8px;
+}
+.hours-section h2 em { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; color: var(--maiz); }
+.clock-wrap { position: relative; width: 100%; max-width: 280px; margin: 30px auto 36px; }
+.clock-wrap svg { width: 100%; display: block; }
+.clock-label {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;
+}
+.clock-label .hrs { font-family: "Archivo Black", sans-serif; font-size: 28px; line-height: 1; }
+.clock-label .now { font-family: "Instrument Serif", serif; font-style: italic; font-size: 13px; opacity: .8; margin-top: 4px; }
+.hours-list { width: 100%; max-width: 400px; }
+.hours-row {
+  display: flex; justify-content: space-between; padding: 10px 0;
+  border-bottom: 1px dashed rgba(245,240,224,.25); font-size: 14px;
+}
+.hours-row strong { font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
+.hours-address {
+  margin-top: 36px; font-family: "Instrument Serif", serif; font-style: italic;
+  font-size: 18px; line-height: 1.45; opacity: .85;
+}
+
+/* ============ FOOTER — Ink ============ */
+.site-footer { background: var(--ink); color: var(--cream); padding: 80px var(--pad) 30px; }
+.footer-big {
+  font-family: "Archivo Black", sans-serif; font-size: clamp(42px, 12vw, 180px);
+  line-height: .84; text-transform: uppercase; letter-spacing: -.035em; margin-bottom: 48px;
+}
+.footer-big em { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; color: var(--terra); display: block; }
+.footer-cols { padding-top: 32px; border-top: 1px solid rgba(245,240,224,.15); margin-bottom: 32px; }
+.footer-col { margin-bottom: 28px; }
+.footer-col h5 { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-weight: 700; color: var(--maiz); margin-bottom: 12px; }
+.footer-col ul { list-style: none; }
+.footer-col li { font-size: 14px; line-height: 1.9; opacity: .8; }
+.footer-col .address { font-family: "Instrument Serif", serif; font-style: italic; font-size: 17px; line-height: 1.45; }
+.footer-bottom {
+  padding-top: 20px; border-top: 1px solid rgba(245,240,224,.15);
+  font-family: "Archivo", monospace; font-size: 10px; letter-spacing: .14em;
+  text-transform: uppercase; opacity: .5; display: flex; flex-direction: column; gap: 6px; text-align: center;
+}
+
+/* ============ REVEAL ============ */
+.reveal { opacity: 0; transform: translateY(32px); transition: opacity .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1); }
+.reveal.in { opacity: 1; transform: none; }
+
+/* ============ DESKTOP ============ */
+@media (min-width: 768px) {
+  :root { --pad: 48px; }
+  .hamburger { display: none; }
+  .topbar .desk-nav { display: flex; }
+  .topbar .desk-book { display: inline-block; }
+  .hero { padding: 120px var(--pad) 60px; }
+  .hero-name { font-size: 18vw; }
+  .hero-sub { font-size: 28px; }
+  .manifesto { padding: 120px var(--pad); }
+  .plates { padding: 120px var(--pad); }
+  .plates-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
+  .plate-card { padding: 36px 0; }
+  .full-menu { padding: 120px var(--pad); }
+  .menu-courses-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 60px; }
+  .origins { padding: 120px var(--pad); }
+  .origins-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
+  .origin-card { padding: 28px 0 28px 24px; }
+  .book-hours-wrap { display: grid; grid-template-columns: 1.2fr 1fr; }
+  .reservation { padding: 100px var(--pad); }
+  .hours-section { padding: 100px var(--pad); }
+  .footer-cols { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
+  .footer-col { margin-bottom: 0; }
+  .footer-bottom { flex-direction: row; justify-content: space-between; text-align: left; }
+}
+@media (min-width: 1100px) {
+  :root { --pad: 60px; }
+  .hero-name { font-size: 16vw; }
+  .plates-list { grid-template-columns: repeat(3, 1fr); }
+  .origins-list { grid-template-columns: repeat(3, 1fr); }
+  .menu-courses-grid { grid-template-columns: 1fr 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ LOADER ============ -->
+<div class="loader" id="loader">
+  <div class="loader-mosaic"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+  <div class="loader-label">MASA &middot; Preparing the table</div>
+</div>
+
+<!-- ============ NAV ============ -->
+<header class="topbar">
+  <a href="#" class="logo"><span class="dot"></span>MASA</a>
+  <nav class="desk-nav">
+    <a href="#plates">Plates</a>
+    <a href="#full-menu">Full Menu</a>
+    <a href="#origins">Origins</a>
+    <a href="#reservation">Visit</a>
+  </nav>
+  <a href="#reservation" class="desk-book">Book a table &rarr;</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu"><span></span></button>
+</header>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#plates">Plates</a>
+  <a href="#full-menu">Full Menu</a>
+  <a href="#origins">Origins</a>
+  <a href="#reservation">Book a Table</a>
+  <a href="#hours">Hours</a>
+  <a href="#footer">Contact</a>
+</div>
+
+<!-- ============ HERO — Chili red (same layout as original ORTO) ============ -->
+<section class="hero" id="hero">
+  <div class="hero-name reveal">MASA</div>
+  <div class="hero-sub reveal">A Mexican kitchen</div>
+  <div class="hero-meta reveal">Melbourne &middot; Since 2022 &middot; 24 seats</div>
+  <div class="hero-photo reveal">
+    <img src="melbourne-img/mexican-inner.png"
+         alt="MASA restaurant interior" loading="eager" decoding="async">
+  </div>
+  <div class="hero-tonight reveal">Tonight: Mole negro, heirloom corn &amp; smoked mezcal</div>
+  <div class="hero-arrow">
+    <svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="14" y1="4" x2="14" y2="22"/>
+      <polyline points="8 16 14 22 20 16"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ============ MANIFESTO — Verde ============ -->
+<section class="manifesto" id="manifesto">
+  <h2 class="manifesto-big reveal">Corn. Fire. Time. Nothing else.</h2>
+  <p class="manifesto-body reveal">Every tortilla starts with nixtamal ground that morning. No shortcuts, no frozen imports. We treat corn the way our grandmothers did &mdash; with patience.</p>
+  <div class="manifesto-stats reveal">
+    <span>Nixtamal daily</span>
+    <span>12 chili varieties</span>
+    <span>Wood-fired</span>
+  </div>
+</section>
+
+<!-- ============ SIGNATURE PLATES ============ -->
+<section class="plates" id="plates">
+  <div class="plates-header reveal">
+    <h2>Signature Plates</h2>
+    <div class="sub">Six compositions &middot; Seasonal menu</div>
+  </div>
+
+  <div class="plates-list">
+    <article class="plate-card reveal">
+      <div class="plate-num">No. 001</div>
+      <div class="plate-img-wrap">
+        <img src="melbourne-img/mexican-tacos.png" alt="Tacos al pastor" loading="lazy" decoding="async">
+      </div>
+      <h3 class="plate-name">Tacos al Pastor</h3>
+      <div class="plate-spanish">the spit, pineapple &amp; fire</div>
+      <p class="plate-desc">Achiote-marinated pork from the trompo, charred pineapple, white onion, cilantro on house-made corn tortillas.</p>
+      <div class="plate-foot">
+        <div class="plate-price">$22</div>
+        <span class="plate-tag house">House</span>
+      </div>
+    </article>
+
+    <article class="plate-card reveal">
+      <div class="plate-num">No. 002</div>
+      <div class="plate-img-wrap">
+        <img src="melbourne-img/mexican-mole.png" alt="Mole negro" loading="lazy" decoding="async">
+      </div>
+      <h3 class="plate-name">Mole Negro</h3>
+      <div class="plate-spanish">thirty ingredients, three days</div>
+      <p class="plate-desc">Oaxacan mole with seven dried chilies, dark chocolate, plantain, and sesame. Braised chicken thigh, rice.</p>
+      <div class="plate-foot">
+        <div class="plate-price">$34</div>
+        <span class="plate-tag spicy">Signature</span>
+      </div>
+    </article>
+
+    <article class="plate-card reveal">
+      <div class="plate-num">No. 003</div>
+      <div class="plate-img-wrap">
+        <img src="melbourne-img/mexican-elote.png" alt="Elote asado" loading="lazy" decoding="async">
+      </div>
+      <h3 class="plate-name">Elote Asado</h3>
+      <div class="plate-spanish">grilled corn, the street way</div>
+      <p class="plate-desc">Whole corn grilled over mesquite, crema, cotija, chili powder, lime. Simple and perfect.</p>
+      <div class="plate-foot">
+        <div class="plate-price">$14</div>
+        <span class="plate-tag gf">GF</span>
+      </div>
+    </article>
+
+    <article class="plate-card reveal">
+      <div class="plate-num">No. 004</div>
+      <div class="plate-img-wrap">
+        <img src="melbourne-img/mexican-ceviche.png" alt="Ceviche Pacífico" loading="lazy" decoding="async">
+      </div>
+      <h3 class="plate-name">Ceviche Pacífico</h3>
+      <div class="plate-spanish">raw fish, citrus, sea</div>
+      <p class="plate-desc">Snapper cured in lime and habanero, avocado, radish, cucumber, tostada.</p>
+      <div class="plate-foot">
+        <div class="plate-price">$26</div>
+        <span class="plate-tag cool">Cold</span>
+      </div>
+    </article>
+
+    <article class="plate-card reveal">
+      <div class="plate-num">No. 005</div>
+      <div class="plate-img-wrap">
+        <img src="melbourne-img/mexican-enchiladas.png" alt="Enchiladas verdes" loading="lazy" decoding="async">
+
+      </div>
+      <h3 class="plate-name">Enchiladas Verdes</h3>
+      <div class="plate-spanish">tomatillo, heat, comfort</div>
+      <p class="plate-desc">Corn tortillas rolled with pulled chicken, tomatillo salsa verde, crema, queso fresco, pickled onion.</p>
+      <div class="plate-foot">
+        <div class="plate-price">$28</div>
+        <span class="plate-tag new">New</span>
+      </div>
+    </article>
+
+    <article class="plate-card reveal">
+      <div class="plate-num">No. 006</div>
+      <div class="plate-img-wrap">
+        <img src="melbourne-img/mexican-churros.png" alt="Churros con cajeta" loading="lazy" decoding="async">
+      </div>
+      <h3 class="plate-name">Churros con Cajeta</h3>
+      <div class="plate-spanish">fried dough, goat caramel</div>
+      <p class="plate-desc">Crispy churros dusted with cinnamon sugar, warm cajeta dipping sauce, dark chocolate ganache.</p>
+      <div class="plate-foot">
+        <div class="plate-price">$16</div>
+        <span class="plate-tag vg">Veg</span>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ FULL MENU — Ink ============ -->
+<section class="full-menu" id="full-menu">
+  <div class="full-menu-header reveal">
+    <h2>The whole <em>menu.</em></h2>
+    <div class="sub">Updated seasonally</div>
+  </div>
+
+  <div class="menu-courses-grid">
+    <div class="menu-course reveal">
+      <div class="course-label"><span class="course-dot" style="background:var(--chili)"></span> Entradas</div>
+      <div class="menu-item"><span class="menu-item-name">Guacamole <em>tableside</em></span><span class="menu-item-price">$16</span></div>
+      <div class="menu-item"><span class="menu-item-name">Queso Fundido</span><span class="menu-item-price">$18</span></div>
+      <div class="menu-item"><span class="menu-item-name">Totopos &amp; salsa</span><span class="menu-item-price">$10</span></div>
+    </div>
+    <div class="menu-course reveal">
+      <div class="course-label"><span class="course-dot" style="background:var(--maiz)"></span> Tacos</div>
+      <div class="menu-item"><span class="menu-item-name">Al Pastor</span><span class="menu-item-price">$22</span></div>
+      <div class="menu-item"><span class="menu-item-name">Carnitas</span><span class="menu-item-price">$22</span></div>
+      <div class="menu-item"><span class="menu-item-name">Hongos <em>y</em> Huitlacoche</span><span class="menu-item-price">$20</span></div>
+    </div>
+    <div class="menu-course reveal">
+      <div class="course-label"><span class="course-dot" style="background:var(--verde)"></span> Platos Fuertes</div>
+      <div class="menu-item"><span class="menu-item-name">Mole Negro</span><span class="menu-item-price">$34</span></div>
+      <div class="menu-item"><span class="menu-item-name">Cochinita <em>Pibil</em></span><span class="menu-item-price">$32</span></div>
+    </div>
+    <div class="menu-course reveal">
+      <div class="course-label"><span class="course-dot" style="background:var(--terra)"></span> Sides</div>
+      <div class="menu-item"><span class="menu-item-name">Elote Asado</span><span class="menu-item-price">$14</span></div>
+      <div class="menu-item"><span class="menu-item-name">Frijoles Negros</span><span class="menu-item-price">$10</span></div>
+    </div>
+    <div class="menu-course reveal">
+      <div class="course-label"><span class="course-dot" style="background:var(--mole)"></span> Postres</div>
+      <div class="menu-item"><span class="menu-item-name">Churros <em>con</em> Cajeta</span><span class="menu-item-price">$16</span></div>
+      <div class="menu-item"><span class="menu-item-name">Flan de Coco</span><span class="menu-item-price">$14</span></div>
+    </div>
+    <div class="menu-course reveal">
+      <div class="course-label"><span class="course-dot" style="background:var(--sky)"></span> Bebidas</div>
+      <div class="menu-item"><span class="menu-item-name">Mezcal flight</span><span class="menu-item-price">$24</span></div>
+      <div class="menu-item"><span class="menu-item-name">Horchata</span><span class="menu-item-price">$8</span></div>
+      <div class="menu-item"><span class="menu-item-name">Seven <em>plates,</em> chef's choice</span><span class="menu-item-price">$85</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ORIGINS — Maiz ============ -->
+<section class="origins" id="origins">
+  <div class="origins-header reveal">
+    <h2>Where it all starts</h2>
+    <div class="sub">Our ingredients &middot; Our people</div>
+  </div>
+
+  <div class="origins-list">
+    <div class="origin-card reveal">
+      <div class="origin-num">01</div>
+      <div class="origin-name">Rancho Milpa</div>
+      <div class="origin-place">&mdash; Oaxaca, Mexico</div>
+      <div class="origin-crop">Heirloom corn &middot; Dried chilies &middot; Chocolate</div>
+    </div>
+    <div class="origin-card reveal">
+      <div class="origin-num">02</div>
+      <div class="origin-name">Finca del Sol</div>
+      <div class="origin-place">&mdash; Michoacán, Mexico</div>
+      <div class="origin-crop">Avocados &middot; Limes &middot; Tomatillos</div>
+    </div>
+    <div class="origin-card reveal">
+      <div class="origin-num">03</div>
+      <div class="origin-name">Queen Vic Market</div>
+      <div class="origin-place">&mdash; Melbourne, 2 km</div>
+      <div class="origin-crop">Seafood &middot; Seasonal produce &middot; Herbs</div>
+    </div>
+    <div class="origin-card reveal">
+      <div class="origin-num">04</div>
+      <div class="origin-name">Agave Brothers</div>
+      <div class="origin-place">&mdash; Jalisco, Mexico</div>
+      <div class="origin-crop">Mezcal &middot; Tequila &middot; Raicilla</div>
+    </div>
+    <div class="origin-card reveal">
+      <div class="origin-num">05</div>
+      <div class="origin-name">Daylesford Farms</div>
+      <div class="origin-place">&mdash; Victoria, 110 km</div>
+      <div class="origin-crop">Free-range pork &middot; Chicken &middot; Eggs</div>
+    </div>
+    <div class="origin-card reveal">
+      <div class="origin-num">06</div>
+      <div class="origin-name">Monte Albán Spice Co.</div>
+      <div class="origin-place">&mdash; Puebla, Mexico</div>
+      <div class="origin-crop">Achiote &middot; Epazote &middot; Canela</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BOOK + HOURS ============ -->
+<div class="book-hours-wrap">
+  <section class="reservation" id="reservation">
+    <h2 class="reveal">Come <em>eat.</em></h2>
+    <p class="reveal">We keep it small &mdash; 24 seats, no rush. Walk-ins welcome, but booking guarantees your spot. Large parties, message us.</p>
+
+    <form class="book-form reveal" onsubmit="event.preventDefault(); alert('Received — we\'ll confirm within the hour.')">
+      <div class="form-row">
+        <label>Full name</label>
+        <input type="text" placeholder="Your name" required>
+      </div>
+      <div class="form-row-half">
+        <div class="form-row">
+          <label>Date</label>
+          <input type="date" required>
+        </div>
+        <div class="form-row">
+          <label>Time</label>
+          <select>
+            <option>17:30</option><option>18:00</option><option>18:30</option>
+            <option>19:00</option><option>19:30</option><option>20:00</option>
+            <option>20:30</option><option>21:00</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Guests</label>
+        <div class="guest-picker">
+          <button type="button">1</button>
+          <button type="button" class="on">2</button>
+          <button type="button">3</button>
+          <button type="button">4</button>
+          <button type="button">5</button>
+          <button type="button">6+</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Email</label>
+        <input type="email" placeholder="you@email.com" required>
+      </div>
+      <button type="submit" class="submit-btn">Book the table &rarr;</button>
+    </form>
+  </section>
+
+  <section class="hours-section" id="hours">
+    <h2 class="reveal">We are <em>here.</em></h2>
+
+    <div class="clock-wrap reveal">
+      <svg viewBox="0 0 300 300">
+        <circle cx="150" cy="150" r="130" fill="none" stroke="#f5f0e0" stroke-width="1" opacity=".4"/>
+        <circle cx="150" cy="150" r="110" fill="none" stroke="#e8b419" stroke-width="22"
+                stroke-dasharray="160 691" stroke-dashoffset="-400" transform="rotate(-90 150 150)"/>
+        <g stroke="#f5f0e0" stroke-width="1">
+          <line x1="150" y1="20" x2="150" y2="30"/>
+          <line x1="150" y1="270" x2="150" y2="280"/>
+          <line x1="20" y1="150" x2="30" y2="150"/>
+          <line x1="270" y1="150" x2="280" y2="150"/>
+        </g>
+        <text x="150" y="16" text-anchor="middle" font-family="Archivo" font-size="11" font-weight="700" fill="#f5f0e0" letter-spacing="1">24</text>
+        <text x="150" y="294" text-anchor="middle" font-family="Archivo" font-size="11" font-weight="700" fill="#f5f0e0" letter-spacing="1">12</text>
+        <text x="12" y="154" text-anchor="middle" font-family="Archivo" font-size="11" font-weight="700" fill="#f5f0e0" letter-spacing="1">18</text>
+        <text x="290" y="154" text-anchor="middle" font-family="Archivo" font-size="11" font-weight="700" fill="#f5f0e0" letter-spacing="1">06</text>
+      </svg>
+      <div class="clock-label">
+        <div class="hrs">17:30<br>&rarr; 23:00</div>
+        <div class="now">tonight, open</div>
+      </div>
+    </div>
+
+    <div class="hours-list reveal">
+      <div class="hours-row"><strong>Mon</strong><span>closed</span></div>
+      <div class="hours-row"><strong>Tue&ndash;Thu</strong><span>17:30 &rarr; 22:00</span></div>
+      <div class="hours-row"><strong>Fri&ndash;Sat</strong><span>17:30 &rarr; 23:00</span></div>
+      <div class="hours-row"><strong>Sun</strong><span>12:00 &rarr; 15:00</span></div>
+    </div>
+
+    <div class="hours-address reveal">
+      120 Smith Street<br>Collingwood VIC 3066<br>Melbourne, Australia
+    </div>
+  </section>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer" id="footer">
+  <div class="footer-big reveal">Buen<br><em>provecho,</em><br>amigos.</div>
+
+  <div class="footer-cols reveal">
+    <div class="footer-col">
+      <h5>Find us</h5>
+      <div class="address">120 Smith Street<br>Collingwood VIC 3066<br>Melbourne</div>
+    </div>
+    <div class="footer-col">
+      <h5>Eat</h5>
+      <ul>
+        <li><a href="#plates">Signature plates</a></li>
+        <li><a href="#full-menu">Full menu</a></li>
+        <li><a href="#">Mezcal list</a></li>
+        <li><a href="#">Chef's tasting</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Know</h5>
+      <ul>
+        <li><a href="#origins">Our origins</a></li>
+        <li><a href="#">Our story</a></li>
+        <li><a href="#">Journal</a></li>
+        <li><a href="#">Press</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <ul>
+        <li>hola@masa.com.au</li>
+        <li>+61 3 9000 1234</li>
+        <li>@masa.melb</li>
+        <li><a href="#reservation">Book a table</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div>&copy; MASA 2026 &middot; Every tortilla made by hand</div>
+    <div>Mexican since 2022</div>
+    <div>Designed in Melbourne</div>
+  </div>
+</footer>
+
+<script>
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('loader').classList.add('gone'), 1500);
+});
+
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+});
+mobileMenu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('in'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+document.querySelectorAll('.guest-picker button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+  });
+});
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href');
+    if (id.length < 2) return;
+    const target = document.querySelector(id);
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+
+document.querySelectorAll('.plate-card').forEach(card => {
+  const img = card.querySelector('.plate-img-wrap img');
+  if (!img) return;
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const mx = (e.clientX - r.left) / r.width - 0.5;
+    const my = (e.clientY - r.top) / r.height - 0.5;
+    img.style.transform = `scale(1.06) translate(${mx * 8}px, ${my * 6}px)`;
+    img.style.transition = 'transform .4s ease';
+  });
+  card.addEventListener('mouseleave', () => { img.style.transform = ''; });
+});
+</script>
+</body>
+</html>

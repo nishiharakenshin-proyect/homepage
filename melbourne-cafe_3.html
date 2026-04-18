@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AZURE & AMBER | Melbourne CBD Specialty Coffee</title>
+  <meta name="description" content="Azure & Amber is a Melbourne CBD specialty coffee concept blending precise roasting, bold design, and a refined city atmosphere." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#F8F1E5',
+            azure: '#163E78',
+            amber: '#E67A38',
+            ink: '#102C57',
+            sand: '#EADCC7'
+          },
+          fontFamily: {
+            display: ['Gravitas One', 'serif'],
+            body: ['Space Grotesk', 'sans-serif']
+          },
+          boxShadow: {
+            soft: '0 20px 60px rgba(16,44,87,.10)',
+            panel: '0 16px 50px rgba(22,62,120,.14)'
+          },
+          borderRadius: {
+            '4xl': '2rem'
+          },
+          letterSpacing: {
+            wideish: '0.18em'
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gravitas+One&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    :root {
+      --cream: #F8F1E5;
+      --azure: #163E78;
+      --amber: #E67A38;
+      --ink: #102C57;
+      --sand: #EADCC7;
+      --header-h: 82px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overflow-x: clip;
+    }
+
+    img { display: block; max-width: 100%; }
+
+    #main {overflow: hidden;}
+
+    .grain::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .04;
+      z-index: 5;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(22,62,120,.7) .5px, transparent .5px),
+        radial-gradient(circle at 80% 40%, rgba(230,122,56,.7) .6px, transparent .6px),
+        radial-gradient(circle at 40% 70%, rgba(16,44,87,.7) .5px, transparent .5px);
+      background-size: 24px 24px, 31px 31px, 27px 27px;
+      mix-blend-mode: multiply;
+    }
+
+    .section-pad { padding-top: clamp(4.5rem, 8vw, 7rem); padding-bottom: clamp(4.5rem, 8vw, 7rem); }
+    .container-shell { width: min(1200px, calc(100% - 2rem)); margin-inline: auto; }
+    @media (min-width: 768px) {
+      .container-shell { width: min(1280px, calc(100% - 4rem)); }
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .75rem;
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .22em;
+      color: var(--amber);
+    }
+    .eyebrow::before {
+      content: "";
+      width: 2.5rem;
+      height: 2px;
+      background: currentColor;
+      display: block;
+    }
+
+    .hero-grid {
+      min-height: auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      align-items: start;
+      padding-top: calc(var(--header-h) + 0rem);
+      padding-bottom: 3.5rem;
+      gap: 1.75rem;
+    }
+    @media (min-width: 1024px) {
+      .hero-grid {
+        min-height: 100svh;
+        min-height: 100vh;
+        align-items: center;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+        gap: 3.5rem;
+        padding-bottom: 2rem;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .section-pad {
+        padding-top: 3.75rem;
+        padding-bottom: 3.75rem;
+      }
+    }
+
+
+    .headline-balance { text-wrap: balance; }
+
+    .hero-card,
+    .info-card,
+    .menu-card,
+    .visit-card {
+      border: 2px solid rgba(22,62,120,.14);
+      background: rgba(255,255,255,.45);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 60px rgba(16,44,87,.08);
+    }
+
+    .hero-visual {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      border-radius: 2rem;
+      overflow: hidden;
+      background: var(--azure);
+      box-shadow: 0 24px 80px rgba(16,44,87,.18);
+    }
+
+
+    @media (max-width: 767px) {
+      .hero-visual {
+        aspect-ratio: 4 / 4.15;
+      }
+    }
+
+    .hero-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.03);
+    }
+
+    .hero-badge {
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(248,241,229,.92);
+      color: var(--ink);
+      border: 2px solid rgba(22,62,120,.14);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(16,44,87,.12);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(2px);
+      pointer-events: none;
+    }
+
+    .section-title {
+      font-family: 'Gravitas One', serif;
+      line-height: .92;
+      letter-spacing: -.03em;
+    }
+
+    .gallery-stage {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gallery-track {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .gallery-viewport {
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .gallery-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1.75rem;
+      border: 2px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 20px 50px rgba(0,0,0,.18);
+    }
+
+    .gallery-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .7s ease;
+    }
+    .gallery-card:hover img { transform: scale(1.04); }
+
+    @media (max-width: 1023px) {
+      .gallery-stage {
+        padding-inline: 0;
+      }
+      .gallery-viewport {
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        margin-right: calc(50% - 50vw);
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        scroll-padding-left: 1rem;
+        padding: 0 0 .5rem 0;
+      }
+      .gallery-viewport::-webkit-scrollbar {
+        display: none;
+      }
+      .gallery-track {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: .9rem;
+        width: max-content;
+        min-width: max-content;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      .gallery-card {
+        width: min(82vw, 25rem);
+        min-width: min(82vw, 25rem);
+        aspect-ratio: 16 / 11;
+        flex: 0 0 auto;
+        scroll-snap-align: start;
+        border-radius: 1.35rem;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .gallery-card {
+        aspect-ratio: 16 / 10.4;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .gallery-stage {
+        display: block;
+        min-height: auto;
+        padding-top: 2rem;
+        padding-bottom: 4rem;
+      }
+      .gallery-track {
+        display: flex;
+        gap: 2rem;
+        padding-inline: 8vw;
+        width: max-content;
+        align-items: flex-start;
+      }
+      .gallery-card {
+        width: min(30vw, 420px);
+        height: min(40vh, 360px);
+        flex: 0 0 auto;
+      }
+    }
+
+    .menu-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+      padding: 1.2rem 0;
+      border-bottom: 1.5px solid rgba(22,62,120,.18);
+      transition: transform .28s ease, border-color .28s ease, color .28s ease;
+    }
+
+    .menu-item:hover {
+      transform: translateX(.35rem);
+      border-color: rgba(230,122,56,.6);
+      color: var(--amber);
+    }
+
+    .menu-meta {
+      font-size: .78rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      opacity: .7;
+      margin-top: .4rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: .6rem 1rem;
+      font-size: .76rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .nav-link {
+      position: relative;
+    }
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -.35rem;
+      width: 100%;
+      height: 2px;
+      background: currentColor;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .28s ease;
+    }
+    .nav-link:hover::after,
+    .nav-link:focus-visible::after { transform: scaleX(1); }
+
+    .mobile-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease;
+    }
+    .mobile-panel.open { max-height: 20rem; }
+
+    .floating-mark {
+      width: clamp(6rem, 11vw, 9rem);
+      height: clamp(6rem, 11vw, 9rem);
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      border: 2px solid rgba(22,62,120,.12);
+      background: rgba(248,241,229,.78);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 14px 40px rgba(16,44,87,.10);
+    }
+
+    .cursor-dot {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: var(--amber);
+      pointer-events: none;
+      z-index: 80;
+      opacity: .9;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: multiply;
+    }
+    @media (hover: none), (pointer: coarse) {
+      .cursor-dot { display: none; }
+    }
+
+    .reveal { opacity: 0; transform: translateY(28px); }
+    .reveal-left { opacity: 0; transform: translateX(-34px); }
+    .reveal-right { opacity: 0; transform: translateX(34px); }
+
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -3rem;
+      background: var(--azure);
+      color: white;
+      padding: .75rem 1rem;
+      border-radius: .75rem;
+      z-index: 999;
+      transition: top .2s ease;
+    }
+    .skip-link:focus { top: 1rem; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+      .reveal, .reveal-left, .reveal-right { opacity: 1 !important; transform: none !important; }
+      .cursor-dot { display: none !important; }
+    }
+  </style>
+</head>
+<body class="grain">
+  <a href="#main" class="skip-link">Skip to content</a>
+  <div class="cursor-dot" id="cursor"></div>
+
+  <header class="fixed inset-x-0 top-0 z-50">
+    <div class="container-shell pt-4">
+      <div class="flex items-center justify-between rounded-full border border-azure/15 bg-cream/85 px-4 py-3 shadow-soft backdrop-blur-xl md:px-6 md:py-4">
+        <a href="#top" class="flex items-center gap-3 text-azure" aria-label="Azure & Amber home">
+          <span class="grid h-9 w-9 place-items-center rounded-full bg-amber text-cream shadow-sm">
+            <span class="font-display text-sm leading-none">A</span>
+          </span>
+          <div>
+            <p class="font-display text-lg leading-none tracking-tight uppercase md:text-xl">A & A</p>
+            <p class="mt-1 text-[10px] font-bold uppercase tracking-[0.28em] text-azure/70">Azure & Amber</p>
+          </div>
+        </a>
+
+        <nav class="hidden items-center gap-8 text-[11px] font-bold uppercase tracking-[0.22em] text-azure lg:flex">
+          <a class="nav-link" href="#about">About</a>
+          <a class="nav-link" href="#atmosphere">Atmosphere</a>
+          <a class="nav-link" href="#roast">Roast</a>
+          <a class="nav-link" href="#menu">Menu</a>
+          <a class="nav-link" href="#visit">Visit</a>
+        </nav>
+
+        <div class="hidden md:block">
+          <a href="#visit" class="pill border-2 border-azure bg-azure text-cream transition hover:-translate-y-0.5 hover:bg-amber hover:border-amber">Visit the café</a>
+        </div>
+
+        <button id="menuToggle" type="button" class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-azure/20 text-azure lg:hidden" aria-expanded="false" aria-controls="mobileNav" aria-label="Open menu">
+          <svg id="menuIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+
+      <div id="mobileNav" class="mobile-panel lg:hidden">
+        <div class="mt-2 rounded-3xl border border-azure/15 bg-cream/95 p-3 shadow-soft backdrop-blur-xl">
+          <nav class="grid gap-1 text-sm font-bold uppercase tracking-[0.16em] text-azure">
+            <a class="rounded-2xl px-4 py-3 hover:bg-azure hover:text-cream" href="#about">About</a>
+            <a class="rounded-2xl px-4 py-3 hover:bg-azure hover:text-cream" href="#atmosphere">Atmosphere</a>
+            <a class="rounded-2xl px-4 py-3 hover:bg-azure hover:text-cream" href="#roast">Roast</a>
+            <a class="rounded-2xl px-4 py-3 hover:bg-azure hover:text-cream" href="#menu">Menu</a>
+            <a class="rounded-2xl px-4 py-3 hover:bg-azure hover:text-cream" href="#visit">Visit</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section id="top" class="relative">
+      <div class="orb bg-amber/20 h-48 w-48 -left-10 top-24 md:h-72 md:w-72"></div>
+      <div class="orb bg-azure/10 h-72 w-72 right-[-4rem] top-16 md:h-[26rem] md:w-[26rem]"></div>
+      <div class="container-shell hero-grid">
+        <!-- Hero Text — left on desktop (order-1), below image on mobile (order-2) -->
+        <div class="relative z-10 order-2 lg:order-1">
+          <div class="max-w-2xl">
+            <span class="eyebrow reveal">Melbourne CBD Roasters</span>
+            <h1 class="section-title headline-balance mt-6 text-[clamp(3rem,8.5vw,7rem)] text-azure reveal">
+              Brewing<br>
+              <span class="text-amber">the vibe</span>
+            </h1>
+            <p class="reveal mt-6 max-w-xl text-base leading-7 text-azure/78 md:text-lg md:leading-8">
+              A refined specialty coffee concept built for city mornings, thoughtful meetings, and slow afternoons hidden inside Melbourne's laneway rhythm.
+            </p>
+
+            <div class="reveal mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <a href="#visit" class="pill w-full justify-center border-2 border-azure bg-azure px-6 py-4 text-cream transition hover:-translate-y-0.5 hover:bg-amber hover:border-amber sm:w-auto">Find us in the CBD</a>
+              <a href="#menu" class="pill w-full justify-center border-2 border-azure/20 bg-white/50 px-6 py-4 text-azure transition hover:-translate-y-0.5 hover:border-azure hover:bg-white sm:w-auto">Explore menu</a>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Hero Visual — right on desktop (order-2), above text on mobile (order-1) -->
+        <div class="relative order-1 lg:order-2 reveal-right">
+          <div class="hero-visual">
+            <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=1600&auto=format&fit=crop" alt="Interior of a stylish specialty café with warm natural light" />
+            <div class="absolute inset-0 bg-gradient-to-t from-azure/55 via-transparent to-transparent"></div>
+            <div class="hero-badge left-4 top-4 px-4 py-3 md:left-6 md:top-6 md:px-5 md:py-4">
+              <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-azure/60">Established</p>
+              <p class="mt-1 text-sm font-bold md:text-base">Melbourne · 2026</p>
+            </div>
+            <div class="hero-badge bottom-4 right-4 px-4 py-3 md:bottom-6 md:right-6 md:px-5 md:py-4">
+              <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-azure/60">Open daily</p>
+              <p class="mt-1 text-sm font-bold md:text-base">Crafted for the CBD</p>
+            </div>
+          </div>
+
+          <div class="absolute -bottom-5 -left-2 hidden lg:block">
+            <div class="floating-mark">
+              <svg viewBox="0 0 120 120" class="h-[82%] w-[82%] animate-[spin_18s_linear_infinite]" aria-hidden="true">
+                <defs>
+                  <path id="circleTextPath" d="M 60, 60 m -38, 0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" />
+                </defs>
+                <text fill="#163E78" font-size="10" font-weight="700" letter-spacing="1.7">
+                  <textPath href="#circleTextPath">SPECIALTY COFFEE • AZURE &amp; AMBER • MELBOURNE CBD •</textPath>
+                </text>
+              </svg>
+              <div class="absolute inset-0 grid place-items-center">
+                <div class="h-10 w-10 rounded-full bg-amber"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section-pad pt-8 md:pt-[clamp(4.5rem,8vw,7rem)]">
+      <div class="container-shell">
+        <div class="grid gap-10 lg:grid-cols-[minmax(0,.95fr)_minmax(0,1.05fr)] lg:items-center">
+          <div class="reveal-left">
+            <span class="eyebrow">The heritage</span>
+            <h2 class="section-title mt-6 text-[clamp(2.9rem,8vw,6.2rem)] text-azure">Who we are</h2>
+          </div>
+          <div class="reveal-right rounded-[2rem] border border-azure/12 bg-white/45 p-7 shadow-soft backdrop-blur-md md:p-10">
+            <p class="text-xl font-bold leading-8 text-azure md:text-2xl md:leading-10">
+              Azure & Amber is a sanctuary for city people who care about taste, detail, and atmosphere as much as the coffee itself.
+            </p>
+            <p class="mt-6 text-base leading-7 text-azure/72 md:text-lg md:leading-8">
+              The brand balances two moods: amber for warmth, energy, and early light; azure for depth, calm, and metropolitan clarity. Every element is designed to feel intentional, from roast profile to table pace.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="atmosphere" class="bg-azure text-cream section-pad overflow-hidden">
+      <div class="container-shell atmosphere-intro">
+        <div class="max-w-3xl pb-8 lg:pb-14">
+          <span class="eyebrow">The experience</span>
+          <h2 class="section-title mt-5 text-[clamp(2.7rem,7.4vw,6.8rem)] text-amber leading-[0.94]">Atmosphere</h2>
+          <p class="mt-5 max-w-2xl text-base leading-7 text-cream/75 md:text-lg md:leading-8">
+            Clean lines, warm materials, and an urban calm built for solo rituals, thoughtful conversations, and slow sips between meetings.
+          </p>
+        </div>
+      </div>
+
+      <div class="gallery-stage">
+        <div class="gallery-viewport" id="galleryViewport">
+          <div class="gallery-track" id="galleryTrack">
+          <article class="gallery-card">
+            <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=1400&auto=format&fit=crop" alt="Stylish café entrance with warm interior lighting" />
+          </article>
+          <article class="gallery-card">
+            <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1400&auto=format&fit=crop" alt="Close-up of specialty coffee brewing" />
+          </article>
+          <article class="gallery-card">
+            <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1400&auto=format&fit=crop" alt="Minimal café interior with customers and bar area" />
+          </article>
+          <article class="gallery-card">
+            <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=1400&auto=format&fit=crop" alt="Coffee and pastry arranged on a table" />
+          </article>
+        </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="roast" class="section-pad">
+      <div class="container-shell grid gap-8 lg:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)] lg:items-center lg:gap-16">
+        <div class="reveal-left">
+          <div class="overflow-hidden rounded-[2rem] border-2 border-azure/15 bg-amber/95 p-4 shadow-panel md:p-5">
+            <img src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=1200&auto=format&fit=crop" alt="Freshly roasted coffee beans" class="aspect-square w-full rounded-[1.5rem] object-cover" />
+          </div>
+        </div>
+
+        <div class="reveal-right">
+          <span class="eyebrow">The roast</span>
+          <h2 class="section-title mt-6 text-[clamp(2.9rem,7vw,5.4rem)] text-azure">Roasted for the brave</h2>
+          <p class="mt-5 max-w-2xl text-base leading-7 text-azure/75 md:text-lg md:leading-8">
+            Single-origin beans, precise roast curves, and a cup profile that feels bright at first sip and deeper as it cools. Designed to mirror the layered pace of Melbourne city life.
+          </p>
+
+          <div class="mt-8 grid gap-4 sm:grid-cols-3">
+            <div class="info-card rounded-[1.5rem] p-6">
+              <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-azure/55">Dose</p>
+              <p class="mt-3 font-display text-3xl text-azure">18G</p>
+            </div>
+            <div class="info-card rounded-[1.5rem] bg-azure p-6 text-cream">
+              <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-cream/65">Water temp</p>
+              <p class="mt-3 font-display text-3xl">92°C</p>
+            </div>
+            <div class="info-card rounded-[1.5rem] p-6">
+              <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-azure/55">Batch</p>
+              <p class="mt-3 font-display text-3xl text-amber">#042</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="menu" class="section-pad bg-white/35">
+      <div class="container-shell">
+        <div class="max-w-3xl text-center mx-auto reveal">
+          <span class="eyebrow justify-center">Selection</span>
+          <h2 class="section-title mt-6 text-[clamp(3rem,8vw,6.4rem)] text-azure">The menu</h2>
+          <p class="mt-5 text-base leading-7 text-azure/70 md:text-lg md:leading-8">Focused, premium, and easy to scan on every screen size.</p>
+        </div>
+
+        <div class="mt-12 grid gap-6 lg:grid-cols-2 lg:gap-8">
+          <div class="menu-card rounded-[2rem] bg-cream/85 p-6 md:p-8">
+            <p class="mb-4 text-xs font-bold uppercase tracking-[0.24em] text-amber">Coffee</p>
+
+            <div class="menu-item">
+              <div>
+                <p class="text-xl font-bold uppercase text-azure">V60 Pour Over</p>
+                <p class="menu-meta">Rotating origin · Floral · Clean finish</p>
+              </div>
+              <p class="font-display text-xl text-azure">$9</p>
+            </div>
+
+            <div class="menu-item">
+              <div>
+                <p class="text-xl font-bold uppercase text-azure">Magic Flat White</p>
+                <p class="menu-meta">Double ristretto · Velvety texture</p>
+              </div>
+              <p class="font-display text-xl text-azure">$5.5</p>
+            </div>
+
+            <div class="menu-item">
+              <div>
+                <p class="text-xl font-bold uppercase text-azure">Azure Latte</p>
+                <p class="menu-meta">Signature blend · Smooth and sweet</p>
+              </div>
+              <p class="font-display text-xl text-azure">$6</p>
+            </div>
+
+            <div class="menu-item">
+              <div>
+                <p class="text-xl font-bold uppercase text-azure">Amber Batch Brew</p>
+                <p class="menu-meta">Daily roast · Balanced all-day cup</p>
+              </div>
+              <p class="font-display text-xl text-azure">$5</p>
+            </div>
+          </div>
+
+          <div class="menu-card rounded-[2rem] bg-cream/85 p-6 md:p-8">
+            <p class="mb-4 text-xs font-bold uppercase tracking-[0.24em] text-amber">Cold + bakery</p>
+
+            <div class="menu-item">
+              <div>
+                <p class="text-xl font-bold uppercase text-azure">Cobalt Cold Brew</p>
+                <p class="menu-meta">12hr steep · Crisp and refreshing</p>
+              </div>
+              <p class="font-display text-xl text-azure">$7.5</p>
+            </div>
+
+            <div class="menu-item">
+              <div>
+                <p class="text-xl font-bold uppercase text-azure">House Mocha</p>
+                <p class="menu-meta">Dark cocoa · Balanced sweetness</p>
+              </div>
+              <p class="font-display text-xl text-azure">$6.8</p>
+            </div>
+
+            <div class="menu-item">
+              <div>
+                <p class="text-xl font-bold uppercase text-azure">Daily Pastry</p>
+                <p class="menu-meta">Hand-baked · Seasonal rotation</p>
+              </div>
+              <p class="font-display text-xl text-azure">$8.5</p>
+            </div>
+
+            <div class="menu-item">
+              <div>
+                <p class="text-xl font-bold uppercase text-azure">Almond Croissant</p>
+                <p class="menu-meta">Butter layers · Toasted finish</p>
+              </div>
+              <p class="font-display text-xl text-azure">$7.8</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="visit" class="section-pad bg-amber text-ink">
+      <div class="container-shell">
+        <div class="visit-card rounded-[2rem] border-2 border-azure/15 bg-cream/28 p-6 shadow-panel backdrop-blur-md md:p-10 lg:p-12">
+          <div class="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,.9fr)] lg:gap-16">
+            <div class="reveal-left">
+              <span class="eyebrow text-azure before:bg-azure">Visit</span>
+              <h2 class="section-title mt-6 text-[clamp(3rem,8vw,6rem)] text-azure">Find us in the CBD</h2>
+              <address class="mt-8 not-italic text-2xl font-bold leading-tight text-azure md:text-3xl">
+                Lane 00, Flinders Street<br>
+                Melbourne CBD, VIC 0000
+              </address>
+              <p class="mt-6 max-w-xl text-base leading-7 text-azure/75 md:text-lg md:leading-8">
+                A laneway destination for quality espresso, slow mornings, and a polished café experience right in the city core.
+              </p>
+            </div>
+
+            <div class="reveal-right grid gap-5 self-start">
+              <div class="rounded-[1.5rem] border border-azure/14 bg-white/45 p-6">
+                <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-azure/55">Opening hours</p>
+                <div class="mt-4 space-y-3 text-lg font-bold uppercase text-azure md:text-xl">
+                  <p class="flex items-center justify-between gap-4 border-b border-azure/10 pb-3"><span>Mon — Fri</span><span>07:00 — 16:00</span></p>
+                  <p class="flex items-center justify-between gap-4"><span>Sat — Sun</span><span>08:00 — 15:00</span></p>
+                </div>
+              </div>
+
+              <div class="rounded-[1.5rem] border border-azure/14 bg-white/45 p-6">
+                <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-azure/55">Contact</p>
+                <div class="mt-4 flex flex-wrap gap-3">
+                  <a href="#" class="pill border-2 border-azure bg-azure text-cream transition hover:-translate-y-0.5 hover:bg-amber hover:border-amber">Instagram</a>
+                  <a href="#" class="pill border-2 border-azure/20 bg-white/60 text-azure transition hover:border-azure hover:bg-white">Contact</a>
+                </div>
+              </div>
+
+              <p class="pt-2 text-[11px] font-bold uppercase tracking-[0.18em] text-azure/50">© 2026 Azure & Amber Coffee Roasters</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const header = document.querySelector('header');
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    const navLinks = document.querySelectorAll('#mobileNav a, header nav a');
+    const cursor = document.getElementById('cursor');
+
+    function setHeaderHeight() {
+      const bar = header.querySelector('.container-shell > div');
+      if (!bar) return;
+      document.documentElement.style.setProperty('--header-h', `${Math.ceil(bar.offsetHeight + 24)}px`);
+    }
+    setHeaderHeight();
+    window.addEventListener('resize', setHeaderHeight);
+
+    menuToggle?.addEventListener('click', () => {
+      const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+      menuToggle.setAttribute('aria-expanded', String(!expanded));
+      mobileNav.classList.toggle('open');
+      document.body.classList.toggle('overflow-hidden', !expanded);
+    });
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileNav.classList.remove('open');
+        menuToggle?.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('overflow-hidden');
+      });
+    });
+
+    if (!prefersReducedMotion && cursor) {
+      window.addEventListener('mousemove', (e) => {
+        gsap.to(cursor, {
+          x: e.clientX,
+          y: e.clientY,
+          duration: 0.18,
+          ease: 'power3.out'
+        });
+      });
+    }
+
+    if (!prefersReducedMotion) {
+      gsap.utils.toArray('.reveal, .reveal-left, .reveal-right').forEach((el) => {
+        gsap.to(el, {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 86%',
+            once: true
+          }
+        });
+      });
+    } else {
+      document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+        el.style.opacity = 1;
+        el.style.transform = 'none';
+      });
+    }
+
+    function initGallery() {
+      const track = document.getElementById('galleryTrack');
+      const section = document.getElementById('atmosphere');
+      const viewport = document.getElementById('galleryViewport');
+      if (!track || !section || !viewport) return;
+
+      ScrollTrigger.getAll().forEach(trigger => {
+        if (trigger.vars && trigger.vars.id === 'desktopGallery') trigger.kill();
+      });
+      gsap.killTweensOf(track);
+      gsap.set(track, { clearProps: 'transform' });
+
+      if (window.innerWidth < 1024 || prefersReducedMotion) {
+        viewport.scrollLeft = 0;
+        track.style.transform = 'none';
+        return;
+      }
+
+      const intro = section.querySelector('.atmosphere-intro');
+      const introHeight = intro ? intro.offsetHeight : 0;
+      const getScrollAmount = () => Math.max(0, track.scrollWidth - window.innerWidth);
+
+      gsap.to(track, {
+        x: () => -getScrollAmount(),
+        ease: 'none',
+        scrollTrigger: {
+          id: 'desktopGallery',
+          trigger: section,
+          start: 'top top',
+          end: () => `+=${getScrollAmount() + introHeight + 32}`,
+          scrub: 1,
+          pin: true,
+          pinSpacing: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true
+        }
+      });
+    }
+
+    initGallery();
+    window.addEventListener('resize', () => {
+      initGallery();
+      ScrollTrigger.refresh();
+    });
+  </script>
+</body>
+</html>

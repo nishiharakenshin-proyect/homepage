@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Kenshin — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Offside&family=Zen+Old+Mincho:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/portfolio.css">
+<link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+<div class="shell">
+
+  <!-- ============ TOP META ============ -->
+  <div class="topbar">
+    <span>Tokyo → Melbourne</span>
+    <span>© 2026</span>
+  </div>
+
+  <!-- ============ HEADER ============ -->
+  <header>
+    <a href="#top" class="brand" aria-label="Kenshin home">Kenshin<em>.</em></a>
+    <div class="lang" role="tablist" aria-label="Language">
+      <button data-lang="en" aria-pressed="true">EN</button>
+      <span class="sep">/</span>
+      <button data-lang="jp" aria-pressed="false">JP</button>
+      <span class="sep">/</span>
+      <button data-lang="es" aria-pressed="false">ES</button>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
+  </header>
+
+  <nav class="nav" id="nav" aria-hidden="true">
+    <ol>
+      <li><a href="#work" data-close data-i18n="nav.work">Work</a></li>
+      <li><a href="#app" data-close data-i18n="nav.app">App</a></li>
+      <li><a href="#social" data-close data-i18n="nav.social">Photo</a></li>
+      <li><a href="#video" data-close data-i18n="nav.video">Video</a></li>
+      <li><a href="#article" data-close data-i18n="nav.article">Article</a></li>
+      <li><a href="#contact" data-close data-i18n="nav.contact">Contact</a></li>
+    </ol>
+    <div class="meta">
+      <span>Tokyo → Melbourne</span>
+      <span>© 2026</span>
+    </div>
+  </nav>
+
+  <!-- ============ KV ============ -->
+  <section id="top" class="kv reveal d1">
+    <div class="kv-eyebrow"><span class="dot"></span><span data-i18n="kv.status">Open to work</span></div>
+
+    <div class="grid9" aria-hidden="true">
+      <div class="cell tl"><img src="img/DSCF5367.jpg" alt=""></div>
+      <div class="cell tc"><img src="img/DSCF5990.jpg" alt=""></div>
+      <div class="cell tr"><img src="img/DSCF5409.jpg" alt=""></div>
+      <div class="cell ml"><img src="img/DSCF5421.jpg" alt=""></div>
+      <div class="cell center"><img src="img/center.JPG" alt="Kenshin"></div>
+      <div class="cell mr"><img src="img/DSCF5416.jpg" alt=""></div>
+      <div class="cell bl"><img src="img/DSCF5444.jpg" alt=""></div>
+      <div class="cell bc"><img src="img/DSCF5446.jpg" alt=""></div>
+      <div class="cell br"><img src="img/DSCF5442.jpg" alt=""></div>
+    </div>
+
+    <div class="kv-caption reveal d3">
+      <span class="tag" data-i18n="kv.tag">Web & Social Media Creator</span>
+      <h1>
+        <span class="fam">Nishihara</span><br>
+        <span class="giv">Kenshin</span>
+      </h1>
+      <p data-i18n="kv.intro">Based in Melbourne. Originally from Tokyo.<br>I help people grow their business through web and social media content.</p>
+    </div>
+  </section>
+
+  <!-- ============ WORK / WEB ============ -->
+  <section id="work">
+    <div class="section-h">
+      <h2>Web <em>/ Work</em></h2>
+      <span class="label">01</span>
+    </div>
+    <p class="sub" data-i18n="work.sub">I create custom websites for you.<br>
+      Or you can buy these templates, and I’ll customize them to match your style.</p>
+
+    <div class="marquee bleed">
+      <div class="track" id="webTrack"></div>
+    </div>
+
+    <a class="btn" href="work.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6v12"/><path d="M4 12h16"/><path d="M14 6l6 6-6 6"/></svg>
+      <span data-i18n="work.cta">See all</span>
+    </a>
+  </section>
+
+  <!-- ============ APP ============ -->
+  <section id="app" class="app">
+    <div class="section-h">
+      <h2>App <em>/ Work</em></h2>
+      <span class="label">02</span>
+    </div>
+    <p class="sub" data-i18n="app.name">Phrame — an app for making your own English phrase notes.</p>
+
+    <div class="video">
+      <video id="appVideo" muted loop playsinline preload="metadata" disablepictureinpicture>
+        <source src="phrame_movie.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <p class="desc" data-i18n="app.desc">Save phrases you want to remember, add a quick note, and come back to them whenever.</p>
+
+    <a class="btn" href="app.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6v12"/><path d="M4 12h16"/><path d="M14 6l6 6-6 6"/></svg>
+      <span data-i18n="app.cta">Open app</span>
+    </a>
+  </section>
+
+  <!-- ============ SOCIAL / PHOTO ============ -->
+  <section id="social" class="photo">
+    <div class="section-h">
+      <h2>Photo <em>/ Social</em></h2>
+      <span class="label">03</span>
+    </div>
+    <p class="sub" data-i18n="social.sub">Photos I've taken before.<br>I also take on photography work.</p>
+
+    <div class="wall bleed" style="padding:0 20px">
+      <div class="col c1"><div class="run" id="run1"></div></div>
+      <div class="col c2"><div class="run" id="run2"></div></div>
+      <div class="col c3"><div class="run" id="run3"></div></div>
+    </div>
+
+    <div style="margin-top:18px">
+      <a class="btn outline" href="https://www.instagram.com/kenshin.photo/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>
+        <span data-i18n="social.cta">Follow on Instagram</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ VIDEO ============ -->
+  <section id="video">
+    <div class="section-h">
+      <h2>Video <em>/ Social</em></h2>
+      <span class="label">04</span>
+    </div>
+
+    <div class="card">
+      <div class="avatar yt">K</div>
+      <div class="body">
+        <h4 data-i18n="video.name">Kenshin | 兼臣</h4>
+        <div class="id">@kenshinjapones</div>
+        <p data-i18n="video.desc">Videos about daily life.</p>
+      </div>
+    </div>
+    <a class="btn" href="https://www.youtube.com/@kenshinjapones" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.2s-.2-1.6-.8-2.3c-.8-.9-1.7-.9-2.1-1C16.9 3.6 12 3.6 12 3.6s-4.9 0-8.1.3c-.4.1-1.3.1-2.1 1C1.2 5.6 1 7.2 1 7.2S.8 9.1.8 11v1.9c0 1.9.2 3.8.2 3.8s.2 1.6.8 2.3c.8.9 1.9.9 2.4 1 1.7.2 7.8.3 7.8.3s4.9 0 8.1-.3c.4-.1 1.3-.1 2.1-1 .6-.7.8-2.3.8-2.3s.2-1.9.2-3.8V11c0-1.9-.2-3.8-.2-3.8zM9.8 14.8V8.2l6.4 3.3-6.4 3.3z"/></svg>
+      <span data-i18n="video.cta">Watch on YouTube</span>
+
+    </a>
+  </section>
+
+  <!-- ============ ARTICLE ============ -->
+  <section id="article">
+    <div class="section-h">
+      <h2>Article <em>/ Social</em></h2>
+      <span class="label">05</span>
+    </div>
+
+    <div class="card">
+      <div class="avatar art">K</div>
+      <div class="body">
+        <h4 data-i18n="article.name">Kenshin | 兼臣</h4>
+        <div class="id">@kenshin_free</div>
+        <p data-i18n="article.desc">Notes on my project, language, and everyday things in Japanese.</p>
+      </div>
+    </div>
+    <a class="btn" href="https://note.com/kenshin_free" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6v12"/><path d="M4 12h16"/><path d="M14 6l6 6-6 6"/></svg>
+      <span data-i18n="article.cta">Read on note</span>
+    </a>
+  </section>
+
+  <!-- ============ FOOTER / CONTACT ============ -->
+  <footer id="contact">
+    <span class="label" data-i18n="contact.label" style="font-family:var(--m);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:color-mix(in srgb, var(--light) 60%, transparent)">06</span>
+    <h2 style="margin-top:10px">Inquiries <em data-i18n="contact.heading.sub">/ Contact</em></h2>
+    <p class="sub-light" data-i18n="contact.sub">Available for work. Feel free to reach out.</p>
+
+    <form class="form" id="contactForm">
+      <div class="field">
+        <label data-i18n="contact.name">Name</label>
+        <input type="text" name="name" required>
+      </div>
+      <div class="field">
+        <label data-i18n="contact.email">Email</label>
+        <input type="email" name="email" required>
+      </div>
+      <div class="field">
+        <label data-i18n="contact.msg">Message</label>
+        <textarea name="message" required></textarea>
+      </div>
+      <button class="submit" type="submit">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6v12"/><path d="M4 12h16"/><path d="M14 6l6 6-6 6"/></svg>
+        <span data-i18n="contact.send">Send message</span>
+      </button>
+    </form>
+
+    <div class="foot-meta">
+      <!-- <a href="mailto:hello@kenshin.xyz">hello@kenshin.xyz</a> -->
+      <span>© 2026 NishiharaKenshin</span>
+    </div>
+  </footer>
+
+</div>
+
+<script src="js/index.js"></script>
+<script>
+/* ===== Contact form → Google Apps Script ===== */
+(function(){
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbz0EWvC4NW5cWmuOC56ffxQmbIjFUIZH466E44rA8VY5sZ3jNAldCv_XCFbLu6MbWifVQ/exec';
+  const form = document.getElementById('contactForm');
+  if (!form) return;
+
+  const btnSpan = form.querySelector('.submit span');
+  const btnOrig = btnSpan.getAttribute('data-i18n');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    const btn = form.querySelector('.submit');
+    btn.disabled = true;
+    btnSpan.textContent = window.__lang==='jp'?'送信中…': window.__lang==='es'?'Enviando…':'Sending…';
+
+    const body = new URLSearchParams({
+      type: 'contact',
+      name:    form.querySelector('[name="name"]').value,
+      email:   form.querySelector('[name="email"]').value,
+      message: form.querySelector('[name="message"]').value
+    });
+
+    fetch(GAS_URL, { method:'POST', mode:'no-cors', body: body })
+      .then(() => {
+        btnSpan.textContent = window.__lang==='jp'?'送信しました ✓': window.__lang==='es'?'Enviado ✓':'Sent ✓';
+        form.reset();
+        setTimeout(()=>{ btnSpan.textContent = I18N[window.__lang||'en'][btnOrig]; btn.disabled=false; }, 3000);
+      })
+      .catch(()=>{
+        btnSpan.textContent = window.__lang==='jp'?'エラー — もう一度': window.__lang==='es'?'Error — inténtalo':'Error — try again';
+        btn.disabled=false;
+        setTimeout(()=>{ btnSpan.textContent = I18N[window.__lang||'en'][btnOrig]; }, 3000);
+      });
+  });
+})();
+</script>
+</body>
+</html>

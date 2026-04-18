@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Phrame — Kenshin Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Offside&family=Zen+Old+Mincho:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/portfolio.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="shell app-page">
+
+  <!-- Top meta -->
+  <div class="topbar">
+    <span>Tokyo → Melbourne</span>
+    <span>© 2026</span>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="brand" aria-label="Kenshin home">Kenshin<em>.</em></a>
+    <div class="lang" role="tablist" aria-label="Language">
+      <button data-lang="en" aria-pressed="true">EN</button>
+      <span class="sep">/</span>
+      <button data-lang="jp" aria-pressed="false">JP</button>
+      <span class="sep">/</span>
+      <button data-lang="es" aria-pressed="false">ES</button>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
+  </header>
+
+  <nav class="nav" id="nav" aria-hidden="true">
+    <ol>
+      <li><a href="work.html" data-close data-i18n="nav.work">Work</a></li>
+      <li><a href="app.html" data-close data-i18n="nav.app">App</a></li>
+      <li><a href="index.html#social" data-close data-i18n="nav.social">Photo</a></li>
+      <li><a href="index.html#video" data-close data-i18n="nav.video">Video</a></li>
+      <li><a href="index.html#article" data-close data-i18n="nav.article">Article</a></li>
+      <li><a href="index.html#contact" data-close data-i18n="nav.contact">Contact</a></li>
+    </ol>
+    <div class="meta">
+      <span>Tokyo → Melbourne</span>
+      <span>© 2026</span>
+    </div>
+  </nav>
+
+  <!-- Back link -->
+  <a href="index.html" class="back-link reveal d1">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6v12"/><path d="M4 12h16"/><path d="M14 6l6 6-6 6"/></svg>
+    <span data-i18n="back">Back</span>
+  </a>
+
+  <!-- ===== HERO ===== -->
+  <div class="app-hero reveal d2">
+    <span class="tag"><span class="dot"></span><span data-i18n="app.hero.tag">AI Phrase Search App</span></span>
+    <h1 data-i18n="app.hero.name">Phrame</h1>
+    <p class="hero-desc" data-i18n="app.hero.desc">Search for a phrase. AI answers instantly.<br>Auto-saved — your own phrasebook builds itself.</p>
+  </div>
+
+  <!-- ===== PHONE MOCKUP ===== -->
+  <div class="phone-mock reveal d3">
+    <video id="appVideo" muted loop playsinline autoplay preload="auto" disablepictureinpicture>
+      <source src="phrame_movie.mp4" type="video/mp4">
+    </video>
+    <span class="chip">Preview</span>
+  </div>
+
+  <!-- ===== STORE BUTTONS ===== -->
+  <div class="store-buttons reveal d4">
+    <span class="coming-soon" data-i18n="app.coming">Coming soon...</span>
+  </div>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section>
+    <div class="section-h">
+      <h2><span data-i18n="app.section.how">How it works</span></h2>
+      <span class="label">01</span>
+    </div>
+
+    <div class="how-steps">
+      <div class="how-step">
+        <span class="step-num">01</span>
+        <div>
+          <h3 data-i18n="app.how1.title">Search a phrase</h3>
+          <p data-i18n="app.how1.desc">Type what you want to say in English. No need to write "translate to English" — just search naturally.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <span class="step-num">02</span>
+        <div>
+          <h3 data-i18n="app.how2.title">AI answers instantly</h3>
+          <p data-i18n="app.how2.desc">AI returns native-level expressions, example sentences, formality levels, and context — all in one view.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <span class="step-num">03</span>
+        <div>
+          <h3 data-i18n="app.how3.title">Auto-saved</h3>
+          <p data-i18n="app.how3.desc">Every phrase you search is automatically saved. No extra steps — your phrasebook grows on its own.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <span class="step-num">04</span>
+        <div>
+          <h3 data-i18n="app.how4.title">Your phrasebook</h3>
+          <p data-i18n="app.how4.desc">Organize by category, review anytime, and quiz yourself. A personal phrasebook that only gets better.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section>
+    <div class="section-h">
+      <h2><span data-i18n="app.section.features">Features</span></h2>
+      <span class="label">02</span>
+    </div>
+
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon">
+          <!-- sparkle / AI -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-6.26L4 10l5.91-1.74L12 2z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 data-i18n="app.feat1.title">AI-Powered Answers</h3>
+          <p data-i18n="app.feat1.desc">Get native-level expressions, example sentences, and usage context — powered by AI, delivered in seconds.</p>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">
+          <!-- globe / languages -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 data-i18n="app.feat2.title">15 Languages</h3>
+          <p data-i18n="app.feat2.desc">Search in Japanese, Spanish, Chinese, Korean, and 11 more languages. AI responds in your native language.</p>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">
+          <!-- sliders / formality -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>
+          </svg>
+        </div>
+        <div>
+          <h3 data-i18n="app.feat3.title">Formality Meter</h3>
+          <p data-i18n="app.feat3.desc">See whether a phrase is casual, neutral, or formal — so you always use the right tone.</p>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">
+          <!-- check-circle / quiz -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <div>
+          <h3 data-i18n="app.feat4.title">Smart Quiz</h3>
+          <p data-i18n="app.feat4.desc">Test yourself with spaced-repetition quizzes built from your own saved phrases. Learn what matters to you.</p>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">
+          <!-- book / diary -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 data-i18n="app.feat5.title">AI Diary</h3>
+          <p data-i18n="app.feat5.desc">Write a short diary entry in English. AI corrects your grammar and suggests more natural expressions.</p>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">
+          <!-- folder / categories -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 data-i18n="app.feat6.title">Categories</h3>
+          <p data-i18n="app.feat6.desc">Organize saved phrases into custom categories — travel, work, daily life, or anything you want.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COMPARISON ===== -->
+  <section>
+    <div class="section-h">
+      <h2><span data-i18n="app.section.compare">Why Phrame?</span></h2>
+      <span class="label">03</span>
+    </div>
+    <p class="sub" data-i18n="app.compare.sub">How Phrame is different from what you already use.</p>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-vs">vs ChatGPT</div>
+        <h3 data-i18n="app.compare1.title">No extra typing</h3>
+        <p data-i18n="app.compare1.desc">No need to write "translate __ to English" every time. Just search your phrase — done. No digging through old chat threads either.</p>
+      </div>
+      <div class="compare-card">
+        <div class="compare-vs">vs Duolingo</div>
+        <h3 data-i18n="app.compare2.title">Your real phrases</h3>
+        <p data-i18n="app.compare2.desc">Learn phrases you actually want to use, not a fixed curriculum. Your phrasebook reflects your life, not someone else's lesson plan.</p>
+      </div>
+      <div class="compare-card">
+        <div class="compare-vs">vs Anki</div>
+        <h3 data-i18n="app.compare3.title">AI does the work</h3>
+        <p data-i18n="app.compare3.desc">No manual flashcard creation. Search a phrase and AI generates everything — expressions, examples, formality. Quiz-ready automatically.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA BANNER (bottom) ===== -->
+  <div class="cta-banner">
+    <h2><span data-i18n="app.cta.line1">Search. Save.</span><br><span data-i18n="app.cta.line2">Your phrasebook.</span></h2>
+    <p class="cta-desc" data-i18n="app.cta.desc">Free to download. No sign-up required.\nSupports 15 languages.</p>
+
+    <div class="store-buttons">
+      <span class="coming-soon cta-coming" data-i18n="app.coming">Coming soon...</span>
+    </div>
+
+    <div class="foot-meta-sub">
+      <span>© 2026 NishiharaKenshin</span>
+    </div>
+  </div>
+
+  <div style="height:28px"></div>
+
+</div>
+
+<script src="js/portfolio.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Work — Kenshin Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Offside&family=Zen+Old+Mincho:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/portfolio.css">
+<link rel="stylesheet" href="css/work.css">
+</head>
+<body>
+<div class="shell">
+
+  <!-- Top meta -->
+  <div class="topbar">
+    <span>Tokyo → Melbourne</span>
+    <span>© 2026</span>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="brand" aria-label="Kenshin home">Kenshin<em>.</em></a>
+    <div class="lang" role="tablist" aria-label="Language">
+      <button data-lang="en" aria-pressed="true">EN</button>
+      <span class="sep">/</span>
+      <button data-lang="jp" aria-pressed="false">JP</button>
+      <span class="sep">/</span>
+      <button data-lang="es" aria-pressed="false">ES</button>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
+  </header>
+
+  <nav class="nav" id="nav" aria-hidden="true">
+    <ol>
+      <li><a href="work.html" data-close data-i18n="nav.work">Work</a></li>
+      <li><a href="app.html" data-close data-i18n="nav.app">App</a></li>
+      <li><a href="index.html#social" data-close data-i18n="nav.social">Photo</a></li>
+      <li><a href="index.html#video" data-close data-i18n="nav.video">Video</a></li>
+      <li><a href="index.html#article" data-close data-i18n="nav.article">Article</a></li>
+      <li><a href="index.html#contact" data-close data-i18n="nav.contact">Contact</a></li>
+    </ol>
+    <div class="meta">
+      <span>Tokyo → Melbourne</span>
+      <span>© 2026</span>
+    </div>
+  </nav>
+
+  <!-- Back link -->
+  <a href="index.html" class="back-link reveal d1">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6v12"/><path d="M4 12h16"/><path d="M14 6l6 6-6 6"/></svg>
+    <span data-i18n="back">Back</span>
+  </a>
+
+  <!-- Section header -->
+  <section id="work-top" class="reveal d2">
+    <div class="section-h">
+      <h2><span data-i18n="work.title">Templates</span></h2>
+      <!-- <span class="label">01</span> -->
+    </div>
+    <p class="sub" data-i18n="work.sub">Browse website templates. Pick one and I'll customize it to match your brand.<br>Or request a fully custom site from scratch.</p>
+    <p style="margin-top:0;margin-bottom:24px;font-size:11px;color:color-mix(in srgb, var(--dark) 45%, transparent)">※ <span data-i18n="work.notes.currency">All prices are listed in Australian Dollars (AUD).</span></p>
+  </section>
+
+  <!-- Filters -->
+  <div class="filters reveal d3" id="filters"></div>
+
+  <!-- Template grid -->
+  <div class="tpl-grid reveal d4" id="tplGrid"></div>
+
+  <!-- Inquiry section -->
+  <div class="inquiry-section" id="inquiry">
+    <h2><span data-i18n="work.inquiry.title">Inquiries</span> <em data-i18n="contact.heading.sub">/ Contact</em></h2>
+    <p class="sub-light" data-i18n="work.inquiry.sub2">Select a template or request a custom site.</p>
+
+    <!-- Flow steps -->
+    <div class="flow" style="margin-top:28px">
+      <div class="flow-step">
+        <span class="flow-num">01</span>
+        <div class="flow-body">
+          <h4 data-i18n="work.flow.s1.title">Inquire</h4>
+          <p data-i18n="work.flow.s1.desc">Fill out the form below. Choose a template or request a custom build.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <span class="flow-num">02</span>
+        <div class="flow-body">
+          <h4 data-i18n="work.flow.s2.title">Hearing</h4>
+          <p data-i18n="work.flow.s2.desc">We'll discuss your brand, content, images, and any custom requirements.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <span class="flow-num">03</span>
+        <div class="flow-body">
+          <h4 data-i18n="work.flow.s3.title">Build</h4>
+          <p data-i18n="work.flow.s3.desc">I'll build and customize your site. You'll get a preview link to review.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <span class="flow-num">04</span>
+        <div class="flow-body">
+          <h4 data-i18n="work.flow.s4.title">Deliver</h4>
+          <p data-i18n="work.flow.s4.desc">Final adjustments, then your site goes live.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="notes">
+      <h4 data-i18n="work.notes.title">Please note</h4>
+      <ul>
+        <li data-i18n="work.notes.ai">Some images on these demo sites are AI-generated.</li>
+        <li data-i18n="work.notes.photo">Photography is available as a separate service (currently Melbourne only). Additional fees apply.</li>
+        <li data-i18n="work.notes.price">The listed price covers template customization. Pricing may vary depending on the scope of additional work.</li>
+        <li data-i18n="work.notes.detail">Details such as branding, pages, and functionality will be discussed after your initial inquiry.</li>
+      </ul>
+    </div>
+
+    <!-- Form -->
+    <form class="form" id="inquiryForm">
+      <!-- Select type (merged: custom + templates) -->
+      <div class="field">
+        <label data-i18n="work.inquiry.select">Select type</label>
+        <select id="templateSelect" name="template">
+          <option value="custom" data-i18n="work.inquiry.opt.custom">Custom site from scratch</option>
+        </select>
+      </div>
+      <!-- Image source -->
+      <div class="field">
+        <span style="font-family:var(--m);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:color-mix(in srgb, var(--light) 65%, transparent)" data-i18n="work.inquiry.images">Images</span>
+        <div class="radio-group">
+          <input type="radio" name="imgSrc" id="imgOwn" value="own" checked>
+          <label for="imgOwn" data-i18n="work.inquiry.img.own">I'll prepare my own</label>
+          <input type="radio" name="imgSrc" id="imgPhoto" value="photo">
+          <label for="imgPhoto" data-i18n="work.inquiry.img.photo">Request photography</label>
+          <input type="radio" name="imgSrc" id="imgExisting" value="existing">
+          <label for="imgExisting" data-i18n="work.inquiry.img.existing">Use my existing images</label>
+          <input type="radio" name="imgSrc" id="imgAi" value="ai">
+          <label for="imgAi" data-i18n="work.inquiry.img.ai">AI-adjusted images</label>
+          <input type="radio" name="imgSrc" id="imgNone" value="none">
+          <label for="imgNone" data-i18n="work.inquiry.img.none">No images needed</label>
+        </div>
+      </div>
+      <!-- Timeline -->
+      <div class="field">
+        <span style="font-family:var(--m);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:color-mix(in srgb, var(--light) 65%, transparent)" data-i18n="work.inquiry.timeline">Timeline</span>
+        <div class="radio-group">
+          <input type="radio" name="timeline" id="tlUrgent" value="urgent">
+          <label for="tlUrgent" data-i18n="work.inquiry.tl.urgent">Urgent</label>
+          <input type="radio" name="timeline" id="tl1m" value="1month" checked>
+          <label for="tl1m" data-i18n="work.inquiry.tl.1m">Within 1 month</label>
+          <input type="radio" name="timeline" id="tlFlex" value="flexible">
+          <label for="tlFlex" data-i18n="work.inquiry.tl.flex">Flexible</label>
+        </div>
+      </div>
+      <div class="field">
+        <label data-i18n="work.inquiry.name">Name</label>
+        <input type="text" name="name" required>
+      </div>
+      <div class="field">
+        <label data-i18n="work.inquiry.email">Email</label>
+        <input type="email" name="email" required>
+      </div>
+      <div class="field">
+        <label data-i18n="work.inquiry.msg">Message</label>
+        <textarea name="message"></textarea>
+      </div>
+      <button class="submit" type="submit">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6v12"/><path d="M4 12h16"/><path d="M14 6l6 6-6 6"/></svg>
+        <span data-i18n="work.inquiry.send">Send inquiry</span>
+      </button>
+    </form>
+
+    <div class="foot-meta-sub">
+      <span>© 2026 NishiharaKenshin</span>
+    </div>
+  </div>
+
+  <div style="height:28px"></div>
+
+</div>
+
+<script src="js/portfolio.js"></script>
+<script src="js/work.js"></script>
+<script>
+/* ===== Inquiry form → Google Apps Script ===== */
+(function(){
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbz0EWvC4NW5cWmuOC56ffxQmbIjFUIZH466E44rA8VY5sZ3jNAldCv_XCFbLu6MbWifVQ/exec';
+  const form = document.getElementById('inquiryForm');
+  if (!form) return;
+
+  const btnSpan = form.querySelector('.submit span');
+  const btnOrig = btnSpan.getAttribute('data-i18n');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    const btn = form.querySelector('.submit');
+    btn.disabled = true;
+    btnSpan.textContent = window.__lang==='jp'?'送信中…': window.__lang==='es'?'Enviando…':'Sending…';
+
+    const imgRadio = form.querySelector('[name="imgSrc"]:checked');
+    const tlRadio  = form.querySelector('[name="timeline"]:checked');
+
+    const body = new URLSearchParams({
+      type:     'inquiry',
+      template: form.querySelector('[name="template"]').value,
+      images:   imgRadio  ? imgRadio.value  : '',
+      timeline: tlRadio   ? tlRadio.value   : '',
+      name:     form.querySelector('[name="name"]').value,
+      email:    form.querySelector('[name="email"]').value,
+      message:  form.querySelector('[name="message"]').value
+    });
+
+    fetch(GAS_URL, { method:'POST', mode:'no-cors', body: body })
+      .then(() => {
+        btnSpan.textContent = window.__lang==='jp'?'送信しました ✓': window.__lang==='es'?'Enviado ✓':'Sent ✓';
+        form.reset();
+        setTimeout(()=>{ btnSpan.textContent = I18N[window.__lang||'en'][btnOrig]; btn.disabled=false; }, 3000);
+      })
+      .catch(()=>{
+        btnSpan.textContent = window.__lang==='jp'?'エラー — もう一度': window.__lang==='es'?'Error — inténtalo':'Error — try again';
+        btn.disabled=false;
+        setTimeout(()=>{ btnSpan.textContent = I18N[window.__lang||'en'][btnOrig]; }, 3000);
+      });
+  });
+})();
+</script>
+</body>
+</html>

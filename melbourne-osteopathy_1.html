@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#050B1F" />
+<title>MERIDIAN — Osteopathy & Bodywork · Fitzroy, Melbourne · Book a Session</title>
+<meta name="description" content="MERIDIAN is an osteopathy and bodywork clinic in Fitzroy, Melbourne. Evidence-based treatment for neck, back, and movement recovery. Online booking, 7 days." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/SplitText.min.js"></script>
+<style>
+:root{
+  --abyss:#030815;
+  --deep:#050B1F;
+  --navy:#0A1733;
+  --navy-2:#0E2246;
+  --navy-3:#152C55;
+  --primary:#2E5CFF;
+  --primary-2:#5B8CFF;
+  --cyan:#7FE3FF;
+  --ink:#EAF0FC;
+  --ink-2:#C4D0E8;
+  --muted:#8597BE;
+  --line:rgba(255,255,255,0.08);
+  --line-2:rgba(255,255,255,0.14);
+  --good:#6EE7B7;
+}
+*{-webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;}
+html,body{background:#000; color:var(--ink); font-family:'Inter',sans-serif; margin:0; overflow-x:hidden;}
+body{font-feature-settings:"ss01","cv11";}
+.font-serif{font-family:'Instrument Serif',serif; font-weight:400; letter-spacing:-0.01em;}
+.font-mono{font-family:'JetBrains Mono',monospace;}
+::-webkit-scrollbar{width:0;height:0;}
+:focus-visible{outline:1px solid var(--primary-2); outline-offset:2px;}
+
+/* ── Desktop phone-frame ambient ──────────── */
+.stage{
+  min-height:100vh; width:100%;
+  background:
+    radial-gradient(1200px 800px at 20% 10%, rgba(46,92,255,0.18), transparent 60%),
+    radial-gradient(900px 700px at 85% 85%, rgba(127,227,255,0.10), transparent 60%),
+    radial-gradient(600px 400px at 50% 50%, rgba(91,140,255,0.08), transparent 70%),
+    #000;
+  display:flex; justify-content:center; align-items:flex-start;
+  position:relative; overflow:hidden;
+}
+.stage::before{
+  content:""; position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse at center, black 30%, transparent 70%);
+  pointer-events:none;
+}
+.phone{
+  width:100%; max-width:440px; position:relative; z-index:2;
+  background:var(--deep); min-height:100vh;
+  box-shadow: 0 60px 140px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06);
+}
+@media (min-width:768px){
+  .stage{padding:40px 0;}
+  .phone{
+    border-radius:46px;
+    min-height:calc(100vh - 80px);
+    overflow:hidden;
+    border:10px solid #0b0f1c;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.06) inset,
+      0 40px 120px rgba(0,0,0,0.7),
+      0 0 200px rgba(46,92,255,0.18);
+  }
+  .phone::before{
+    content:""; position:absolute; top:14px; left:50%; transform:translateX(-50%);
+    width:110px; height:28px; background:#000; border-radius:20px; z-index:60;
+  }
+  .stage-meta{display:block;}
+}
+.stage-meta{
+  display:none; position:fixed; font-family:'JetBrains Mono',monospace; color:var(--muted);
+  font-size:10px; letter-spacing:0.2em; text-transform:uppercase; z-index:10;
+}
+.meta-tl{top:22px; left:28px;}
+.meta-tr{top:22px; right:28px;}
+.meta-bl{bottom:22px; left:28px;}
+.meta-br{bottom:22px; right:28px;}
+.meta-dot{display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--good); margin-right:6px; vertical-align:middle; animation:meta-pulse 2s ease-in-out infinite;}
+@keyframes meta-pulse{0%,100%{opacity:1} 50%{opacity:0.3}}
+
+/* ── Status bar ──────────── */
+.statusbar{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 22px 4px; font-family:'JetBrains Mono',monospace;
+  font-size:12px; color:var(--ink); font-weight:500;
+}
+.status-r{display:flex; gap:6px; align-items:center;}
+
+/* ── Top nav ──────────── */
+.topbar{
+  position:sticky; top:0; z-index:50;
+  background:linear-gradient(180deg, rgba(5,11,31,0.95), rgba(5,11,31,0.7) 85%, transparent);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  padding:14px 22px; display:flex; justify-content:space-between; align-items:center;
+}
+.brand{font-family:'Instrument Serif',serif; font-size:22px; letter-spacing:0.02em;}
+.brand-dot{display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--cyan); margin-left:4px; vertical-align:middle; animation:meta-pulse 2s ease-in-out infinite;}
+.menu-btn{
+  width:42px; height:42px; border-radius:14px; border:1px solid var(--line-2);
+  display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.03);
+}
+.menu-btn span{display:block; width:16px; height:1px; background:var(--ink); position:relative;}
+.menu-btn span::before,.menu-btn span::after{content:""; position:absolute; left:0; width:100%; height:1px; background:var(--ink);}
+.menu-btn span::before{top:-5px;}
+.menu-btn span::after{top:5px;}
+
+/* ── Hero ──────────── */
+.hero{padding:26px 22px 56px; position:relative;}
+.tag-row{display:flex; gap:8px; margin-bottom:28px; flex-wrap:wrap;}
+.tag{
+  font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ink-2);
+  padding:5px 10px; border:1px solid var(--line-2); border-radius:999px;
+  letter-spacing:0.12em; text-transform:uppercase; background:rgba(255,255,255,0.02);
+}
+.tag.hot{border-color:rgba(127,227,255,0.3); color:var(--cyan);}
+.tag.hot::before{content:""; display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--cyan); margin-right:6px; vertical-align:middle; animation:meta-pulse 2s ease-in-out infinite;}
+.hero h1{
+  font-family:'Instrument Serif',serif;
+  font-size:56px; line-height:0.96; letter-spacing:-0.02em;
+  margin:0 0 24px;
+}
+.hero h1 .it{font-style:italic; color:var(--primary-2);}
+.hero h1 .line{display:block; overflow:hidden;}
+.hero p.lede{
+  color:var(--ink-2); font-size:15px; line-height:1.55; max-width:340px;
+}
+.hero-wave{height:120px; margin:32px -22px 0; position:relative;}
+.hero-wave svg{width:100%; height:100%;}
+
+.cta-row{display:flex; gap:10px; margin-top:28px;}
+.cta-primary{
+  flex:1; background:var(--primary); color:#fff;
+  padding:18px 22px; border-radius:18px; font-weight:600; font-size:14px;
+  letter-spacing:0.02em; display:flex; justify-content:space-between; align-items:center;
+  box-shadow: 0 10px 30px rgba(46,92,255,0.4), 0 0 0 1px rgba(255,255,255,0.08) inset;
+  position:relative; overflow:hidden;
+  transition:transform 0.4s cubic-bezier(.2,.9,.3,1);
+}
+.cta-primary::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.25) 50%, transparent 70%);
+  transform:translateX(-100%);
+  transition:transform 0.9s cubic-bezier(.2,.9,.3,1);
+}
+.cta-primary:hover::after,.cta-primary:active::after{transform:translateX(100%);}
+.cta-primary:active{transform:scale(0.98);}
+.cta-ghost{
+  width:58px; background:rgba(255,255,255,0.04);
+  border:1px solid var(--line-2); border-radius:18px;
+  display:flex; align-items:center; justify-content:center;
+}
+
+.kpi-row{
+  margin-top:36px; display:grid; grid-template-columns:repeat(3, 1fr); gap:0;
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+.kpi{padding:18px 6px; text-align:left; border-right:1px solid var(--line);}
+.kpi:last-child{border-right:none;}
+.kpi-n{font-family:'Instrument Serif',serif; font-size:32px; line-height:1; color:var(--ink);}
+.kpi-n .unit{font-family:'Inter',sans-serif; font-size:14px; color:var(--muted); margin-left:2px; font-weight:300;}
+.kpi-l{font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; color:var(--muted); text-transform:uppercase; margin-top:6px;}
+
+/* ── Section chrome ──────────── */
+.sec{padding:72px 22px; position:relative;}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.25em;
+  color:var(--primary-2); text-transform:uppercase; display:flex; align-items:center; gap:10px;
+}
+.eyebrow::before{content:""; display:inline-block; width:24px; height:1px; background:var(--primary-2);}
+.sec h2{
+  font-family:'Instrument Serif',serif; font-size:40px; line-height:1; letter-spacing:-0.02em;
+  margin:14px 0 22px;
+}
+.sec h2 em{font-style:italic; color:var(--primary-2);}
+.sec p.sub{color:var(--ink-2); font-size:15px; line-height:1.55;}
+
+/* ── Treats horizontal scroll ──────────── */
+.treats-scroll{
+  margin:24px -22px 0; padding:4px 22px; display:flex; gap:10px;
+  overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none;
+}
+.treats-scroll::-webkit-scrollbar{display:none;}
+.treat-card{
+  flex:0 0 240px; scroll-snap-align:start;
+  background:linear-gradient(180deg, var(--navy-2), var(--navy));
+  border:1px solid var(--line-2); border-radius:22px;
+  padding:22px; display:flex; flex-direction:column; gap:16px; min-height:260px;
+  position:relative; overflow:hidden;
+}
+.treat-card::after{
+  content:""; position:absolute; width:200px; height:200px; border-radius:50%;
+  background:radial-gradient(circle, rgba(46,92,255,0.35), transparent 70%);
+  right:-80px; top:-80px; filter:blur(8px);
+}
+.treat-num{font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:0.2em;}
+.treat-icon{width:52px; height:52px; border-radius:14px; background:rgba(46,92,255,0.15); border:1px solid rgba(91,140,255,0.3); display:flex; align-items:center; justify-content:center; position:relative; z-index:1;}
+.treat-h{font-family:'Instrument Serif',serif; font-size:24px; line-height:1.05; position:relative; z-index:1;}
+.treat-desc{font-size:13px; color:var(--ink-2); line-height:1.5; position:relative; z-index:1;}
+.treat-link{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--primary-2); letter-spacing:0.15em; display:flex; align-items:center; gap:8px; margin-top:auto; position:relative; z-index:1;}
+
+/* ── Method timeline ──────────── */
+.method{
+  position:relative; margin-top:30px;
+  border-left:1px dashed var(--line-2); padding-left:26px;
+}
+.method-step{position:relative; padding-bottom:48px;}
+.method-step::before{
+  content:""; position:absolute; left:-33px; top:4px;
+  width:14px; height:14px; border-radius:50%;
+  background:var(--deep); border:1px solid var(--primary-2);
+}
+.method-step::after{
+  content:""; position:absolute; left:-29px; top:8px;
+  width:6px; height:6px; border-radius:50%;
+  background:var(--primary-2); box-shadow:0 0 12px var(--primary-2);
+}
+.method-step .mn{font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--primary-2); letter-spacing:0.2em;}
+.method-step .mh{font-family:'Instrument Serif',serif; font-size:26px; margin:6px 0 10px; line-height:1.05;}
+.method-step .md{font-size:14px; color:var(--ink-2); line-height:1.55;}
+
+/* ── Practitioners ──────────── */
+.prac-grid{margin:24px -22px 0; padding:4px 22px; display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none;}
+.prac-grid::-webkit-scrollbar{display:none;}
+.prac{
+  flex:0 0 260px; scroll-snap-align:start;
+  border:1px solid var(--line-2); border-radius:22px; overflow:hidden;
+  background:var(--navy); display:flex; flex-direction:column;
+}
+.prac-img{aspect-ratio:4/5; background:linear-gradient(135deg, var(--navy-3), var(--navy-2)); position:relative; overflow:hidden;}
+.prac-img svg{width:100%; height:100%;}
+.prac-img .reg{
+  position:absolute; top:14px; left:14px; font-family:'JetBrains Mono',monospace; font-size:9px;
+  letter-spacing:0.2em; color:var(--cyan); background:rgba(3,8,21,0.6); backdrop-filter:blur(10px);
+  padding:5px 9px; border-radius:999px; border:1px solid rgba(127,227,255,0.3);
+}
+.prac-body{padding:18px;}
+.prac-name{font-family:'Instrument Serif',serif; font-size:22px; line-height:1;}
+.prac-role{font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:0.15em; margin-top:6px;}
+.prac-bio{font-size:13px; color:var(--ink-2); line-height:1.5; margin-top:12px;}
+
+/* ── Testimonials ──────────── */
+.quote-stage{
+  position:relative; height:280px; margin-top:30px;
+  border:1px solid var(--line); border-radius:24px;
+  background:
+    radial-gradient(600px 200px at 50% 0%, rgba(46,92,255,0.2), transparent 70%),
+    linear-gradient(180deg, var(--navy-2), var(--deep));
+  overflow:hidden;
+}
+.quote{
+  position:absolute; inset:0; padding:30px 26px; opacity:0;
+  display:flex; flex-direction:column; justify-content:space-between;
+  transition:opacity 0.8s ease;
+}
+.quote.active{opacity:1;}
+.quote-mark{font-family:'Instrument Serif',serif; font-size:72px; line-height:0.6; color:var(--primary-2); font-style:italic;}
+.quote-body{font-family:'Instrument Serif',serif; font-size:22px; line-height:1.25;}
+.quote-author{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.2em; color:var(--muted); text-transform:uppercase;}
+.quote-dots{display:flex; gap:6px; position:absolute; bottom:20px; right:24px; z-index:2;}
+.quote-dot{width:6px; height:6px; border-radius:50%; background:var(--line-2); transition:all 0.4s;}
+.quote-dot.active{width:22px; border-radius:4px; background:var(--primary-2);}
+
+/* ── Pricing ──────────── */
+.price-list{margin-top:26px;}
+.price-row{
+  display:flex; align-items:baseline; gap:14px; padding:18px 0;
+  border-bottom:1px solid var(--line);
+  position:relative;
+}
+.price-row:last-child{border-bottom:none;}
+.price-row .ttl{font-family:'Instrument Serif',serif; font-size:22px; line-height:1.05;}
+.price-row .dots{flex:1; border-bottom:1px dotted var(--line-2); transform:translateY(-4px);}
+.price-row .amt{font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--ink);}
+.price-row .sub2{font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:0.15em; margin-top:4px;}
+
+/* ── FAQ ──────────── */
+.faq{margin-top:26px; border-top:1px solid var(--line);}
+.faq-item{border-bottom:1px solid var(--line); padding:0;}
+.faq-q{
+  width:100%; text-align:left; background:transparent; border:0;
+  padding:20px 0; display:flex; justify-content:space-between; align-items:center; gap:14px;
+  color:var(--ink); font-family:'Inter',sans-serif; font-size:15px; font-weight:500;
+  cursor:pointer;
+}
+.faq-q .plus{position:relative; width:14px; height:14px; flex-shrink:0;}
+.faq-q .plus::before,.faq-q .plus::after{content:""; position:absolute; background:var(--primary-2); left:50%; top:50%;}
+.faq-q .plus::before{width:14px; height:1px; transform:translate(-50%,-50%);}
+.faq-q .plus::after{width:1px; height:14px; transform:translate(-50%,-50%); transition:transform 0.3s;}
+.faq-item.open .faq-q .plus::after{transform:translate(-50%,-50%) rotate(90deg);}
+.faq-a{max-height:0; overflow:hidden; transition:max-height 0.5s cubic-bezier(.2,.9,.3,1); color:var(--ink-2); font-size:14px; line-height:1.6;}
+.faq-a-inner{padding-bottom:22px;}
+
+/* ── Availability card ──────────── */
+.avail{
+  margin-top:28px; border:1px solid rgba(46,92,255,0.3); border-radius:22px;
+  background:
+    radial-gradient(400px 160px at 0% 0%, rgba(46,92,255,0.25), transparent 70%),
+    linear-gradient(180deg, var(--navy-2), var(--navy));
+  padding:24px; position:relative; overflow:hidden;
+}
+.avail-head{display:flex; justify-content:space-between; align-items:flex-start;}
+.avail-h{font-family:'Instrument Serif',serif; font-size:26px; line-height:1;}
+.live-dot{display:inline-flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--good); letter-spacing:0.18em; text-transform:uppercase;}
+.live-dot::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--good); animation:meta-pulse 1.6s ease-in-out infinite;}
+.avail-slots{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:18px;}
+.slot{
+  font-family:'JetBrains Mono',monospace; font-size:11px; padding:10px 0;
+  text-align:center; border-radius:10px; color:var(--ink-2);
+  background:rgba(255,255,255,0.04); border:1px solid var(--line);
+  transition:all 0.3s;
+}
+.slot.open{color:var(--ink); border-color:var(--primary); background:rgba(46,92,255,0.15);}
+.slot.sel{background:var(--primary); color:#fff; border-color:var(--primary);}
+.slot.gone{color:var(--muted); text-decoration:line-through;}
+
+/* ── Hours ──────────── */
+.hours-table{margin-top:22px;}
+.hours-row{display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line); font-size:14px;}
+.hours-row:last-child{border-bottom:none;}
+.hours-row .d{color:var(--ink);}
+.hours-row .h{color:var(--ink-2); font-family:'JetBrains Mono',monospace; font-size:12px;}
+.hours-row.now{color:var(--cyan);}
+.hours-row.now .d,.hours-row.now .h{color:var(--cyan);}
+
+/* ── Map ──────────── */
+.map-card{
+  margin-top:26px; border:1px solid var(--line-2); border-radius:22px; overflow:hidden;
+  position:relative; aspect-ratio:4/3;
+  background:var(--navy);
+}
+
+/* ── Footer ──────────── */
+footer{
+  padding:64px 22px 140px;
+  border-top:1px solid var(--line);
+  background:linear-gradient(180deg, transparent, rgba(46,92,255,0.04));
+  position:relative;
+}
+.foot-brand{font-family:'Instrument Serif',serif; font-size:80px; line-height:0.85; letter-spacing:-0.02em;}
+.foot-brand em{font-style:italic; color:var(--primary-2);}
+.foot-meta{display:grid; grid-template-columns:1fr 1fr; gap:26px 16px; margin-top:42px; font-family:'JetBrains Mono',monospace; font-size:11px;}
+.foot-lbl{color:var(--muted); letter-spacing:0.18em; text-transform:uppercase; font-size:9px; margin-bottom:6px;}
+.foot-val{color:var(--ink); line-height:1.5;}
+.foot-bot{
+  margin-top:48px; display:flex; justify-content:space-between;
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; color:var(--muted); text-transform:uppercase;
+}
+
+/* ── Sticky bottom book bar ──────────── */
+.bookbar{
+  position:fixed; bottom:0; left:0; right:0; z-index:80;
+  padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+  pointer-events:none;
+  display:flex; justify-content:center;
+}
+.bookbar-inner{
+  pointer-events:auto;
+  width:100%; max-width:412px;
+  background:rgba(10, 23, 51, 0.82);
+  backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px);
+  border:1px solid var(--line-2); border-radius:22px;
+  padding:10px 10px 10px 18px;
+  display:flex; align-items:center; gap:12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.bookbar .left{font-size:12px; color:var(--ink-2); line-height:1.3; flex:1;}
+.bookbar .left b{color:var(--ink); font-weight:500;}
+.bookbar .cta{
+  background:var(--primary); color:#fff; font-size:13px; font-weight:600;
+  padding:12px 18px; border-radius:14px; white-space:nowrap;
+  display:flex; align-items:center; gap:8px;
+  box-shadow:0 8px 24px rgba(46,92,255,0.4);
+}
+@media (min-width:768px){
+  .bookbar{padding:12px 0; bottom:28px;}
+  .bookbar-inner{max-width:416px;}
+}
+
+/* ── Loader ──────────── */
+#loader{
+  position:fixed; inset:0; background:#000; z-index:200;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; gap:22px;
+}
+#loader .l-brand{font-family:'Instrument Serif',serif; font-size:48px;}
+#loader .l-bar{width:160px; height:1px; background:rgba(255,255,255,0.12); overflow:hidden;}
+#loader .l-bar span{display:block; height:100%; width:0; background:var(--primary-2);}
+#loader .l-meta{font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.3em; color:var(--muted); text-transform:uppercase;}
+
+/* ── Progress line ──────────── */
+#progress{position:fixed; top:0; left:0; height:2px; width:0; background:linear-gradient(90deg, var(--primary), var(--cyan)); z-index:90; transition:width .08s linear; max-width:440px;}
+@media(min-width:768px){
+  #progress{left:50%; transform:translateX(-50%);}
+}
+
+/* ── Animated reveal ──────────── */
+.reveal-line{overflow:hidden;}
+.reveal-char{display:inline-block; transform:translateY(110%);}
+
+/* Spine SVG drawing */
+.spine-path{stroke-dasharray:600; stroke-dashoffset:600;}
+
+/* orb drift */
+.orb{position:absolute; border-radius:50%; filter:blur(40px); pointer-events:none;}
+
+/* shimmer for primary CTA */
+@keyframes shimmer {0%{background-position:-200% 0;} 100%{background-position:200% 0;}}
+</style>
+</head>
+<body>
+
+<!-- ───── Loader ───── -->
+<div id="loader">
+  <div class="l-brand">meridian<span style="color:#5B8CFF; font-style:italic;">.</span></div>
+  <div class="l-bar"><span></span></div>
+  <div class="l-meta">preparing · fitzroy clinic</div>
+</div>
+
+<!-- ───── Stage meta (desktop only) ───── -->
+<div class="stage-meta meta-tl"><span class="meta-dot"></span>Optimised for mobile 375+</div>
+<div class="stage-meta meta-tr">viewing · meridian.au</div>
+<div class="stage-meta meta-bl">© 2026 meridian osteopathy</div>
+<div class="stage-meta meta-br">fitzroy · melbourne</div>
+
+<div id="progress"></div>
+
+<div class="stage">
+  <main class="phone">
+
+    <!-- ───── Status bar ───── -->
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="status-r">
+        <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 8h2V5H1v3zm4 0h2V3H5v5zm4 0h2V1H9v7zm4 0h2V0h-2v8z" fill="currentColor"/></svg>
+        <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M7 2.5a4.8 4.8 0 0 1 3.4 1.4l1-1a6.2 6.2 0 0 0-8.8 0l1 1A4.8 4.8 0 0 1 7 2.5zM2 2l1 1a5.8 5.8 0 0 1 8 0l1-1a7.2 7.2 0 0 0-10 0zm5 3a2.4 2.4 0 0 0-1.7.7l1.7 1.7 1.7-1.7A2.4 2.4 0 0 0 7 5z" fill="currentColor"/></svg>
+        <span>100</span>
+      </div>
+    </div>
+
+    <!-- ───── Top nav ───── -->
+    <header class="topbar">
+      <div class="brand">meridian<span class="brand-dot"></span></div>
+      <button class="menu-btn" aria-label="Menu"><span></span></button>
+    </header>
+
+    <!-- ───── Hero ───── -->
+    <section class="hero">
+      <div class="tag-row" data-reveal>
+        <span class="tag hot">open · accepting new patients</span>
+        <span class="tag">est. 2019 · fitzroy</span>
+      </div>
+
+      <h1 data-split>
+        <span class="line">Bodywork for</span>
+        <span class="line">people who want</span>
+        <span class="line">to <span class="it">move again.</span></span>
+      </h1>
+      <p class="lede" data-reveal>Osteopathy, remedial massage, and structured rehab — grounded in evidence, delivered in a quiet Fitzroy studio.</p>
+
+      <div class="cta-row" data-reveal>
+        <a href="#book" class="cta-primary">
+          <span>Book a session</span>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9h12m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="tel:+61390000000" class="cta-ghost" aria-label="Call">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7a2 2 0 0 1 1.72 2.03z" stroke="#EAF0FC" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <!-- Pulse / spine wave -->
+      <div class="hero-wave" aria-hidden="true">
+        <svg viewBox="0 0 440 120" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="pg" x1="0" x2="1">
+              <stop offset="0" stop-color="#5B8CFF" stop-opacity="0"/>
+              <stop offset=".2" stop-color="#5B8CFF"/>
+              <stop offset=".8" stop-color="#7FE3FF"/>
+              <stop offset="1" stop-color="#7FE3FF" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="pg2" x1="0" x2="1">
+              <stop offset="0" stop-color="#2E5CFF" stop-opacity="0"/>
+              <stop offset=".5" stop-color="#2E5CFF" stop-opacity=".4"/>
+              <stop offset="1" stop-color="#2E5CFF" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path id="wave1" d="M0,60 Q55,60 80,60 T140,60 Q165,20 185,60 Q200,100 215,60 Q230,35 250,60 T360,60 T440,60" stroke="url(#pg)" stroke-width="1.2" fill="none"/>
+          <path id="wave2" d="M0,60 Q80,60 120,60 T200,60 T280,60 T360,60 T440,60" stroke="url(#pg2)" stroke-width="0.8" fill="none"/>
+        </svg>
+      </div>
+
+      <div class="kpi-row" data-reveal>
+        <div class="kpi"><div class="kpi-n" data-count="12">0</div><div class="kpi-l">Yrs Combined</div></div>
+        <div class="kpi"><div class="kpi-n" data-count="4200"><span class="unit">+</span></div><div class="kpi-l">Sessions</div></div>
+        <div class="kpi"><div class="kpi-n" data-count="4.9"><span class="unit">/5</span></div><div class="kpi-l">Google Rating</div></div>
+      </div>
+    </section>
+
+    <!-- ───── What we treat ───── -->
+    <section class="sec">
+      <div class="eyebrow">01 · What we treat</div>
+      <h2 data-reveal>Pain points,<br/><em>traced back</em> to causes.</h2>
+      <p class="sub" data-reveal>Every plan begins with a 60-minute assessment. Treatment is hands-on and paired with clear, home-doable rehab.</p>
+
+      <div class="treats-scroll">
+        <!-- card 1 -->
+        <article class="treat-card">
+          <div class="treat-num">01 / 06</div>
+          <div class="treat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2v4M12 18v4M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5" stroke="#5B8CFF" stroke-width="1.4" stroke-linecap="round"/><circle cx="12" cy="12" r="4" stroke="#7FE3FF" stroke-width="1.4"/></svg>
+          </div>
+          <h3 class="treat-h">Neck & shoulder tension</h3>
+          <p class="treat-desc">Desk-driven tightness, tension headaches, postural fatigue. Myofascial release + targeted mobility.</p>
+          <span class="treat-link">SEE PROTOCOL <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5h6m-2-2 2 2-2 2" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/></svg></span>
+        </article>
+        <!-- card 2 -->
+        <article class="treat-card">
+          <div class="treat-num">02 / 06</div>
+          <div class="treat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3c-3 2-3 6 0 8s3 6 0 8M8 7h8M8 17h8" stroke="#5B8CFF" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <h3 class="treat-h">Lower back & sciatica</h3>
+          <p class="treat-desc">Disc irritation, SI joint dysfunction, radiating leg pain. Stabilisation + graded loading.</p>
+          <span class="treat-link">SEE PROTOCOL <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5h6m-2-2 2 2-2 2" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/></svg></span>
+        </article>
+        <!-- card 3 -->
+        <article class="treat-card">
+          <div class="treat-num">03 / 06</div>
+          <div class="treat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="7" r="3" stroke="#5B8CFF" stroke-width="1.4"/><path d="M6 21v-4a6 6 0 0 1 12 0v4" stroke="#7FE3FF" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <h3 class="treat-h">Sports recovery</h3>
+          <p class="treat-desc">Runners, cyclists, lifters. Post-event recovery and pre-season conditioning.</p>
+          <span class="treat-link">SEE PROTOCOL <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5h6m-2-2 2 2-2 2" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/></svg></span>
+        </article>
+        <!-- card 4 -->
+        <article class="treat-card">
+          <div class="treat-num">04 / 06</div>
+          <div class="treat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21c-5-4-8-8-8-12a4 4 0 0 1 8-2 4 4 0 0 1 8 2c0 4-3 8-8 12z" stroke="#5B8CFF" stroke-width="1.4"/></svg>
+          </div>
+          <h3 class="treat-h">Pre & postnatal care</h3>
+          <p class="treat-desc">Pelvic balance, diastasis recovery, safe return to movement after birth.</p>
+          <span class="treat-link">SEE PROTOCOL <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5h6m-2-2 2 2-2 2" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/></svg></span>
+        </article>
+        <!-- card 5 -->
+        <article class="treat-card">
+          <div class="treat-num">05 / 06</div>
+          <div class="treat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 19h16M8 19V9m4 10V5m4 14v-8" stroke="#5B8CFF" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </div>
+          <h3 class="treat-h">Chronic tension & TMJ</h3>
+          <p class="treat-desc">Jaw, scalp, and upper-neck work for clenching, grinding, and migraine patterns.</p>
+          <span class="treat-link">SEE PROTOCOL <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5h6m-2-2 2 2-2 2" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/></svg></span>
+        </article>
+        <!-- card 6 -->
+        <article class="treat-card">
+          <div class="treat-num">06 / 06</div>
+          <div class="treat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l3-8 4 16 3-8h4" stroke="#5B8CFF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="treat-h">Post-surgical rehab</h3>
+          <p class="treat-desc">Structured return to function after knee, shoulder, or spinal procedures.</p>
+          <span class="treat-link">SEE PROTOCOL <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5h6m-2-2 2 2-2 2" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/></svg></span>
+        </article>
+      </div>
+    </section>
+
+    <!-- ───── Method ───── -->
+    <section class="sec" style="padding-top:30px;">
+      <div class="eyebrow">02 · Our method</div>
+      <h2 data-reveal>Slow down,<br/><em>then rebuild.</em></h2>
+
+      <div class="method">
+        <div class="method-step" data-reveal>
+          <div class="mn">STEP 01 · 15 MIN</div>
+          <div class="mh">Listen</div>
+          <div class="md">We start with the story — injury history, work habits, sleep, sport. Before hands, questions.</div>
+        </div>
+        <div class="method-step" data-reveal>
+          <div class="mn">STEP 02 · 20 MIN</div>
+          <div class="mh">Assess</div>
+          <div class="md">Functional movement screen, joint-by-joint range testing, neurological screen where indicated.</div>
+        </div>
+        <div class="method-step" data-reveal>
+          <div class="mn">STEP 03 · 25 MIN</div>
+          <div class="mh">Treat</div>
+          <div class="md">Hands-on osteopathic technique selected to your presentation — articulation, soft tissue, gentle HVLA where appropriate.</div>
+        </div>
+        <div class="method-step" data-reveal>
+          <div class="mn">STEP 04 · ONGOING</div>
+          <div class="mh">Rebuild</div>
+          <div class="md">A short, specific home program. We review and reload each visit — no open-ended dependence on the clinic.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── Practitioners ───── -->
+    <section class="sec" style="padding-top:30px;">
+      <div class="eyebrow">03 · Practitioners</div>
+      <h2 data-reveal>Small team.<br/><em>Same face</em> every visit.</h2>
+      <p class="sub" data-reveal>Continuity matters in bodywork. You book the same practitioner, not a roster.</p>
+
+      <div class="prac-grid">
+        <article class="prac">
+          <div class="prac-img">
+            <svg viewBox="0 0 260 325" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="fig1" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="#1E3A8A"/>
+                  <stop offset="1" stop-color="#050B1F"/>
+                </linearGradient>
+              </defs>
+              <rect width="260" height="325" fill="url(#fig1)"/>
+              <circle cx="130" cy="130" r="54" fill="#2E5CFF" opacity="0.5"/>
+              <path d="M50 325 Q50 220 130 220 Q210 220 210 325 Z" fill="#2E5CFF" opacity="0.5"/>
+              <circle cx="130" cy="130" r="54" fill="none" stroke="#7FE3FF" stroke-width="0.6"/>
+            </svg>
+            <span class="reg">AHPRA · OSTE0001789</span>
+          </div>
+          <div class="prac-body">
+            <div class="prac-name">Dr. Elena Park</div>
+            <div class="prac-role">FOUNDER · OSTEOPATH</div>
+            <p class="prac-bio">Masters in Osteopathy (VU). 8 yrs. Special interest in runners and pre/postnatal care.</p>
+          </div>
+        </article>
+        <article class="prac">
+          <div class="prac-img">
+            <svg viewBox="0 0 260 325" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="fig2" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="#152C55"/>
+                  <stop offset="1" stop-color="#050B1F"/>
+                </linearGradient>
+              </defs>
+              <rect width="260" height="325" fill="url(#fig2)"/>
+              <circle cx="130" cy="135" r="50" fill="#5B8CFF" opacity="0.45"/>
+              <path d="M55 325 Q55 225 130 225 Q205 225 205 325 Z" fill="#5B8CFF" opacity="0.45"/>
+              <circle cx="130" cy="135" r="50" fill="none" stroke="#7FE3FF" stroke-width="0.6"/>
+            </svg>
+            <span class="reg">AHPRA · OSTE0002431</span>
+          </div>
+          <div class="prac-body">
+            <div class="prac-name">Dr. Marco Reyes</div>
+            <div class="prac-role">OSTEOPATH</div>
+            <p class="prac-bio">Former strength coach. Focused on spine rehab and return-to-lifting programs.</p>
+          </div>
+        </article>
+        <article class="prac">
+          <div class="prac-img">
+            <svg viewBox="0 0 260 325" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="fig3" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="#0E2246"/>
+                  <stop offset="1" stop-color="#030815"/>
+                </linearGradient>
+              </defs>
+              <rect width="260" height="325" fill="url(#fig3)"/>
+              <circle cx="130" cy="128" r="52" fill="#2E5CFF" opacity="0.45"/>
+              <path d="M50 325 Q50 222 130 222 Q210 222 210 325 Z" fill="#2E5CFF" opacity="0.45"/>
+              <circle cx="130" cy="128" r="52" fill="none" stroke="#7FE3FF" stroke-width="0.6"/>
+            </svg>
+            <span class="reg">AAMT · RM210554</span>
+          </div>
+          <div class="prac-body">
+            <div class="prac-name">Hana Okafor</div>
+            <div class="prac-role">REMEDIAL MASSAGE</div>
+            <p class="prac-bio">Deep tissue and myofascial. 6 yrs. Private health rebates on the spot.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ───── Testimonials ───── -->
+    <section class="sec" style="padding-top:30px;">
+      <div class="eyebrow">04 · What patients say</div>
+      <h2 data-reveal>Plainly written,<br/><em>honestly earned.</em></h2>
+
+      <div class="quote-stage">
+        <div class="quote active">
+          <span class="quote-mark">“</span>
+          <div class="quote-body">Three months in and my back hasn't flared once. Elena built me a plan I could actually stick to.</div>
+          <div class="quote-author">— Sarah W. · Carlton · Runner</div>
+        </div>
+        <div class="quote">
+          <span class="quote-mark">“</span>
+          <div class="quote-body">Genuinely different from any clinic I've tried. They explain what they're doing — and why.</div>
+          <div class="quote-author">— James L. · Collingwood · Cyclist</div>
+        </div>
+        <div class="quote">
+          <span class="quote-mark">“</span>
+          <div class="quote-body">Postnatal recovery that didn't rush me. Calm room, very attentive. Five stars.</div>
+          <div class="quote-author">— Priya M. · Fitzroy N. · New parent</div>
+        </div>
+        <div class="quote-dots" aria-hidden="true">
+          <span class="quote-dot active"></span>
+          <span class="quote-dot"></span>
+          <span class="quote-dot"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── Availability / Book ───── -->
+    <section class="sec" id="book" style="padding-top:30px;">
+      <div class="eyebrow">05 · Next available</div>
+      <h2 data-reveal>Book in <em>minutes,</em><br/>not callbacks.</h2>
+
+      <div class="avail" data-reveal>
+        <div class="avail-head">
+          <div>
+            <div class="avail-h">Thu · Apr 23</div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); margin-top:6px; letter-spacing:0.12em;">WITH DR. ELENA PARK</div>
+          </div>
+          <span class="live-dot">Live</span>
+        </div>
+        <div class="avail-slots">
+          <span class="slot gone">8:30</span>
+          <span class="slot gone">9:15</span>
+          <span class="slot open">10:00</span>
+          <span class="slot open">10:45</span>
+          <span class="slot gone">11:30</span>
+          <span class="slot open">13:00</span>
+          <span class="slot sel">14:15</span>
+          <span class="slot open">15:00</span>
+          <span class="slot open">15:45</span>
+          <span class="slot gone">16:30</span>
+          <span class="slot open">17:15</span>
+          <span class="slot open">18:00</span>
+        </div>
+        <a href="#confirm" class="cta-primary" style="margin-top:22px; width:100%;">
+          <span>Confirm 14:15 · 60 min · A$145</span>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9h12m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <p style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); margin-top:14px; letter-spacing:0.1em; line-height:1.5;">REBATES FROM MEDIBANK · BUPA · HCF · ON-THE-SPOT HICAPS</p>
+      </div>
+    </section>
+
+    <!-- ───── Pricing ───── -->
+    <section class="sec" style="padding-top:30px;">
+      <div class="eyebrow">06 · Fees</div>
+      <h2 data-reveal>One price.<br/><em>No packages.</em></h2>
+      <p class="sub" data-reveal>We don't upsell bundles. Book only what you need — most patients see us 3–6 times total.</p>
+
+      <div class="price-list">
+        <div class="price-row">
+          <div>
+            <div class="ttl">Initial osteopathy</div>
+            <div class="sub2">60 MIN · NEW PATIENT</div>
+          </div>
+          <div class="dots"></div>
+          <div class="amt">A$145</div>
+        </div>
+        <div class="price-row">
+          <div>
+            <div class="ttl">Follow-up osteopathy</div>
+            <div class="sub2">45 MIN · EXISTING</div>
+          </div>
+          <div class="dots"></div>
+          <div class="amt">A$115</div>
+        </div>
+        <div class="price-row">
+          <div>
+            <div class="ttl">Remedial massage</div>
+            <div class="sub2">60 MIN · HICAPS</div>
+          </div>
+          <div class="dots"></div>
+          <div class="amt">A$125</div>
+        </div>
+        <div class="price-row">
+          <div>
+            <div class="ttl">Movement consult</div>
+            <div class="sub2">30 MIN · REHAB REVIEW</div>
+          </div>
+          <div class="dots"></div>
+          <div class="amt">A$85</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── FAQ ───── -->
+    <section class="sec" style="padding-top:30px;">
+      <div class="eyebrow">07 · FAQ</div>
+      <h2 data-reveal>Before your<br/><em>first visit.</em></h2>
+
+      <div class="faq">
+        <div class="faq-item">
+          <button class="faq-q">Do I need a referral?<span class="plus"></span></button>
+          <div class="faq-a"><div class="faq-a-inner">No referral needed. Osteopaths in Australia are primary-care practitioners — you can book directly.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Can I claim private health?<span class="plus"></span></button>
+          <div class="faq-a"><div class="faq-a-inner">Yes — we run HICAPS on the spot. Medibank, Bupa, HCF, NIB and most others are supported.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Is cracking involved?<span class="plus"></span></button>
+          <div class="faq-a"><div class="faq-a-inner">HVLA (high-velocity) is one of many techniques we use — only when indicated and only with your consent.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">What should I wear?<span class="plus"></span></button>
+          <div class="faq-a"><div class="faq-a-inner">Comfortable clothing you can move in. Shorts and a t-shirt are ideal. Change rooms on-site.</div></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Cancellation policy?<span class="plus"></span></button>
+          <div class="faq-a"><div class="faq-a-inner">Free changes up to 12 hours before. Late cancellations are charged 50% of the session fee.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── Location ───── -->
+    <section class="sec" style="padding-top:30px;">
+      <div class="eyebrow">08 · Find us</div>
+      <h2 data-reveal>243 Brunswick St,<br/><em>Fitzroy.</em></h2>
+      <p class="sub" data-reveal>Upstairs, above the florist. Tram 11, stop 14. Street parking after 6pm.</p>
+
+      <div class="hours-table">
+        <div class="hours-row now"><span class="d">Friday <span style="font-size:11px; letter-spacing:0.15em; margin-left:6px;">· TODAY</span></span><span class="h">08:00 — 19:00</span></div>
+        <div class="hours-row"><span class="d">Saturday</span><span class="h">09:00 — 15:00</span></div>
+        <div class="hours-row"><span class="d">Sunday</span><span class="h">CLOSED</span></div>
+        <div class="hours-row"><span class="d">Mon — Thu</span><span class="h">07:00 — 20:00</span></div>
+      </div>
+
+      <div class="map-card">
+        <svg viewBox="0 0 400 300" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M40 0H0V40" fill="none" stroke="rgba(91,140,255,0.12)" stroke-width="1"/>
+            </pattern>
+            <radialGradient id="mapBg" cx="50%" cy="50%" r="70%">
+              <stop offset="0" stop-color="#0E2246"/>
+              <stop offset="1" stop-color="#030815"/>
+            </radialGradient>
+          </defs>
+          <rect width="400" height="300" fill="url(#mapBg)"/>
+          <rect width="400" height="300" fill="url(#grid)"/>
+          <path d="M0 120 L400 100" stroke="rgba(91,140,255,0.25)" stroke-width="2"/>
+          <path d="M120 0 L140 300" stroke="rgba(91,140,255,0.25)" stroke-width="2"/>
+          <path d="M0 200 Q100 195 180 210 T400 220" stroke="rgba(127,227,255,0.2)" stroke-width="1.4" fill="none"/>
+          <circle cx="200" cy="150" r="20" fill="#2E5CFF" opacity="0.18">
+            <animate attributeName="r" values="16;38;16" dur="2.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.4;0;0.4" dur="2.5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="200" cy="150" r="8" fill="#2E5CFF"/>
+          <circle cx="200" cy="150" r="3" fill="#fff"/>
+          <text x="220" y="154" fill="#EAF0FC" font-family="JetBrains Mono" font-size="11" letter-spacing="1">MERIDIAN</text>
+          <text x="220" y="168" fill="#8597BE" font-family="JetBrains Mono" font-size="9" letter-spacing="1">243 BRUNSWICK ST</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ───── Footer ───── -->
+    <footer>
+      <div class="foot-brand" data-reveal>meridian<em>.</em></div>
+
+      <div class="foot-meta">
+        <div>
+          <div class="foot-lbl">Clinic</div>
+          <div class="foot-val">243 Brunswick St<br/>Fitzroy VIC 3065</div>
+        </div>
+        <div>
+          <div class="foot-lbl">Contact</div>
+          <div class="foot-val">(03) 9000 0000<br/>hello@meridian.au</div>
+        </div>
+        <div>
+          <div class="foot-lbl">Registrations</div>
+          <div class="foot-val">AHPRA Osteopathy Board<br/>Osteopathy Australia</div>
+        </div>
+        <div>
+          <div class="foot-lbl">Socials</div>
+          <div class="foot-val">@meridian.osteo<br/>Instagram · Google</div>
+        </div>
+      </div>
+
+      <div class="foot-bot">
+        <span>© 2026 · MERIDIAN</span>
+        <span>ABN 00 000 000 000</span>
+      </div>
+    </footer>
+
+  </main>
+</div>
+
+<!-- ───── Sticky bookbar ───── -->
+<div class="bookbar">
+  <div class="bookbar-inner">
+    <div class="left"><b>Next opening</b> — Thu, 10:00 AM<br/><span style="color:var(--muted); font-size:11px;">with Dr. Elena Park</span></div>
+    <a href="#book" class="cta">Book <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6h7m-2-2 2 2-2 2" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  </div>
+</div>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+// ── Loader ─────────────────────────────
+(function(){
+  const tl = gsap.timeline();
+  tl.to('#loader .l-bar span', {width:'100%', duration:1.2, ease:'power2.inOut'})
+    .to('#loader', {opacity:0, duration:0.6, ease:'power2.out'}, '+=0.1')
+    .set('#loader', {display:'none'});
+})();
+
+// ── Progress bar ─────────────────────────────
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const p = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  document.getElementById('progress').style.width = p + '%';
+});
+
+// ── Split + reveal headings ─────────────────────────────
+document.querySelectorAll('[data-split]').forEach(el => {
+  el.querySelectorAll('.line').forEach(line => {
+    const words = line.textContent.split(' ');
+    line.innerHTML = words.map(w =>
+      `<span class="word" style="display:inline-block; overflow:hidden;"><span class="wi" style="display:inline-block; transform:translateY(110%);">${w}&nbsp;</span></span>`
+    ).join('');
+  });
+  gsap.to(el.querySelectorAll('.wi'), {
+    y: 0, duration: 1.1, stagger: 0.06, ease: 'power3.out',
+    scrollTrigger: { trigger: el, start: 'top 85%' }
+  });
+});
+
+// ── Generic reveal ─────────────────────────────
+document.querySelectorAll('[data-reveal]').forEach(el => {
+  gsap.from(el, {
+    y: 24, opacity: 0, duration: 1, ease: 'power3.out',
+    scrollTrigger: { trigger: el, start: 'top 90%' }
+  });
+});
+
+// ── Count up ─────────────────────────────
+document.querySelectorAll('[data-count]').forEach(el => {
+  const target = parseFloat(el.dataset.count);
+  const unit = el.querySelector('.unit')?.outerHTML || '';
+  const obj = { v: 0 };
+  ScrollTrigger.create({
+    trigger: el, start: 'top 90%',
+    onEnter: () => {
+      gsap.to(obj, {
+        v: target, duration: 1.8, ease: 'power2.out',
+        onUpdate: () => {
+          const formatted = target % 1 === 0 ? Math.round(obj.v).toLocaleString() : obj.v.toFixed(1);
+          el.innerHTML = formatted + unit;
+        }
+      });
+    }
+  });
+});
+
+// ── Pulse / wave animation ─────────────────────────────
+(function(){
+  const path = document.getElementById('wave1');
+  const len = path.getTotalLength();
+  gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+  gsap.to(path, {
+    strokeDashoffset: 0, duration: 2.4, ease: 'power2.out',
+    scrollTrigger: { trigger: '.hero-wave', start: 'top 90%' }
+  });
+  gsap.to('#wave2', {
+    attr: { d: 'M0,60 Q80,80 120,60 T200,60 T280,60 T360,60 T440,60' },
+    yoyo: true, repeat: -1, duration: 3, ease: 'sine.inOut'
+  });
+})();
+
+// ── Testimonials cycle ─────────────────────────────
+(function(){
+  const quotes = document.querySelectorAll('.quote');
+  const dots = document.querySelectorAll('.quote-dot');
+  let i = 0;
+  setInterval(() => {
+    quotes[i].classList.remove('active');
+    dots[i].classList.remove('active');
+    i = (i + 1) % quotes.length;
+    quotes[i].classList.add('active');
+    dots[i].classList.add('active');
+  }, 4800);
+})();
+
+// ── FAQ accordion ─────────────────────────────
+document.querySelectorAll('.faq-item').forEach(item => {
+  const q = item.querySelector('.faq-q');
+  const a = item.querySelector('.faq-a');
+  q.addEventListener('click', () => {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(it => {
+      it.classList.remove('open');
+      it.querySelector('.faq-a').style.maxHeight = null;
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      a.style.maxHeight = a.scrollHeight + 'px';
+    }
+  });
+});
+
+// ── Slot pick (interactive) ─────────────────────────────
+document.querySelectorAll('.slot.open, .slot.sel').forEach(slot => {
+  slot.addEventListener('click', () => {
+    document.querySelectorAll('.slot').forEach(s => {
+      if (s.classList.contains('sel')) { s.classList.remove('sel'); s.classList.add('open'); }
+    });
+    slot.classList.remove('open'); slot.classList.add('sel');
+    const btn = document.querySelector('#book .cta-primary span');
+    if (btn) btn.textContent = `Confirm ${slot.textContent} · 60 min · A$145`;
+    gsap.fromTo(slot, { scale: 0.9 }, { scale: 1, duration: 0.4, ease: 'back.out(2)' });
+  });
+});
+
+// ── Parallax hero wave ─────────────────────────────
+gsap.to('.hero-wave', {
+  y: -40, ease: 'none',
+  scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+});
+
+// ── Bookbar show/hide ─────────────────────────────
+let lastScroll = 0;
+const bookbar = document.querySelector('.bookbar');
+gsap.set(bookbar, { y: 100, opacity: 0 });
+ScrollTrigger.create({
+  start: 400,
+  onUpdate: self => {
+    if (self.scroll() > 400 && !bookbar.classList.contains('vis')) {
+      bookbar.classList.add('vis');
+      gsap.to(bookbar, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' });
+    }
+  }
+});
+
+// ── Menu button tactile ─────────────────────────────
+document.querySelector('.menu-btn')?.addEventListener('click', e => {
+  gsap.fromTo(e.currentTarget, { scale: 0.9 }, { scale: 1, duration: 0.4, ease: 'back.out(2)' });
+});
+</script>
+</body>
+</html>

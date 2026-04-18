@@ -1,0 +1,145 @@
+/* ===== KV ===== */
+.kv{position:relative;padding:15px 0 0}
+.kv-eyebrow{font-family:var(--m);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:color-mix(in srgb, var(--dark) 55%, transparent);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.kv-eyebrow .dot{width:6px;height:6px;border-radius:999px;background:var(--green);box-shadow:0 0 0 4px color-mix(in srgb, var(--green) 22%, transparent);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 9px color-mix(in srgb, var(--green) 0%, transparent)}}
+
+/* 3×3 grid — equal squares by default, center is slightly expanded (pushing neighbours),
+   and hovering any cell re-assigns the expansion to that cell. */
+.grid9{
+  --big:1.18fr; --small:.91fr;
+  position:relative;display:grid;gap:6px;
+  grid-template-columns: var(--small) var(--big) var(--small);
+  grid-template-rows:    var(--small) var(--big) var(--small);
+  aspect-ratio:1/1;border-radius:4px;overflow:hidden;
+  box-shadow:0 30px 60px -30px rgba(20,20,19,.35);
+  transition: grid-template-columns .38s var(--ease), grid-template-rows .38s var(--ease);
+  contain: layout paint;
+}
+.grid9 .cell{position:relative;overflow:hidden;background:var(--lgray);border-radius:2px;contain:layout paint;transform:translateZ(0)}
+/* Non-center cells: soft green glow behind the image, 50% opacity until hover */
+.grid9 .cell:not(.center){
+  background:
+    radial-gradient(65% 65% at 50% 45%, color-mix(in srgb, var(--green) 55%, #fff) 0%,
+                                         color-mix(in srgb, var(--green) 22%, #fff) 45%,
+                                         var(--lgray) 75%);
+}
+.grid9 .cell img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .42s var(--ease), opacity .35s var(--ease);
+  filter:grayscale(.2) contrast(1.03) brightness(.98);
+  will-change:transform;backface-visibility:hidden;transform:translateZ(0) scale(1.55);
+}
+.grid9 .cell:not(.center) img{opacity:.5}
+/* All images centered — surrounding cells zoom into the image center (so they
+   still feel "cut off" but show the subject in the middle, not the edges). */
+.grid9 .cell img{object-position:center center;transform-origin:center center}
+.grid9 .cell.center img{transform:translateZ(0) scale(1.02);filter:none}
+.grid9 .cell:not(.center) img{transform:translateZ(0) scale(1.55)}
+
+/* Hover: the hovered cell becomes the "big" one — 9 position overrides */
+.grid9:has(.cell:nth-child(1):hover){grid-template-columns:var(--big) var(--small) var(--small);grid-template-rows:var(--big) var(--small) var(--small)}
+.grid9:has(.cell:nth-child(2):hover){grid-template-columns:var(--small) var(--big) var(--small);grid-template-rows:var(--big) var(--small) var(--small)}
+.grid9:has(.cell:nth-child(3):hover){grid-template-columns:var(--small) var(--small) var(--big);grid-template-rows:var(--big) var(--small) var(--small)}
+.grid9:has(.cell:nth-child(4):hover){grid-template-columns:var(--big) var(--small) var(--small);grid-template-rows:var(--small) var(--big) var(--small)}
+.grid9:has(.cell:nth-child(5):hover){grid-template-columns:var(--small) var(--big) var(--small);grid-template-rows:var(--small) var(--big) var(--small)}
+.grid9:has(.cell:nth-child(6):hover){grid-template-columns:var(--small) var(--small) var(--big);grid-template-rows:var(--small) var(--big) var(--small)}
+.grid9:has(.cell:nth-child(7):hover){grid-template-columns:var(--big) var(--small) var(--small);grid-template-rows:var(--small) var(--small) var(--big)}
+.grid9:has(.cell:nth-child(8):hover){grid-template-columns:var(--small) var(--big) var(--small);grid-template-rows:var(--small) var(--small) var(--big)}
+.grid9:has(.cell:nth-child(9):hover){grid-template-columns:var(--small) var(--small) var(--big);grid-template-rows:var(--small) var(--small) var(--big)}
+
+/* Hovered cell — image fades back in and loosens up */
+.grid9 .cell:hover img{filter:grayscale(.1) contrast(1.04) brightness(1);opacity:1}
+.grid9 .cell.center:hover img{transform:translateZ(0) scale(1.05)}
+.grid9 .cell:not(.center):hover img{transform:translateZ(0) scale(1.3)}
+
+.kv-caption{
+  position:relative;margin-top:-68px;padding:22px 18px 18px;
+  background:linear-gradient(180deg, transparent, color-mix(in srgb, var(--light) 92%, transparent) 38%);
+  z-index:2;
+}
+.kv-caption h1{font-family:var(--d);font-weight:400;font-size:48px;line-height:.95;letter-spacing:-.025em}
+.kv-caption h1 .fam{color:var(--dark)}
+.kv-caption h1 .giv{color:var(--green)}
+.kv-caption p{font-family:var(--b);font-size:14.5px;margin-top:12px;color:color-mix(in srgb, var(--dark) 78%, transparent);max-width:38ch}
+.kv-caption .tag{display:inline-flex;gap:6px;align-items:center;font-family:var(--m);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dark);background:var(--light);border:1px solid color-mix(in srgb, var(--dark) 14%, transparent);padding:6px 10px;border-radius:999px;margin-bottom:12px}
+
+/* ===== Work > Web marquee (auto-scroll + manual swipe) ===== */
+.marquee{
+  overflow-x:auto;overflow-y:hidden;position:relative;padding:6px 0;
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+          mask-image:linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  scrollbar-width:none;-ms-overflow-style:none;
+  scroll-behavior:auto;overscroll-behavior-x:contain;
+  -webkit-overflow-scrolling:touch;cursor:grab;
+  touch-action:pan-x;
+}
+.marquee::-webkit-scrollbar{display:none}
+.marquee.dragging{cursor:grabbing}
+.track{display:flex;gap:14px;width:max-content;will-change:transform}
+.wcard{width:260px;flex:0 0 auto;background:var(--light);border:1px solid color-mix(in srgb, var(--dark) 10%, transparent);border-radius:2px;overflow:hidden;box-shadow:0 16px 30px -20px rgba(20,20,19,.2)}
+.wcard .ph{aspect-ratio:16/10;background:#fff;position:relative;overflow:hidden}
+/* Live iframe preview of the site's KV, scaled down so a 1440×900 viewport fits inside the card */
+.wcard .ph .preview{
+  position:absolute;top:0;left:0;width:1440px;height:900px;border:0;
+  transform-origin:top left;transform:scale(.1806);
+  pointer-events:none;background:#fff;
+}
+.wcard .ph .pc{display:none;position:absolute;inset:10px 80px 10px 10px;background:var(--dark);border-radius:3px;grid-template-rows:14px 1fr}
+.wcard .ph .pc::before{content:"";background:linear-gradient(90deg,var(--yellow),var(--yellow) 8px, transparent 8px, transparent 16px, var(--green) 16px, var(--green) 24px, transparent 24px, transparent 32px, var(--light) 32px, var(--light) 40px);display:block;border-bottom:1px solid color-mix(in srgb, var(--light) 20%, transparent)}
+.wcard .ph .pc::after{content:"";background:
+    radial-gradient(120% 80% at 20% 20%, color-mix(in srgb, var(--accent,var(--orange)) 85%, transparent), transparent 60%),
+    linear-gradient(180deg, #1b1b19, #0f0f0e);}
+.wcard .ph .sp{position:absolute;right:10px;top:20px;bottom:20px;width:60px;background:var(--light);border:1px solid color-mix(in srgb, var(--dark) 10%, transparent);border-radius:8px;overflow:hidden}
+.wcard .ph .sp::before{content:"";display:block;height:14px;background:var(--dark)}
+.wcard .ph .sp::after{content:"";display:block;position:absolute;inset:20px 6px 6px 6px;background:linear-gradient(180deg, var(--accent,var(--orange)), transparent 70%), var(--lgray);border-radius:3px}
+.wcard .meta{padding:12px 14px 16px}
+.wcard h3{font-family:var(--d);font-weight:500;font-size:18px;letter-spacing:-.02em}
+.wcard p{font-family:var(--b);font-size:12.5px;color:color-mix(in srgb, var(--dark) 65%, transparent);margin-top:4px}
+.wcard .num{font-family:var(--m);font-size:10px;letter-spacing:.2em;color:var(--orange);text-transform:uppercase}
+
+/* ===== App ===== */
+/* App video — small, centered */
+.app .video{position:relative;aspect-ratio:9/16;width:58%;max-width:240px;margin:0 auto;border-radius:6px;overflow:hidden;background:#000;box-shadow:0 24px 50px -28px rgba(20,20,19,.4);isolation:isolate}
+.app .video video{width:100%;height:100%;object-fit:cover;display:block;transform:translateZ(0);backface-visibility:hidden;will-change:transform}
+.app .video .chip{position:absolute;top:10px;left:10px;font-family:var(--m);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--light);background:color-mix(in srgb, var(--dark) 60%, transparent);padding:4px 8px;border-radius:999px;backdrop-filter:blur(8px)}
+.app .desc{margin:18px auto 0;font-family:var(--b);font-size:14.5px;color:color-mix(in srgb, var(--dark) 80%, transparent);max-width:46ch;text-align:center}
+/* Center the Web CTA and App CTA under their respective sections */
+#work > .btn, #app > .btn{display:flex;width:max-content;margin-left:auto;margin-right:auto}
+
+/* ===== Social Photo (3x5 columns, each col scrolls horizontally) ===== */
+/* Skip painting / animation work for these sections until near the viewport */
+#work, #social, #video, #article{content-visibility:auto;contain-intrinsic-size:auto 700px}
+#app{content-visibility:auto;contain-intrinsic-size:auto 520px}
+.photo .wall{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.col{overflow:hidden;border-radius:3px}
+.col .run{display:flex;gap:8px;width:max-content;animation:slide 40s linear infinite;will-change:transform;transform:translateZ(0);backface-visibility:hidden}
+.col.c2 .run{animation-duration:55s;animation-direction:reverse}
+.col.c3 .run{animation-duration:48s}
+.photo.paused .run{animation-play-state:paused}
+@keyframes slide{to{transform:translateX(-50%)}}
+.tile{flex:0 0 auto;width:110px;aspect-ratio:1080/1350;border-radius:3px;overflow:hidden;background:var(--lgray);position:relative;contain:layout paint style}
+.tile img{width:100%;height:100%;object-fit:cover}
+.tile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, transparent 60%, rgba(20,20,19,.25))}
+
+/* ===== Cards for Video & Article ===== */
+.card{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid color-mix(in srgb, var(--dark) 10%, transparent);border-radius:4px;background:color-mix(in srgb, var(--light) 70%, transparent);backdrop-filter:blur(6px)}
+.card + .card{margin-top:12px}
+.avatar{width:52px;height:52px;border-radius:999px;background:var(--dark);display:grid;place-items:center;color:var(--light);font-family:var(--d);font-size:22px;flex:0 0 auto;letter-spacing:-.02em;overflow:hidden;position:relative}
+.avatar.yt{background:conic-gradient(from 210deg, var(--green), var(--green-deep), var(--green));color:var(--light)}
+.avatar.art{background:conic-gradient(from 30deg, var(--green), var(--green-deep), var(--green))}
+.card h4{font-family:var(--d);font-size:19px;letter-spacing:-.02em;font-weight:500}
+.card .id{font-family:var(--m);font-size:11px;color:color-mix(in srgb, var(--dark) 55%, transparent);letter-spacing:.08em}
+.card p{font-family:var(--b);font-size:13.5px;color:color-mix(in srgb, var(--dark) 72%, transparent);margin-top:6px}
+.card .body{flex:1;min-width:0}
+
+/* placeholder portrait (SVG data uri) — in case the user hasn't placed images yet */
+.ph-img{background:
+  radial-gradient(60% 60% at 50% 35%, color-mix(in srgb, var(--orange) 65%, #fff) 0%, color-mix(in srgb, var(--orange) 30%, #fff) 40%, var(--lgray) 70%),
+  linear-gradient(180deg, var(--lgray), #fff);
+  position:relative}
+.ph-img.c2{background:radial-gradient(60% 60% at 50% 35%, color-mix(in srgb, var(--blue) 55%, #fff), var(--lgray) 70%)}
+.ph-img.c3{background:radial-gradient(60% 60% at 50% 35%, color-mix(in srgb, var(--green) 55%, #fff), var(--lgray) 70%)}
+.ph-img.c4{background:radial-gradient(60% 60% at 50% 35%, color-mix(in srgb, var(--yellow) 35%, #fff), var(--lgray) 70%)}
+
+.hidden{display:none!important}

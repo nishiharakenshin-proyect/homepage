@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MELBY LOOPS — Melbourne Donut & Specialty Coffee</title>
+    <meta name="description"
+        content="Handcrafted donuts and specialty coffee from Melbourne. MELBY LOOPS — made fresh from 4 AM every morning, crispy outside, soft inside.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --cream: #F7F3EB;
+            --glaze: #2C5A3F;
+            --glaze-dark: #1E4430;
+            --gold: #C4A265;
+            --espresso: #2D1B0F;
+            --dough: #E8D5B8;
+            --latte: #B09272;
+            --white: #FEFCF8;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--cream);
+            color: var(--espresso);
+            font-family: 'DM Sans', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* ── Custom Cursor (desktop only) ── */
+        #cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--glaze);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: multiply;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            #cursor {
+                opacity: 1;
+            }
+        }
+
+        /* ── Loader ── */
+        .loader {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: var(--espresso);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease, visibility 0.6s;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loader-text {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 6vw, 4rem);
+            font-weight: 900;
+            color: var(--cream);
+            letter-spacing: -0.03em;
+        }
+
+        .loader-text span {
+            color: var(--glaze);
+        }
+
+        /* ── Header ── */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 600;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.4s, backdrop-filter 0.4s, padding 0.4s;
+        }
+
+        .site-header.scrolled {
+            background: rgba(247, 243, 235, 0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 0.8rem 2rem;
+            box-shadow: 0 1px 20px rgba(45, 27, 15, 0.06);
+        }
+
+        .header-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            color: var(--espresso);
+            text-decoration: none;
+        }
+
+        .header-logo i {
+            color: var(--glaze);
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .header-nav a {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--espresso);
+            text-decoration: none;
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        .header-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1.5px;
+            background: var(--glaze);
+            transition: width 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        .header-nav a:hover::after {
+            width: 100%;
+        }
+
+        .header-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--espresso);
+            color: var(--cream);
+            padding: 0.65rem 1.5rem;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .header-cta:hover {
+            background: var(--glaze);
+            transform: translateY(-1px);
+        }
+
+        /* ── Hamburger ──
+           position: fixed so it escapes the header's stacking context
+           (otherwise the mobile-menu at z-index:550 paints over it) */
+        .hamburger {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            right: 1.25rem;
+            width: 44px;
+            height: 44px;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 5px;
+            background: rgba(247, 243, 235, 0.88);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(45, 27, 15, 0.08);
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 0;
+            z-index: 700;
+            box-shadow: 0 6px 18px rgba(45, 27, 15, 0.12);
+            transition: background 0.3s ease, box-shadow 0.3s, transform 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .hamburger:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(45, 27, 15, 0.18);
+        }
+
+        .hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--espresso);
+            border-radius: 2px;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s, background 0.25s;
+            transform-origin: center;
+        }
+
+        /* When menu is open, invert to a clearly visible X */
+        .hamburger.active {
+            background: var(--espresso);
+            border-color: rgba(44, 90, 63, 0.35);
+            box-shadow: 0 12px 30px rgba(45, 27, 15, 0.35);
+        }
+
+        .hamburger.active span {
+            background: var(--cream);
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0.2);
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        /* ── Mobile Menu ── */
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 550;
+            background: var(--cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s, visibility 0.4s;
+        }
+
+        .mobile-menu.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* When menu is open, hide header chrome so only X button shows */
+        .site-header:has(.hamburger.active) {
+            background: transparent !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            box-shadow: none !important;
+        }
+        .site-header:has(.hamburger.active) .header-logo,
+        .site-header:has(.hamburger.active) .header-nav,
+        .site-header:has(.hamburger.active) .header-cta {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .mobile-menu a {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--espresso);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease, color 0.3s;
+        }
+
+        .mobile-menu.open a {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mobile-menu.open a:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+
+        .mobile-menu.open a:nth-child(2) {
+            transition-delay: 0.15s;
+        }
+
+        .mobile-menu.open a:nth-child(3) {
+            transition-delay: 0.2s;
+        }
+
+        .mobile-menu.open a:nth-child(4) {
+            transition-delay: 0.25s;
+        }
+
+        .mobile-menu.open a:nth-child(5) {
+            transition-delay: 0.3s;
+        }
+
+        .mobile-menu a:hover {
+            color: var(--glaze);
+        }
+
+        /* ── Key Visual — Hero ── */
+        .kv-hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: var(--cream);
+            padding-top: 100px;
+            padding-bottom: 80px;
+            overflow: hidden;
+        }
+
+        .kv-hero-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            width: 100%;
+            margin-bottom: 3.5rem;
+        }
+
+        .kv-hero-text {
+            max-width: 680px;
+        }
+
+        .kv-hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3.5rem, 10vw, 7.5rem);
+            font-weight: 900;
+            color: var(--espresso);
+            line-height: 0.92;
+            letter-spacing: -0.03em;
+        }
+
+        .kv-hero-sub {
+            margin-top: 1.5rem;
+            font-size: clamp(0.7rem, 1.2vw, 0.85rem);
+            font-weight: 500;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--latte);
+        }
+
+        .kv-scroll {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 20;
+        }
+
+        .kv-scroll-label {
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            color: var(--espresso);
+            opacity: 0.4;
+        }
+
+        .kv-scroll-line {
+            width: 1px;
+            height: 48px;
+            background: rgba(45, 27, 15, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kv-scroll-line::after {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--glaze);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollPulse {
+            0% {
+                top: -100%;
+            }
+
+            50% {
+                top: 100%;
+            }
+
+            100% {
+                top: 100%;
+            }
+        }
+
+        /* ── Section Common ── */
+        .sec-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .sec-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 7vw, 5rem);
+            font-weight: 900;
+            line-height: 0.92;
+        }
+
+        /* ── Donut Ticker (inside hero) ── */
+
+        .ticker-wrap {
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .ticker-track {
+            display: flex;
+            width: fit-content;
+        }
+
+        .donut-card {
+            flex-shrink: 0;
+            width: 280px;
+            margin: 0 1.5rem;
+            text-align: center;
+            cursor: default;
+        }
+
+        .donut-card-img-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(45, 27, 15, 0.10);
+            margin-bottom: 1.25rem;
+        }
+
+        .donut-card-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .donut-card:hover .donut-card-img-wrap img {
+            transform: scale(1.12) rotate(4deg);
+        }
+
+        .donut-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+        }
+
+        .donut-card .price {
+            font-size: 0.72rem;
+            letter-spacing: 0.15em;
+            color: var(--latte);
+            margin-top: 0.4rem;
+            font-weight: 500;
+        }
+
+        /* ── Coffee Menu ── */
+        .coffee-section {
+            padding: 6rem 0;
+            background: var(--espresso);
+            color: var(--cream);
+        }
+
+        .coffee-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .coffee-left {
+            position: sticky;
+            top: 6rem;
+        }
+
+        .coffee-desc {
+            margin-top: 2rem;
+            font-size: 1rem;
+            opacity: 0.55;
+            line-height: 1.9;
+            max-width: 380px;
+        }
+
+        .coffee-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .coffee-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 1.5rem 0;
+            cursor: default;
+            transition: padding-left 0.3s ease;
+        }
+
+        .coffee-item:hover {
+            padding-left: 0.5rem;
+        }
+
+        .coffee-item-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.4rem;
+        }
+
+        .coffee-item h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+            font-weight: 700;
+            transition: color 0.3s;
+        }
+
+        .coffee-item:hover h3 {
+            color: var(--latte);
+        }
+
+        .coffee-item .price {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            color: var(--latte);
+            font-weight: 500;
+        }
+
+        .coffee-item p {
+            font-size: 0.82rem;
+            opacity: 0.4;
+            line-height: 1.6;
+        }
+
+        /* ── About ── */
+        .about-section {
+            padding: 6rem 0;
+        }
+
+        .about-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-visual {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .about-img-wrap {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 60px;
+            overflow: hidden;
+            transform: rotate(3deg);
+            background: var(--dough);
+        }
+
+        .about-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: rotate(-3deg) scale(1.1);
+            transition: transform 0.7s ease;
+        }
+
+        .about-img-wrap:hover img {
+            transform: rotate(-3deg) scale(1.18);
+        }
+
+        .about-badge {
+            position: absolute;
+            bottom: -1.5rem;
+            right: -1.5rem;
+            width: 130px;
+            height: 130px;
+            background: var(--glaze);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            line-height: 1.3;
+            text-align: center;
+            padding: 1rem;
+            box-shadow: 0 8px 30px rgba(44, 90, 63, 0.3);
+        }
+
+        .about-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .about-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-content .desc {
+            font-size: 1rem;
+            opacity: 0.65;
+            line-height: 2;
+            margin-bottom: 2.5rem;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            border-top: 1px solid rgba(45, 27, 15, 0.1);
+            padding-top: 2rem;
+        }
+
+        .about-stat-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+        }
+
+        .about-stat-label {
+            font-size: 0.68rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            opacity: 0.4;
+            margin-top: 0.25rem;
+            font-weight: 500;
+        }
+
+        /* ── Merch Store ── */
+        .merch-section {
+            padding: 6rem 0;
+            background: var(--white);
+        }
+
+        .merch-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .merch-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 3.5rem;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .merch-top .desc {
+            max-width: 280px;
+            font-size: 0.88rem;
+            opacity: 0.5;
+            line-height: 1.7;
+            margin-bottom: 0.5rem;
+        }
+
+        .merch-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .merch-card {
+            border-radius: 20px;
+            overflow: hidden;
+            background: var(--white);
+            box-shadow: 0 2px 20px rgba(45, 27, 15, 0.05);
+            transition: transform 0.4s ease, box-shadow 0.4s;
+        }
+
+        .merch-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 50px rgba(45, 27, 15, 0.1);
+        }
+
+        .merch-card-img {
+            aspect-ratio: 1;
+            background: #F5F3EE;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .merch-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .merch-card:hover .merch-card-img img {
+            transform: scale(1.08);
+        }
+
+        .merch-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--glaze);
+            color: var(--white);
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.3rem 0.8rem;
+            border-radius: 100px;
+        }
+
+        .merch-card-body {
+            padding: 1.5rem 1.75rem 1.75rem;
+        }
+
+        .merch-card-body h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .merch-card-body .price {
+            font-size: 0.78rem;
+            color: var(--latte);
+            font-weight: 500;
+            letter-spacing: 0.08em;
+        }
+
+        .merch-card-body button {
+            margin-top: 1.25rem;
+            width: 100%;
+            padding: 0.85rem;
+            border: 1.5px solid var(--espresso);
+            border-radius: 100px;
+            background: transparent;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--espresso);
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s, transform 0.2s;
+        }
+
+        .merch-card-body button:hover {
+            background: var(--espresso);
+            color: var(--cream);
+        }
+
+        .merch-card-body button:active {
+            transform: scale(0.97);
+        }
+
+        /* ── Location ── */
+        .location-section {
+            padding: 6rem 0;
+            background: var(--espresso);
+            color: var(--cream);
+        }
+
+        .location-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .location-address {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.2rem, 2vw, 1.5rem);
+            font-style: normal;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .location-hours {
+            font-size: 0.88rem;
+            opacity: 0.5;
+            line-height: 2;
+        }
+
+        .location-links {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .location-links a {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--latte);
+            text-decoration: none;
+            padding-bottom: 3px;
+            border-bottom: 1.5px solid var(--latte);
+            transition: color 0.3s, border-color 0.3s;
+        }
+
+        .location-links a:hover {
+            color: var(--glaze);
+            border-color: var(--glaze);
+        }
+
+        .location-map {
+            width: 100%;
+            height: 380px;
+            border-radius: 28px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .location-map iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            filter: grayscale(0.7) contrast(1.1);
+            transition: filter 0.5s;
+        }
+
+        .location-map:hover iframe {
+            filter: grayscale(0) contrast(1);
+        }
+
+        /* ── Footer ── */
+        .site-footer {
+            padding: 3rem 0 2rem;
+            background: var(--espresso);
+            color: rgba(247, 243, 235, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--cream);
+            letter-spacing: -0.03em;
+        }
+
+        .footer-logo i {
+            color: var(--glaze);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-social a {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(247, 243, 235, 0.5);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: border-color 0.3s, color 0.3s;
+        }
+
+        .footer-social a:hover {
+            border-color: var(--glaze);
+            color: var(--glaze);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--cream);
+        }
+
+        /* ── Scroll Donut ── */
+        .scrolling-donut {
+            position: fixed;
+            right: 20px;
+            top: 0;
+            width: 48px;
+            height: 48px;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0.7;
+            filter: drop-shadow(0 10px 30px rgba(45, 27, 15, 0.25));
+            background: transparent;
+        }
+
+        /* ── Reveal Animation ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ═══════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════ */
+        @media (max-width: 1024px) {
+            .coffee-inner {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+
+            .coffee-left {
+                position: static;
+            }
+
+            .merch-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .location-inner {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+
+            .location-map {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .header-nav,
+            .header-cta {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+                top: 0.4rem;
+            }
+
+            .site-header {
+                padding: 1rem 1.25rem;
+            }
+
+            .kv-hero {
+                min-height: unset;
+                padding-top: 80px;
+                padding-bottom: 60px;
+            }
+
+            .kv-hero-inner {
+                padding: 0 1.25rem;
+                margin-bottom: 2.5rem;
+            }
+
+            .donut-card {
+                width: 220px;
+                margin: 0 1rem;
+            }
+
+            .coffee-section {
+                padding: 4rem 0;
+            }
+
+            .coffee-inner {
+                padding: 0 1.25rem;
+            }
+
+            .about-section {
+                padding: 4rem 0;
+            }
+
+            .about-inner {
+                padding: 0 1.25rem;
+                flex-direction: column;
+                gap: 2.5rem;
+            }
+
+            .about-badge {
+                width: 100px;
+                height: 100px;
+                font-size: 0.9rem;
+                bottom: -1rem;
+                right: -0.5rem;
+            }
+
+            .merch-section {
+                padding: 4rem 0;
+            }
+
+            .merch-inner {
+                padding: 0 1.25rem;
+            }
+
+            .merch-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .location-section {
+                padding: 4rem 0;
+            }
+
+            .location-inner {
+                padding: 0 1.25rem;
+            }
+
+            .location-map {
+                height: 260px;
+                border-radius: 20px;
+            }
+
+            .footer-inner {
+                padding: 0 1.25rem;
+            }
+
+            .footer-top {
+                justify-content: center;
+                text-align: center;
+                flex-direction: column;
+            }
+
+            .footer-bottom {
+                justify-content: center;
+                text-align: center;
+                flex-direction: column;
+            }
+
+            .scrolling-donut {
+                width: 36px;
+                height: 36px;
+                right: auto;
+                top: auto;
+                bottom: 16px;
+                left: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .kv-hero-title {
+                font-size: clamp(2.8rem, 14vw, 4.5rem);
+            }
+
+            .sec-title {
+                font-size: clamp(2rem, 10vw, 3rem);
+            }
+
+            .about-img-wrap {
+                border-radius: 36px;
+            }
+
+            .donut-card {
+                width: 190px;
+                margin: 0 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <div class="loader-text">MELBY <span>LOOPS</span></div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div id="cursor"></div>
+
+    <!-- Header -->
+    <header class="site-header" id="site-header">
+        <a href="#" class="header-logo">MELBY LOOPS</a>
+        <nav class="header-nav">
+            <a href="#menu">Coffee</a>
+            <a href="#about">About</a>
+            <a href="#store">Merch</a>
+            <a href="#location">Location</a>
+        </nav>
+        <a href="#store" class="header-cta">Shop Now</a>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="#menu">Coffee</a>
+        <a href="#about">About</a>
+        <a href="#store">Merch</a>
+        <a href="#location">Location</a>
+    </div>
+
+    <!-- Key Visual — Donuts Hero -->
+    <section id="donuts" class="kv-hero">
+        <div class="kv-hero-inner">
+            <div class="kv-hero-text">
+                <h1 class="sec-title">MELBY<br>LOOPS</h1>
+                <p class="kv-hero-sub">Handcrafted Donuts · Specialty Coffee · Melbourne</p>
+            </div>
+        </div>
+        <div class="ticker-wrap">
+            <div class="ticker-track" id="donut-track">
+                <div class="donut-card">
+                    <div class="donut-card-img-wrap">
+                        <img src="melbourne-img/donuts-classic.png" alt="Classic Old">
+                    </div>
+                    <h3>Classic Old</h3>
+                    <p class="price">$5.00 AUD</p>
+                </div>
+                <div class="donut-card">
+                    <div class="donut-card-img-wrap">
+                        <img src="melbourne-img/donuts-berry.png" alt="Berry Glaze">
+                    </div>
+                    <h3>Berry Glaze</h3>
+                    <p class="price">$5.50 AUD</p>
+                </div>
+                <div class="donut-card">
+                    <div class="donut-card-img-wrap">
+                        <img src="melbourne-img/donuts-dark.png" alt="Dark Choc">
+                    </div>
+                    <h3>Dark Choc</h3>
+                    <p class="price">$6.00 AUD</p>
+                </div>
+                <div class="donut-card">
+                    <div class="donut-card-img-wrap">
+                        <img src="melbourne-img/donuts-matcha.png" alt="Matcha Ring">
+                    </div>
+                    <h3>Matcha Ring</h3>
+                    <p class="price">$6.50 AUD</p>
+                </div>
+                <!-- Duplicates for seamless loop -->
+                <div class="donut-card">
+                    <div class="donut-card-img-wrap">
+                        <img src="melbourne-img/donuts-classic.png" alt="Classic Old">
+                    </div>
+                    <h3>Classic Old</h3>
+                    <p class="price">$5.00 AUD</p>
+                </div>
+                <div class="donut-card">
+                    <div class="donut-card-img-wrap">
+                        <img src="melbourne-img/donuts-berry.png" alt="Berry Glaze">
+                    </div>
+                    <h3>Berry Glaze</h3>
+                    <p class="price">$5.50 AUD</p>
+                </div>
+                <div class="donut-card">
+                    <div class="donut-card-img-wrap">
+                        <img src="melbourne-img/donuts-dark.png" alt="Dark Choc">
+                    </div>
+                    <h3>Dark Choc</h3>
+                    <p class="price">$6.00 AUD</p>
+                </div>
+                <div class="donut-card">
+                    <div class="donut-card-img-wrap">
+                        <img src="melbourne-img/donuts-matcha.png" alt="Matcha Ring">
+                    </div>
+                    <h3>Matcha Ring</h3>
+                    <p class="price">$6.50 AUD</p>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="kv-scroll">
+            <span class="kv-scroll-label">Scroll</span>
+            <div class="kv-scroll-line"></div>
+        </div> -->
+    </section>
+
+    <!-- Coffee Menu -->
+    <section id="menu" class="coffee-section">
+        <div class="coffee-inner">
+            <div class="coffee-left reveal">
+                <p class="sec-label" style="color: var(--latte);">The Brew List</p>
+                <h2 class="sec-title">Melbourne<br>Standard.</h2>
+                <p class="coffee-desc">Single-origin beans, perfectly steamed milk. An uncompromising cup, refined in Melbourne's hidden laneways.</p>
+            </div>
+            <div class="coffee-list">
+                <div class="coffee-item reveal">
+                    <div class="coffee-item-top">
+                        <h3>Flat White</h3>
+                        <span class="price">$5.00</span>
+                    </div>
+                    <p>Our signature micro-foam masterpiece.</p>
+                </div>
+                <div class="coffee-item reveal">
+                    <div class="coffee-item-top">
+                        <h3>Magic</h3>
+                        <span class="price">$5.50</span>
+                    </div>
+                    <p>Double ristretto, flat white style. Melbourne's secret.</p>
+                </div>
+                <div class="coffee-item reveal">
+                    <div class="coffee-item-top">
+                        <h3>Cold Brew Tonic</h3>
+                        <span class="price">$7.50</span>
+                    </div>
+                    <p>Fizzy, bright, and caffeinated.</p>
+                </div>
+                <div class="coffee-item reveal">
+                    <div class="coffee-item-top">
+                        <h3>Batch Brew</h3>
+                        <span class="price">$4.50</span>
+                    </div>
+                    <p>Rotating single origin filter coffee.</p>
+                </div>
+                <div class="coffee-item reveal">
+                    <div class="coffee-item-top">
+                        <h3>Matcha Latte</h3>
+                        <span class="price">$6.00</span>
+                    </div>
+                    <p>Ceremonial grade, oat milk, silky smooth.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="about-section">
+        <div class="about-inner">
+            <div class="about-visual reveal">
+                <div class="about-img-wrap">
+                    <img src="melbourne-img/donuts-inner.png"
+                        alt="Melby Donuts">
+                </div>
+                <div class="about-badge">Est.<br>2024<br>Melbourne</div>
+            </div>
+            <div class="about-content reveal">
+                <p class="sec-label" style="color: var(--glaze);">The Story</p>
+                <h2>Every loop has a story to tell.</h2>
+                <p class="desc">
+                    Our journey started in a tiny space tucked away in a Melbourne laneway. We believe a donut isn't just a pastry — it's the loop that makes a great day whole. That signature crispy-outside, pillowy-inside texture comes from careful handwork starting at 4 AM every morning.
+                </p>
+                <!-- <div class="about-stats">
+                    <div>
+                        <p class="about-stat-num font-serif">100%</p>
+                        <p class="about-stat-label">Hand-Crafted</p>
+                    </div>
+                    <div>
+                        <p class="about-stat-num font-serif">24hr</p>
+                        <p class="about-stat-label">Dough Rise</p>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Merch Store -->
+    <section id="store" class="merch-section">
+        <div class="merch-inner">
+            <div class="merch-top">
+                <div class="reveal">
+                    <p class="sec-label" style="color: var(--glaze);">Merch Store</p>
+                    <h2 class="sec-title">The<br>Originals.</h2>
+                </div>
+                <p class="desc reveal">Wear the philosophy. Original goods to complete your donut life.</p>
+            </div>
+            <div class="merch-grid">
+                <div class="merch-card reveal">
+                    <div class="merch-card-img">
+                        <img src="melbourne-img/donuts-mug.png"
+                            alt="Ceramic mug">
+                        <span class="merch-badge">Limited</span>
+                    </div>
+                    <div class="merch-card-body">
+                        <h3>Melby Mug (Ivory)</h3>
+                        <p class="price">$32.00 AUD</p>
+                        <button>Add to Cart</button>
+                    </div>
+                </div>
+                <div class="merch-card reveal">
+                    <div class="merch-card-img">
+                        <img src="melbourne-img/donuts-apron.png"
+                            alt="Barista apron">
+                    </div>
+                    <div class="merch-card-body">
+                        <h3>Classic Barista Apron</h3>
+                        <p class="price">$68.00 AUD</p>
+                        <button>Add to Cart</button>
+                    </div>
+                </div>
+                <div class="merch-card reveal">
+                    <div class="merch-card-img">
+                        <img src="melbourne-img/donuts-bag.png"
+                            alt="Canvas tote bag">
+                    </div>
+                    <div class="merch-card-body">
+                        <h3>The Loop Tote Bag</h3>
+                        <p class="price">$24.00 AUD</p>
+                        <button>Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location -->
+    <section id="location" class="location-section">
+        <div class="location-inner">
+            <div class="reveal">
+                <p class="sec-label" style="color: var(--latte);">Location</p>
+                <h2 class="sec-title">Come Loop<br>With Us.</h2>
+                <address class="location-address">
+                    000 Laneway Street,<br>
+                    Melbourne VIC 0000,<br>
+                    Australia
+                </address>
+                <div class="location-hours">
+                    <p>Mon – Fri: 7:00 am – 4:00 pm</p>
+                    <p>Sat – Sun: 8:00 am – 3:00 pm</p>
+                </div>
+                <div class="location-links">
+                    <a href="#">Google Maps</a>
+                    <a href="#">Instagram</a>
+                </div>
+            </div>
+            <div class="location-map reveal">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1575.9093975953765!2d144.9690882!3d-37.81771315!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642b6e9fcc44f%3A0x38e74745ead60eab!2z44OV44Kn44OH44Os44O844K344On44Oz44O744K544Kv44Ko44Ki!5e0!3m2!1sau!4v1775702025545!5m2!1sja!2sau" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-logo">MELBY LOOPS</div>
+                <div class="footer-social">
+                    <a href="#" aria-label="Instagram">IG</a>
+                    <a href="#" aria-label="TikTok">TK</a>
+                    <a href="#" aria-label="X (Twitter)">X</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 Melby Loops Donut Pty Ltd.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scrolling Donut -->
+    <svg class="scrolling-donut" id="scroll-donut" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+            <radialGradient id="scrDonutBase" cx="50%" cy="40%" r="62%">
+                <stop offset="0%" stop-color="#E3A771"/>
+                <stop offset="100%" stop-color="#A8642E"/>
+            </radialGradient>
+            <radialGradient id="scrGlaze" cx="50%" cy="38%" r="66%">
+                <stop offset="0%" stop-color="#FFF0A3"/>
+                <stop offset="100%" stop-color="#E8B84B"/>
+            </radialGradient>
+            <mask id="scrRing">
+                <rect width="400" height="400" fill="black"/>
+                <circle cx="200" cy="200" r="160" fill="white"/>
+                <circle cx="200" cy="200" r="58" fill="black"/>
+            </mask>
+        </defs>
+        <g mask="url(#scrRing)">
+            <circle cx="200" cy="200" r="160" fill="url(#scrDonutBase)"/>
+            <path d="M 40 200 Q 40 78 200 56 Q 360 78 360 200 L 360 228 Q 340 248 322 226 Q 302 256 282 224 Q 260 258 238 222 Q 216 258 194 222 Q 172 258 150 222 Q 128 256 108 224 Q 88 254 68 226 Q 48 244 40 224 Z" fill="url(#scrGlaze)"/>
+        </g>
+        <g>
+            <rect x="148" y="98" width="8" height="20" rx="3" fill="#D4A95A" transform="rotate(-22 152 108)"/>
+            <rect x="220" y="90" width="8" height="20" rx="3" fill="#2C5A3F" transform="rotate(28 224 100)"/>
+            <rect x="268" y="126" width="8" height="20" rx="3" fill="#B09272" transform="rotate(-15 272 136)"/>
+            <rect x="108" y="130" width="8" height="20" rx="3" fill="#E8D5B8" transform="rotate(46 112 140)"/>
+            <rect x="84" y="180" width="8" height="20" rx="3" fill="#D4A95A" transform="rotate(62 88 190)"/>
+            <rect x="302" y="168" width="8" height="20" rx="3" fill="#2C5A3F" transform="rotate(-42 306 178)"/>
+            <rect x="136" y="162" width="8" height="20" rx="3" fill="#B09272" transform="rotate(12 140 172)"/>
+            <rect x="254" y="160" width="8" height="20" rx="3" fill="#E8D5B8" transform="rotate(-52 258 170)"/>
+        </g>
+    </svg>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // ── Image fallback (defensive) ──
+        // If any Unsplash photo fails to load, swap to a known-working image
+        // based on where the broken img sits in the DOM.
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('error', function onErr() {
+                this.removeEventListener('error', onErr);
+                if (this.closest('.merch-card')) {
+                    this.src = 'https://images.unsplash.com/photo-1558326567-98ae2405596b?auto=format&fit=crop&w=800&q=80';
+                } else if (this.closest('.about-img-wrap')) {
+                    this.src = 'https://images.unsplash.com/photo-1495147466023-ac5c588e2e94?auto=format&fit=crop&w=800&q=80';
+                } else {
+                    this.src = 'https://images.unsplash.com/photo-1551024601-bec78aea704b?q=80&w=600&auto=format&fit=crop';
+                }
+            });
+        });
+
+        // ── Loader ──
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            gsap.to('.loader-text', {
+                scale: 0.9, opacity: 0, duration: 0.5, delay: 0.8,
+                onComplete: () => loader.classList.add('hidden')
+            });
+            // Hero entrance
+            gsap.from('.kv-hero-title', { y: 80, opacity: 0, duration: 1, delay: 1.2, ease: 'power3.out' });
+            gsap.from('.kv-hero .sec-label', { y: 20, opacity: 0, duration: 0.7, delay: 1.0, ease: 'power3.out' });
+            gsap.from('.kv-hero-sub', { y: 30, opacity: 0, duration: 0.8, delay: 1.5, ease: 'power3.out' });
+            gsap.from('.ticker-wrap', { y: 60, opacity: 0, duration: 1, delay: 1.6, ease: 'power3.out' });
+            gsap.from('.kv-scroll', { opacity: 0, duration: 1, delay: 2.2 });
+        });
+
+        // ── Custom Cursor ──
+        const cursor = document.getElementById('cursor');
+        if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+            window.addEventListener('mousemove', (e) => {
+                gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.15, ease: 'power2.out' });
+            });
+        }
+
+        // ── Header scroll effect ──
+        const header = document.getElementById('site-header');
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', window.scrollY > 60);
+        }, { passive: true });
+
+        // ── Hamburger Menu ──
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('open');
+            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+        });
+        mobileMenu.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('open');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // ── Scroll Donut — rolls as scroll-position indicator ──
+        (function(){
+          var donut = document.getElementById('scroll-donut');
+          var isMobile = window.matchMedia('(max-width:768px)');
+
+          function setupDonutScroll(){
+            // kill previous ScrollTrigger on this element
+            ScrollTrigger.getAll().forEach(function(st){ if(st.vars && st.vars.id==='donutRoll') st.kill(); });
+
+            if(isMobile.matches){
+              // Mobile: bottom bar, left→right
+              gsap.set(donut,{top:'auto',bottom:16,left:0,right:'auto',x:0,y:0,rotation:0});
+              var maxX = window.innerWidth - 36;
+              gsap.to(donut,{
+                x: maxX,
+                rotation: 1080,
+                ease:'none',
+                scrollTrigger:{ id:'donutRoll', trigger:'body', start:'top top', end:'bottom bottom', scrub:0.3 }
+              });
+            } else {
+              // PC: right rail, top→bottom
+              gsap.set(donut,{top:20,bottom:'auto',left:'auto',right:20,x:0,y:0,rotation:0});
+              var maxY = window.innerHeight - 48 - 20;
+              gsap.to(donut,{
+                y: maxY,
+                rotation: 1080,
+                ease:'none',
+                scrollTrigger:{ id:'donutRoll', trigger:'body', start:'top top', end:'bottom bottom', scrub:0.3 }
+              });
+            }
+          }
+
+          setupDonutScroll();
+          isMobile.addEventListener('change', function(){ setupDonutScroll(); ScrollTrigger.refresh(); });
+          window.addEventListener('resize', function(){ ScrollTrigger.refresh(); });
+        })();
+
+        // ── Donut Ticker ──
+        const track = document.getElementById('donut-track');
+        gsap.to(track, { xPercent: -50, duration: 25, ease: 'none', repeat: -1 });
+
+        // ── Reveal on scroll ──
+        const revealEls = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+        revealEls.forEach(el => revealObserver.observe(el));
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#1E1108" />
+<title>LANEWAY — Melbourne Coffee House · Mobile</title>
+<meta name="description" content="LANEWAY is a specialty coffee house in Melbourne's Degraves Lane. Single-origin beans, small-batch roasted, served with care. Mobile-first site." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F5EDE2;
+  --cream-2:#EDE3D6;
+  --cream-3:#E7DDD2;
+  --paper:#FDFAF6;
+  --espresso:#1E1108;
+  --espresso-2:#2A1A0F;
+  --latte:#C8956A;
+  --latte-l:#D9AB86;
+  --latte-d:#A8764D;
+  --sage:#687B5C;
+  --muted:#7A6558;
+  --line:rgba(30,17,8,0.1);
+  --line-2:rgba(30,17,8,0.18);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{background:#0c0805; overflow-x:hidden;}
+body{
+  font-family:'DM Sans',system-ui,sans-serif;
+  color:var(--espresso);
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:"ss01","cv11";
+}
+a{text-decoration:none; color:inherit;}
+button{border:0; cursor:pointer; font-family:inherit; background:transparent;}
+img{max-width:100%; height:auto; display:block;}
+::-webkit-scrollbar{width:0;height:0;}
+:focus-visible{outline:1px solid var(--latte); outline-offset:2px;}
+
+.font-serif{font-family:'Playfair Display',serif;}
+.font-mono{font-family:'JetBrains Mono',monospace;}
+
+/* ── Stage (desktop ambient) ────────── */
+.stage{
+  min-height:100vh; width:100%;
+  background:
+    radial-gradient(1200px 800px at 15% 5%, rgba(200,149,106,0.32), transparent 60%),
+    radial-gradient(900px 700px at 90% 90%, rgba(104,123,92,0.18), transparent 60%),
+    radial-gradient(600px 400px at 50% 40%, rgba(245,237,226,0.08), transparent 70%),
+    #0c0805;
+  display:flex; justify-content:center; align-items:flex-start;
+  position:relative; overflow:hidden;
+}
+.stage::before{
+  content:""; position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(245,237,226,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245,237,226,0.035) 1px, transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse at center, black 30%, transparent 72%);
+  pointer-events:none;
+}
+/* film grain */
+.stage::after{
+  content:""; position:fixed; inset:-20%;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:0.035; pointer-events:none; z-index:9999;
+  animation:grn .45s steps(2) infinite;
+}
+@keyframes grn{
+  0%{transform:translate(0,0)} 25%{transform:translate(-2%,-1%)}
+  50%{transform:translate(1%,2%)} 75%{transform:translate(-1%,1%)}
+  100%{transform:translate(2%,-2%)}
+}
+
+.phone{
+  width:100%; max-width:440px; position:relative; z-index:2;
+  background:var(--cream); min-height:100vh;
+  box-shadow: 0 60px 140px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+}
+@media (min-width:768px){
+  .stage{padding:40px 0;}
+  .phone{
+    border-radius:46px;
+    min-height:calc(100vh - 80px);
+    overflow:hidden;
+    border:10px solid #0b0805;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.05) inset,
+      0 40px 120px rgba(0,0,0,0.7),
+      0 0 220px rgba(200,149,106,0.22);
+  }
+  .phone::before{
+    content:""; position:absolute; top:14px; left:50%; transform:translateX(-50%);
+    width:110px; height:28px; background:#000; border-radius:20px; z-index:60;
+  }
+  .stage-meta{display:block;}
+}
+
+.stage-meta{
+  display:none; position:fixed; font-family:'JetBrains Mono',monospace; color:rgba(245,237,226,0.45);
+  font-size:10px; letter-spacing:0.2em; text-transform:uppercase; z-index:10;
+}
+.meta-tl{top:22px; left:28px;}
+.meta-tr{top:22px; right:28px;}
+.meta-bl{bottom:22px; left:28px;}
+.meta-br{bottom:22px; right:28px;}
+.meta-dot{display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--latte); margin-right:6px; vertical-align:middle; animation:mpulse 2s ease-in-out infinite;}
+@keyframes mpulse{0%,100%{opacity:1} 50%{opacity:0.3}}
+
+/* ── Progress line ────────── */
+#progress{position:fixed; top:0; left:0; height:2px; width:0; background:linear-gradient(90deg, var(--latte), var(--latte-l)); z-index:90; max-width:440px; transition:width .08s linear;}
+@media(min-width:768px){#progress{left:50%; transform:translateX(-50%);}}
+
+/* ── Status bar ────────── */
+.statusbar{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 22px 4px; font-family:'JetBrains Mono',monospace;
+  font-size:12px; color:var(--espresso); font-weight:500;
+}
+.status-r{display:flex; gap:6px; align-items:center;}
+
+/* ── Top nav ────────── */
+.topbar{
+  position:sticky; top:0; z-index:50;
+  background:linear-gradient(180deg, rgba(245,237,226,0.96), rgba(245,237,226,0.7) 85%, transparent);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  padding:14px 22px; display:flex; justify-content:space-between; align-items:center;
+}
+.brand{font-family:'Playfair Display',serif; font-size:22px; font-weight:900; letter-spacing:0.08em;}
+.brand-mark{display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--latte); margin-left:3px; vertical-align:middle; animation:mpulse 2s ease-in-out infinite;}
+.menu-btn{
+  width:42px; height:42px; border-radius:14px; border:1px solid var(--line-2);
+  display:flex; align-items:center; justify-content:center; background:rgba(253,250,246,0.5);
+  transition:transform 0.3s;
+}
+.menu-btn span{display:block; width:16px; height:1px; background:var(--espresso); position:relative;}
+.menu-btn span::before,.menu-btn span::after{content:""; position:absolute; left:0; width:100%; height:1px; background:var(--espresso); transition:transform 0.4s;}
+.menu-btn span::before{top:-5px;}
+.menu-btn span::after{top:5px;}
+.menu-btn.open span{background:transparent;}
+.menu-btn.open span::before{transform:translateY(5px) rotate(45deg);}
+.menu-btn.open span::after{transform:translateY(-5px) rotate(-45deg);}
+
+/* ── Mobile drawer (within phone) ────────── */
+.drawer{
+  position:absolute; top:0; right:0; bottom:0; left:0;
+  background:var(--espresso); color:var(--cream);
+  padding:100px 28px 28px;
+  transform:translateX(100%); transition:transform 0.6s cubic-bezier(.2,.9,.3,1);
+  z-index:40; display:flex; flex-direction:column; gap:4px;
+}
+.drawer.open{transform:translateX(0);}
+.drawer a{
+  display:block; padding:18px 0;
+  border-bottom:1px solid rgba(245,237,226,0.1);
+  font-family:'Playfair Display',serif; font-size:32px; font-style:italic;
+  transition:color 0.3s, transform 0.3s; transform:translateX(20px); opacity:0;
+}
+.drawer.open a{transform:translateX(0); opacity:1;}
+.drawer.open a:nth-child(1){transition-delay:0.15s;}
+.drawer.open a:nth-child(2){transition-delay:0.2s;}
+.drawer.open a:nth-child(3){transition-delay:0.25s;}
+.drawer.open a:nth-child(4){transition-delay:0.3s;}
+.drawer.open a:nth-child(5){transition-delay:0.35s;}
+.drawer a:hover{color:var(--latte-l);}
+.drawer .d-cta{
+  margin-top:auto; padding:18px 24px; background:var(--latte); color:var(--espresso);
+  border-radius:100px; text-align:center; font-family:'DM Sans',sans-serif;
+  font-size:14px; font-style:normal; border-bottom:0; letter-spacing:0.08em;
+}
+
+/* ── Hero ────────── */
+.hero{padding:18px 22px 40px; position:relative;}
+.tag-row{display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap;}
+.tag{
+  font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted);
+  padding:5px 10px; border:1px solid var(--line-2); border-radius:999px;
+  letter-spacing:0.12em; text-transform:uppercase; background:rgba(253,250,246,0.4);
+}
+.tag.hot{border-color:rgba(200,149,106,0.45); color:var(--latte-d);}
+.tag.hot::before{content:""; display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--latte-d); margin-right:6px; vertical-align:middle; animation:mpulse 2s ease-in-out infinite;}
+
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:58px; line-height:0.92; letter-spacing:-0.02em; font-weight:700;
+  margin:0 0 24px;
+}
+.hero h1 .it{font-style:italic; color:var(--latte-d); font-weight:400;}
+.hero h1 .line{display:block; overflow:hidden;}
+.hero p.lede{
+  color:var(--muted); font-size:15px; line-height:1.55; max-width:340px;
+}
+
+.hero-photo{
+  margin:30px -22px 0; position:relative; aspect-ratio:4/5; overflow:hidden;
+}
+.hero-photo img{width:100%; height:100%; object-fit:cover;}
+.hero-photo::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, transparent 30%, rgba(30,17,8,0.35) 100%);
+}
+.hero-photo-badge{
+  position:absolute; bottom:22px; left:22px; right:22px;
+  display:flex; justify-content:space-between; align-items:flex-end; z-index:2;
+}
+.hero-photo-badge .loc{
+  color:var(--cream); font-family:'Playfair Display',serif; font-style:italic;
+  font-size:18px; line-height:1.1;
+}
+.hero-photo-badge .loc span{display:block; font-family:'JetBrains Mono',monospace; font-style:normal; font-size:10px; letter-spacing:0.18em; color:rgba(245,237,226,0.65); margin-top:6px; text-transform:uppercase;}
+.hero-photo-badge .crc{
+  width:70px; height:70px; border-radius:50%; background:var(--latte); color:var(--espresso);
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  font-family:'Playfair Display',serif; font-size:11px; font-style:italic; line-height:1.15;
+  transform:rotate(-8deg);
+  animation:spin 14s linear infinite;
+}
+@keyframes spin{to{transform:rotate(352deg);}}
+
+.cta-row{display:flex; gap:10px; margin-top:26px; padding:0 22px;}
+.cta-row-wrap{margin:0 -22px; padding:26px 22px 0; display:flex; gap:10px;}
+.cta-primary{
+  flex:1; background:var(--espresso); color:var(--cream);
+  padding:17px 22px; border-radius:100px; font-weight:500; font-size:13px;
+  letter-spacing:0.08em; text-transform:uppercase;
+  display:flex; justify-content:space-between; align-items:center;
+  box-shadow: 0 10px 28px rgba(30,17,8,0.3);
+  position:relative; overflow:hidden;
+  transition:transform 0.3s;
+}
+.cta-primary::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(110deg, transparent 30%, rgba(200,149,106,0.35) 50%, transparent 70%);
+  transform:translateX(-100%);
+  transition:transform 0.9s cubic-bezier(.2,.9,.3,1);
+}
+.cta-primary:hover::after,.cta-primary:active::after{transform:translateX(100%);}
+.cta-primary:active{transform:scale(0.98);}
+.cta-ghost{
+  width:56px; background:rgba(253,250,246,0.5); color:var(--espresso);
+  border:1px solid var(--line-2); border-radius:100px;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* ── Ticker ────────── */
+.ticker{
+  background:var(--espresso); color:var(--cream);
+  padding:18px 0; overflow:hidden; white-space:nowrap;
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+.ticker-track{
+  display:inline-flex; gap:28px; animation:tick 26s linear infinite;
+  font-family:'Playfair Display',serif; font-style:italic; font-size:20px;
+}
+.ticker-dot{color:var(--latte);}
+@keyframes tick{to{transform:translateX(-50%);}}
+
+/* ── Section chrome ────────── */
+.sec{padding:64px 22px; position:relative;}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.25em;
+  color:var(--latte-d); text-transform:uppercase; display:flex; align-items:center; gap:10px;
+}
+.eyebrow::before{content:""; display:inline-block; width:24px; height:1px; background:var(--latte-d);}
+.sec h2{
+  font-family:'Playfair Display',serif; font-size:40px; line-height:1; letter-spacing:-0.02em;
+  margin:14px 0 22px; font-weight:700;
+}
+.sec h2 em{font-style:italic; color:var(--latte-d); font-weight:400;}
+.sec p.sub{color:var(--muted); font-size:15px; line-height:1.55;}
+
+/* ── KPI row ────────── */
+.kpi-row{
+  margin-top:34px; display:grid; grid-template-columns:repeat(3, 1fr); gap:0;
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+.kpi{padding:18px 6px; text-align:left; border-right:1px solid var(--line);}
+.kpi:last-child{border-right:none;}
+.kpi-n{font-family:'Playfair Display',serif; font-size:32px; line-height:1; color:var(--espresso); font-weight:700;}
+.kpi-n .unit{font-family:'DM Sans',sans-serif; font-size:14px; color:var(--muted); margin-left:2px; font-weight:300;}
+.kpi-l{font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; color:var(--muted); text-transform:uppercase; margin-top:6px;}
+
+/* ── Menu tabs ────────── */
+.menu-tabs{
+  display:flex; gap:8px; margin-top:24px; padding:6px;
+  background:var(--cream-2); border-radius:100px; border:1px solid var(--line);
+}
+.tab{
+  flex:1; padding:12px 20px; border-radius:100px;
+  font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; letter-spacing:0.06em;
+  color:var(--muted); transition:all 0.4s cubic-bezier(.2,.9,.3,1);
+}
+.tab.on{background:var(--espresso); color:var(--cream);}
+
+.menu-panel{display:none;}
+.menu-panel.on{display:block; animation:fadeUp 0.6s cubic-bezier(.2,.9,.3,1);}
+@keyframes fadeUp{from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:translateY(0);}}
+
+.drinks-list{margin-top:26px;}
+.drinks-cat{margin-bottom:28px;}
+.drinks-cat-head{
+  font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.2em;
+  color:var(--latte-d); text-transform:uppercase; padding-bottom:10px;
+  border-bottom:1px solid var(--line-2); margin-bottom:6px;
+}
+.drink-item{display:flex; justify-content:space-between; gap:18px; padding:16px 0; border-bottom:1px solid var(--line);}
+.drink-item:last-child{border-bottom:none;}
+.drink-l{flex:1;}
+.drink-row1{display:flex; gap:8px; align-items:baseline; flex-wrap:wrap; margin-bottom:5px;}
+.drink-name{font-family:'Playfair Display',serif; font-size:20px; font-weight:400; line-height:1.1;}
+.drink-badge{
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em;
+  padding:3px 7px; border-radius:100px; text-transform:uppercase;
+}
+.drink-badge.sig{background:var(--latte); color:var(--cream);}
+.drink-badge.new{background:var(--sage); color:var(--cream);}
+.drink-badge.veg{background:transparent; color:var(--sage); border:1px solid var(--sage);}
+.drink-desc{font-size:13px; color:var(--muted); line-height:1.5;}
+.drink-price{font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--espresso); flex-shrink:0;}
+
+/* ── Food cards ────────── */
+.food-grid{margin-top:26px; display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+.food-card{
+  background:var(--paper); border-radius:18px; overflow:hidden;
+  border:1px solid var(--line); transition:transform 0.4s cubic-bezier(.2,.9,.3,1);
+}
+.food-card:hover{transform:translateY(-3px);}
+.food-img{aspect-ratio:1/1; position:relative; overflow:hidden;}
+.food-img img{width:100%; height:100%; object-fit:cover; transition:transform 0.7s cubic-bezier(.2,.9,.3,1);}
+.food-card:hover .food-img img{transform:scale(1.06);}
+.food-body{padding:12px 14px 16px;}
+.food-name{font-family:'Playfair Display',serif; font-size:16px; font-weight:700; line-height:1.1;}
+.food-desc{font-size:11px; color:var(--muted); margin-top:4px; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+.food-foot{display:flex; justify-content:space-between; align-items:center; margin-top:10px;}
+.food-price{font-family:'Playfair Display',serif; font-size:16px; font-weight:700;}
+.food-badge{font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase;}
+
+/* ── About ────────── */
+.about-vis{position:relative; margin:30px -22px 0; padding:0 22px;}
+.about-photo{
+  aspect-ratio:4/5; overflow:hidden; border-radius:24px; position:relative;
+  box-shadow: 0 30px 60px rgba(30,17,8,0.2);
+}
+.about-photo img{width:100%; height:100%; object-fit:cover;}
+.about-caption{
+  position:absolute; bottom:18px; left:18px;
+  background:rgba(30,17,8,0.7); backdrop-filter:blur(10px);
+  color:var(--cream); padding:8px 14px; border-radius:100px;
+  font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase;
+}
+.about-badge{
+  position:absolute; top:-8px; right:8px;
+  width:92px; height:92px; border-radius:50%;
+  background:var(--latte); color:var(--espresso);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; font-family:'Playfair Display',serif; font-style:italic; font-size:13px; line-height:1.15;
+  transform:rotate(10deg);
+  box-shadow:0 12px 30px rgba(168,118,77,0.4);
+  animation:spin 16s linear infinite;
+}
+.about-badge strong{font-size:16px; font-style:normal; display:block; margin-bottom:2px;}
+
+/* ── Store ────────── */
+.store-note{
+  font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.18em;
+  color:var(--latte-d); text-transform:uppercase; margin-top:10px;
+  padding:10px 14px; background:rgba(200,149,106,0.12); border-radius:100px; display:inline-block;
+}
+.store-grid{margin-top:24px; display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.prod{
+  background:var(--paper); border-radius:18px; overflow:hidden;
+  border:1px solid var(--line); position:relative;
+  transition:transform 0.4s cubic-bezier(.2,.9,.3,1);
+}
+.prod:hover{transform:translateY(-3px);}
+.prod-img{aspect-ratio:1/1; overflow:hidden; position:relative; background:var(--cream-2);}
+.prod-img img{width:100%; height:100%; object-fit:cover; transition:transform 0.7s;}
+.prod:hover .prod-img img{transform:scale(1.06);}
+.prod-add{
+  position:absolute; bottom:8px; right:8px;
+  width:36px; height:36px; border-radius:50%; background:var(--espresso); color:var(--cream);
+  display:flex; align-items:center; justify-content:center;
+  transition:transform 0.3s; z-index:2;
+}
+.prod-add:hover{transform:scale(1.1);}
+.prod-info{padding:12px 14px 16px;}
+.prod-name{font-family:'Playfair Display',serif; font-size:16px; font-weight:700; line-height:1.1;}
+.prod-sub{font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em; color:var(--muted); margin-top:4px; text-transform:uppercase;}
+.prod-price{font-family:'Playfair Display',serif; font-size:16px; font-weight:700; margin-top:8px;}
+
+/* ── Location ────────── */
+.hours-table{margin-top:22px;}
+.hours-row{display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--line); font-size:14px;}
+.hours-row:last-child{border-bottom:none;}
+.hours-row .d{color:var(--espresso);}
+.hours-row .h{color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:12px;}
+.hours-row.now{color:var(--latte-d);}
+.hours-row.now .d,.hours-row.now .h{color:var(--latte-d);}
+
+.map-card{
+  margin-top:24px; border:1px solid var(--line-2); border-radius:22px; overflow:hidden;
+  position:relative; aspect-ratio:4/3;
+  background:var(--espresso);
+}
+.loc-links{display:flex; gap:8px; margin-top:24px; flex-wrap:wrap;}
+.loc-pill{
+  padding:12px 18px; border-radius:100px; background:var(--cream-2);
+  font-size:12px; font-weight:500; color:var(--espresso);
+  transition:background 0.3s; display:inline-flex; align-items:center; gap:6px;
+  border:1px solid var(--line);
+}
+.loc-pill:hover{background:var(--latte); color:var(--cream);}
+
+/* ── Footer ────────── */
+footer{
+  background:var(--espresso); color:var(--cream);
+  padding:64px 22px 140px;
+  position:relative;
+}
+.foot-brand{font-family:'Playfair Display',serif; font-size:72px; line-height:0.85; font-weight:900; letter-spacing:-0.02em;}
+.foot-brand em{font-style:italic; color:var(--latte);}
+.foot-about{margin-top:22px; font-size:13px; line-height:1.6; color:rgba(245,237,226,0.65); max-width:320px;}
+.foot-meta{display:grid; grid-template-columns:1fr 1fr; gap:26px 16px; margin-top:36px; font-family:'JetBrains Mono',monospace; font-size:11px;}
+.foot-lbl{color:rgba(245,237,226,0.4); letter-spacing:0.18em; text-transform:uppercase; font-size:9px; margin-bottom:6px;}
+.foot-val{color:var(--cream); line-height:1.5;}
+.foot-val a{display:block; color:rgba(245,237,226,0.75); transition:color 0.2s;}
+.foot-val a:hover{color:var(--latte-l);}
+.foot-social{display:flex; gap:10px; margin-top:22px;}
+.foot-social a{
+  width:38px; height:38px; border-radius:50%; border:1px solid rgba(245,237,226,0.15);
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.3s;
+}
+.foot-social a:hover{background:var(--latte); border-color:var(--latte);}
+.foot-bot{
+  margin-top:40px; padding-top:26px; border-top:1px solid rgba(245,237,226,0.08);
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; color:rgba(245,237,226,0.4); text-transform:uppercase;
+}
+
+/* ── Sticky bottom order bar ────────── */
+.orderbar{
+  position:fixed; bottom:0; left:0; right:0; z-index:80;
+  padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+  pointer-events:none;
+  display:flex; justify-content:center;
+}
+.orderbar-inner{
+  pointer-events:auto;
+  width:100%; max-width:412px;
+  background:rgba(30,17,8,0.85);
+  backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px);
+  border:1px solid rgba(245,237,226,0.15); border-radius:22px;
+  padding:10px 10px 10px 18px;
+  display:flex; align-items:center; gap:12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.orderbar .left{font-size:12px; color:rgba(245,237,226,0.75); line-height:1.3; flex:1;}
+.orderbar .left b{color:var(--cream); font-weight:500;}
+.orderbar .cta{
+  background:var(--latte); color:var(--espresso); font-size:13px; font-weight:600;
+  padding:12px 18px; border-radius:14px; white-space:nowrap;
+  display:flex; align-items:center; gap:8px;
+  transition:transform 0.3s;
+}
+.orderbar .cta:hover{transform:scale(1.03);}
+@media (min-width:768px){
+  .orderbar{padding:12px 0; bottom:28px;}
+  .orderbar-inner{max-width:416px;}
+}
+
+/* ── Loader ────────── */
+#loader{
+  position:fixed; inset:0; background:var(--espresso); z-index:200;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; gap:22px;
+}
+#loader .l-brand{font-family:'Playfair Display',serif; font-size:48px; font-weight:900; letter-spacing:0.08em; color:var(--cream);}
+#loader .l-brand em{font-style:italic; color:var(--latte); font-weight:400;}
+#loader .l-bar{width:160px; height:1px; background:rgba(245,237,226,0.15); overflow:hidden;}
+#loader .l-bar span{display:block; height:100%; width:0; background:var(--latte);}
+#loader .l-meta{font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.3em; color:rgba(245,237,226,0.45); text-transform:uppercase;}
+
+/* ── Reveal ────────── */
+[data-r]{
+  opacity:0; transform:translateY(32px);
+  transition:opacity 0.9s cubic-bezier(.2,.9,.3,1), transform 0.9s cubic-bezier(.2,.9,.3,1);
+}
+[data-r].in{opacity:1; transform:none;}
+.stagger>[data-r]:nth-child(1){transition-delay:.05s;}
+.stagger>[data-r]:nth-child(2){transition-delay:.13s;}
+.stagger>[data-r]:nth-child(3){transition-delay:.21s;}
+.stagger>[data-r]:nth-child(4){transition-delay:.29s;}
+.stagger>[data-r]:nth-child(5){transition-delay:.37s;}
+.stagger>[data-r]:nth-child(6){transition-delay:.45s;}
+
+/* word split */
+.word{display:inline-block; overflow:hidden;}
+.word>span{display:inline-block; transform:translateY(110%); transition:transform 1s cubic-bezier(.2,.9,.3,1);}
+[data-r].in .word>span{transform:translateY(0);}
+[data-r].in .word:nth-child(1)>span{transition-delay:.05s;}
+[data-r].in .word:nth-child(2)>span{transition-delay:.12s;}
+[data-r].in .word:nth-child(3)>span{transition-delay:.19s;}
+[data-r].in .word:nth-child(4)>span{transition-delay:.26s;}
+[data-r].in .word:nth-child(5)>span{transition-delay:.33s;}
+[data-r].in .word:nth-child(6)>span{transition-delay:.40s;}
+[data-r].in .word:nth-child(7)>span{transition-delay:.47s;}
+</style>
+</head>
+<body>
+
+<!-- ───── Loader ───── -->
+<div id="loader">
+  <div class="l-brand">LANEWAY<em>.</em></div>
+  <div class="l-bar"><span></span></div>
+  <div class="l-meta">brewing · degraves lane</div>
+</div>
+
+<!-- ───── Stage meta (desktop only) ───── -->
+<div class="stage-meta meta-tl"><span class="meta-dot"></span>Optimised for mobile 375+</div>
+<div class="stage-meta meta-tr">viewing · lanewaycoffee.com.au</div>
+<div class="stage-meta meta-bl">© 2026 laneway coffee</div>
+<div class="stage-meta meta-br">27 degraves · melbourne</div>
+
+<div id="progress"></div>
+
+<div class="stage">
+  <main class="phone">
+
+    <!-- ───── Status bar ───── -->
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="status-r">
+        <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 8h2V5H1v3zm4 0h2V3H5v5zm4 0h2V1H9v7zm4 0h2V0h-2v8z" fill="currentColor"/></svg>
+        <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M7 2.5a4.8 4.8 0 0 1 3.4 1.4l1-1a6.2 6.2 0 0 0-8.8 0l1 1A4.8 4.8 0 0 1 7 2.5zM2 2l1 1a5.8 5.8 0 0 1 8 0l1-1a7.2 7.2 0 0 0-10 0zm5 3a2.4 2.4 0 0 0-1.7.7l1.7 1.7 1.7-1.7A2.4 2.4 0 0 0 7 5z" fill="currentColor"/></svg>
+        <span>100</span>
+      </div>
+    </div>
+
+    <!-- ───── Top nav ───── -->
+    <header class="topbar">
+      <div class="brand">LANEWAY<span class="brand-mark"></span></div>
+      <button class="menu-btn" id="menuBtn" aria-label="Menu"><span></span></button>
+    </header>
+
+    <!-- ───── Drawer ───── -->
+    <nav class="drawer" id="drawer">
+      <a href="#menu">Menu</a>
+      <a href="#about">About</a>
+      <a href="#store">Store</a>
+      <a href="#location">Find Us</a>
+      <a href="#store" class="d-cta">Order Online</a>
+    </nav>
+
+    <!-- ───── Hero ───── -->
+    <section class="hero">
+      <div class="tag-row" data-r>
+        <span class="tag hot">Open today · 7AM — 5PM</span>
+        <span class="tag">Est. 2017 · CBD</span>
+      </div>
+
+      <h1 data-r>
+        <span class="line"><span class="word"><span>The</span></span> <span class="word"><span>Art</span></span> <span class="word"><span>of</span></span></span>
+        <span class="line"><span class="word"><span>Melbourne</span></span></span>
+        <span class="line"><span class="word"><span class="it">Coffee.</span></span></span>
+      </h1>
+      <p class="lede" data-r>Single-origin beans, small-batch roasted, poured in the heart of Degraves Lane. Every cup is a conversation.</p>
+
+      <div class="hero-photo" data-r>
+        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&h=1125&q=85" alt="Coffee being poured at Laneway" />
+        <div class="hero-photo-badge">
+          <div class="loc">Degraves Lane<span>Melbourne · VIC</span></div>
+          <div class="crc">Est<br/>2017</div>
+        </div>
+      </div>
+
+      <div class="cta-row-wrap" data-r>
+        <a href="#store" class="cta-primary">
+          <span>Order Online</span>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9h12m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#about" class="cta-ghost" aria-label="Our story">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9h12m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <div class="kpi-row" data-r>
+        <div class="kpi"><div class="kpi-n" data-count="8"><span class="unit">yr</span></div><div class="kpi-l">In the Lane</div></div>
+        <div class="kpi"><div class="kpi-n" data-count="300"><span class="unit">/day</span></div><div class="kpi-l">Cups poured</div></div>
+        <div class="kpi"><div class="kpi-n" data-count="8"><span class="unit"> origins</span></div><div class="kpi-l">Single origin</div></div>
+      </div>
+    </section>
+
+    <!-- ───── Ticker ───── -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>Specialty Coffee</span><span class="ticker-dot">·</span>
+        <span>Single Origin</span><span class="ticker-dot">·</span>
+        <span>Melbourne Roasted</span><span class="ticker-dot">·</span>
+        <span>Est. 2017</span><span class="ticker-dot">·</span>
+        <span>Degraves Lane</span><span class="ticker-dot">·</span>
+        <span>Open 7 Days</span><span class="ticker-dot">·</span>
+        <span>Specialty Coffee</span><span class="ticker-dot">·</span>
+        <span>Single Origin</span><span class="ticker-dot">·</span>
+        <span>Melbourne Roasted</span><span class="ticker-dot">·</span>
+        <span>Est. 2017</span><span class="ticker-dot">·</span>
+        <span>Degraves Lane</span><span class="ticker-dot">·</span>
+        <span>Open 7 Days</span><span class="ticker-dot">·</span>
+      </div>
+    </div>
+
+    <!-- ───── Menu ───── -->
+    <section class="sec" id="menu">
+      <div class="eyebrow">01 · Menu</div>
+      <h2 data-r>Crafted with<br/><em>intention.</em></h2>
+      <p class="sub" data-r>House blends, rotating single origins, and a short food list — all made fresh every day.</p>
+
+      <div class="menu-tabs" role="tablist" data-r>
+        <button class="tab on" data-tab="drinks">☕  Drinks</button>
+        <button class="tab" data-tab="food">🍞  Food</button>
+      </div>
+
+      <div class="menu-panel on" id="drinks">
+        <div class="drinks-list">
+          <div class="drinks-cat" data-r>
+            <div class="drinks-cat-head">Espresso</div>
+            <div class="drink-item">
+              <div class="drink-l">
+                <div class="drink-row1"><p class="drink-name">Signature Flat White</p><span class="drink-badge sig">Signature</span></div>
+                <p class="drink-desc">Double ristretto on our house Ethiopian blend, poured through velvety steamed milk by hand.</p>
+              </div>
+              <p class="drink-price">$5.50</p>
+            </div>
+            <div class="drink-item">
+              <div class="drink-l">
+                <div class="drink-row1"><p class="drink-name">Single Origin Pour Over</p><span class="drink-badge new">Rotating</span></div>
+                <p class="drink-desc">Today: Ethiopian Yirgacheffe. Bright, floral, bergamot and jasmine. V60, to order.</p>
+              </div>
+              <p class="drink-price">$8.50</p>
+            </div>
+            <div class="drink-item">
+              <div class="drink-l">
+                <div class="drink-row1"><p class="drink-name">Long Black</p></div>
+                <p class="drink-desc">Hot water, double ristretto. Unadulterated, honest, deeply satisfying.</p>
+              </div>
+              <p class="drink-price">$4.50</p>
+            </div>
+            <div class="drink-item">
+              <div class="drink-l">
+                <div class="drink-row1"><p class="drink-name">Cappuccino</p></div>
+                <p class="drink-desc">Equal parts espresso, steamed milk, and thick microfoam. Classic Melbourne.</p>
+              </div>
+              <p class="drink-price">$5.00</p>
+            </div>
+          </div>
+
+          <div class="drinks-cat" data-r>
+            <div class="drinks-cat-head">Cold &amp; Chilled</div>
+            <div class="drink-item">
+              <div class="drink-l">
+                <div class="drink-row1"><p class="drink-name">Nitro Cold Brew</p><span class="drink-badge new">Seasonal</span></div>
+                <p class="drink-desc">18-hour steep cascaded through nitrogen on tap. Creamy, dark, silky.</p>
+              </div>
+              <p class="drink-price">$7.00</p>
+            </div>
+            <div class="drink-item">
+              <div class="drink-l">
+                <div class="drink-row1"><p class="drink-name">Iced Latte</p><span class="drink-badge veg">Vegan opt.</span></div>
+                <p class="drink-desc">Double espresso over ice with your preferred milk. Melbourne summer in a glass.</p>
+              </div>
+              <p class="drink-price">$6.00</p>
+            </div>
+            <div class="drink-item">
+              <div class="drink-l">
+                <div class="drink-row1"><p class="drink-name">Cold Brew Tonic</p></div>
+                <p class="drink-desc">House cold brew over tonic and ice. Citrusy, bright, a laneway staple.</p>
+              </div>
+              <p class="drink-price">$7.50</p>
+            </div>
+          </div>
+
+          <div class="drinks-cat" data-r>
+            <div class="drinks-cat-head">Specialty</div>
+            <div class="drink-item">
+              <div class="drink-l">
+                <div class="drink-row1"><p class="drink-name">Matcha Latte</p><span class="drink-badge veg">Vegan</span></div>
+                <p class="drink-desc">Ceremonial-grade matcha from Uji, whisked with a touch of honey.</p>
+              </div>
+              <p class="drink-price">$6.50</p>
+            </div>
+            <div class="drink-item">
+              <div class="drink-l">
+                <div class="drink-row1"><p class="drink-name">Batch Brew</p></div>
+                <p class="drink-desc">House blend, filter-brewed every 45 minutes. Clean and always fresh.</p>
+              </div>
+              <p class="drink-price">$4.00</p>
+            </div>
+            <div class="drink-item">
+              <div class="drink-l">
+                <div class="drink-row1"><p class="drink-name">Turmeric Latte</p><span class="drink-badge veg">Vegan</span></div>
+                <p class="drink-desc">Golden blend with turmeric, ginger, cinnamon, and black pepper. Warming.</p>
+              </div>
+              <p class="drink-price">$6.50</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-panel" id="food">
+        <div class="food-grid stagger">
+          <div class="food-card" data-r>
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1541519227354-08fa5d50c820?auto=format&fit=crop&w=500&h=500&q=80" alt="Avocado smash" loading="lazy"></div>
+            <div class="food-body">
+              <p class="food-name">Avocado Smash</p>
+              <p class="food-desc">Sourdough, whipped ricotta, za'atar dukkah.</p>
+              <div class="food-foot"><span class="food-price">$18</span><span class="food-badge">VEGETARIAN</span></div>
+            </div>
+          </div>
+          <div class="food-card" data-r>
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1605288407665-5cd3c4f07e27?auto=format&fit=crop&w=500&h=500&q=80" alt="Banana bread" loading="lazy"></div>
+            <div class="food-body">
+              <p class="food-name">Banana Bread</p>
+              <p class="food-desc">Made fresh daily. Toasted with cultured butter.</p>
+              <div class="food-foot"><span class="food-price">$7</span><span class="food-badge">HOUSE-MADE</span></div>
+            </div>
+          </div>
+          <div class="food-card" data-r>
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=500&h=500&q=80" alt="Granola bowl" loading="lazy"></div>
+            <div class="food-body">
+              <p class="food-name">Granola Bowl</p>
+              <p class="food-desc">House granola, seasonal fruit, coconut yoghurt.</p>
+              <div class="food-foot"><span class="food-price">$14</span><span class="food-badge">GF · VEGAN</span></div>
+            </div>
+          </div>
+          <div class="food-card" data-r>
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1481070414801-51fd732d7184?auto=format&fit=crop&w=500&h=500&q=80" alt="Cheese toast" loading="lazy"></div>
+            <div class="food-body">
+              <p class="food-name">Cheese Toast</p>
+              <p class="food-desc">Gruyère fondue, caramelised onion, thyme.</p>
+              <div class="food-foot"><span class="food-price">$12</span><span class="food-badge">CHEF'S PICK</span></div>
+            </div>
+          </div>
+          <div class="food-card" data-r>
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=500&h=500&q=80" alt="Brownie" loading="lazy"></div>
+            <div class="food-body">
+              <p class="food-name">Choc Hazelnut Brownie</p>
+              <p class="food-desc">Dark chocolate, hazelnut praline, sea salt.</p>
+              <div class="food-foot"><span class="food-price">$6</span><span class="food-badge">SWEET</span></div>
+            </div>
+          </div>
+          <div class="food-card" data-r>
+            <div class="food-img"><img src="https://images.unsplash.com/photo-1556040220-4096d522378d?auto=format&fit=crop&w=500&h=500&q=80" alt="Açaí bowl" loading="lazy"></div>
+            <div class="food-body">
+              <p class="food-name">Açaí Bowl</p>
+              <p class="food-desc">Dragon fruit, mango, coconut, fresh mint.</p>
+              <div class="food-foot"><span class="food-price">$16</span><span class="food-badge">GF · VEGAN</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── About ───── -->
+    <section class="sec" id="about" style="padding-top:30px;">
+      <div class="eyebrow">02 · Our story</div>
+      <h2 data-r>Born in the<br/><em>heart of the laneway.</em></h2>
+
+      <div class="about-vis" data-r>
+        <div class="about-photo">
+          <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=700&h=875&q=85" alt="Barista pouring a latte" loading="lazy">
+          <span class="about-caption">27 Degraves · Melbourne CBD</span>
+        </div>
+        <div class="about-badge"><strong>★</strong>Best<br/>Café VIC</div>
+      </div>
+
+      <p class="sub" data-r style="margin-top:26px;">In 2017 we squeezed a hand-built espresso bar into 40 square metres of Degraves Lane. Our first cup went to a stranger who became a regular that afternoon. Melbourne's laneway culture — spontaneous, creative, unhurried — has shaped everything we do.</p>
+      <p class="sub" data-r style="margin-top:14px;">We source direct from smallholder farms in Ethiopia, Colombia, and Guatemala, roasting in small batches each week. Coffee is our craft; community is our purpose.</p>
+
+      <div class="kpi-row" data-r>
+        <div class="kpi"><div class="kpi-n" data-count="2017">2017</div><div class="kpi-l">Est. Melbourne</div></div>
+        <div class="kpi"><div class="kpi-n" data-count="300"><span class="unit">+</span></div><div class="kpi-l">Cups per day</div></div>
+        <div class="kpi"><div class="kpi-n" data-count="8">0</div><div class="kpi-l">Coffee origins</div></div>
+      </div>
+    </section>
+
+    <!-- ───── Store ───── -->
+    <section class="sec" id="store" style="padding-top:30px;">
+      <div class="eyebrow">03 · Online store</div>
+      <h2 data-r>Bring it <em>home.</em></h2>
+      <span class="store-note">Free shipping AU · Orders $60+</span>
+
+      <div class="store-grid stagger">
+        <div class="prod" data-r>
+          <div class="prod-img">
+            <img src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=500&h=500&q=80" alt="House Blend" loading="lazy">
+            <button class="prod-add" aria-label="Add to cart">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <div class="prod-info">
+            <p class="prod-name">House Blend</p>
+            <p class="prod-sub">250g · Whole / Ground</p>
+            <p class="prod-price">$22.00</p>
+          </div>
+        </div>
+        <div class="prod" data-r>
+          <div class="prod-img">
+            <img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=500&h=500&q=80" alt="Ethiopia single origin" loading="lazy">
+            <button class="prod-add" aria-label="Add to cart">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <div class="prod-info">
+            <p class="prod-name">SO · Ethiopia</p>
+            <p class="prod-sub">200g · Yirgacheffe · Light</p>
+            <p class="prod-price">$26.00</p>
+          </div>
+        </div>
+        <div class="prod" data-r>
+          <div class="prod-img">
+            <img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=500&h=500&q=80" alt="V60 kit" loading="lazy">
+            <button class="prod-add" aria-label="Add to cart">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <div class="prod-info">
+            <p class="prod-name">V60 Dripper Kit</p>
+            <p class="prod-sub">Dripper + 40 filters</p>
+            <p class="prod-price">$48.00</p>
+          </div>
+        </div>
+        <div class="prod" data-r>
+          <div class="prod-img">
+            <img src="https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=500&h=500&q=80" alt="Ceramic mug" loading="lazy">
+            <button class="prod-add" aria-label="Add to cart">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <div class="prod-info">
+            <p class="prod-name">Ceramic Mug</p>
+            <p class="prod-sub">Hand-thrown · 280ml</p>
+            <p class="prod-price">$38.00</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───── Location ───── -->
+    <section class="sec" id="location" style="padding-top:30px;">
+      <div class="eyebrow">04 · Find us</div>
+      <h2 data-r>In the heart of<br/><em>the city.</em></h2>
+      <p class="sub" data-r>27 Degraves Lane · Melbourne CBD, VIC 3000</p>
+
+      <div class="hours-table">
+        <div class="hours-row now"><span class="d">Monday — Friday <span style="font-size:10px; letter-spacing:0.15em; margin-left:6px;">· TODAY</span></span><span class="h">7:00 — 17:00</span></div>
+        <div class="hours-row"><span class="d">Saturday</span><span class="h">8:00 — 16:00</span></div>
+        <div class="hours-row"><span class="d">Sunday</span><span class="h">8:30 — 15:00</span></div>
+        <div class="hours-row"><span class="d">Public holidays</span><span class="h">9:00 — 14:00</span></div>
+      </div>
+
+      <div class="map-card">
+        <svg viewBox="0 0 400 300" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="300" fill="#1E1108"/>
+          <g stroke="rgba(245,237,226,.06)" stroke-width="1">
+            <line x1="0" y1="60" x2="400" y2="60"/><line x1="0" y1="120" x2="400" y2="120"/>
+            <line x1="0" y1="180" x2="400" y2="180"/><line x1="0" y1="240" x2="400" y2="240"/>
+            <line x1="80" y1="0" x2="80" y2="300"/><line x1="160" y1="0" x2="160" y2="300"/>
+            <line x1="240" y1="0" x2="240" y2="300"/><line x1="320" y1="0" x2="320" y2="300"/>
+          </g>
+          <g fill="rgba(245,237,226,.04)" stroke="rgba(245,237,226,.08)" stroke-width="0.6">
+            <rect x="84" y="64" width="72" height="52"/><rect x="164" y="64" width="72" height="52"/>
+            <rect x="244" y="64" width="72" height="52"/><rect x="84" y="184" width="72" height="52"/>
+            <rect x="244" y="184" width="72" height="52"/><rect x="164" y="184" width="72" height="52"/>
+          </g>
+          <rect x="0" y="118" width="400" height="6" fill="rgba(200,149,106,.18)"/>
+          <rect x="156" y="0" width="6" height="300" fill="rgba(200,149,106,.12)"/>
+          <text x="10" y="115" font-size="8" fill="rgba(245,237,226,.35)" font-family="JetBrains Mono, monospace" letter-spacing="1.5">FLINDERS ST</text>
+          <g transform="translate(200,150)">
+            <circle cx="0" cy="0" r="22" fill="#C8956A" opacity="0.22">
+              <animate attributeName="r" values="16;34;16" dur="2.5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.35;0;0.35" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+            <path d="M0 -18 C-10 -18 -18 -10 -18 0 C-18 12 0 28 0 28 C0 28 18 12 18 0 C18 -10 10 -18 0 -18Z" fill="#C8956A"/>
+            <circle cx="0" cy="0" r="6" fill="#1E1108"/>
+          </g>
+          <text x="230" y="156" font-size="10" fill="#F5EDE2" font-family="Playfair Display, serif" letter-spacing="1">LANEWAY</text>
+          <text x="230" y="170" font-size="8" fill="rgba(245,237,226,.5)" font-family="JetBrains Mono, monospace" letter-spacing="1">27 DEGRAVES LN</text>
+        </svg>
+      </div>
+
+      <div class="loc-links">
+        <a href="#" class="loc-pill">📍 Directions</a>
+        <a href="tel:+61399998888" class="loc-pill">📞 Call</a>
+        <a href="mailto:hello@laneway.au" class="loc-pill">✉ Email</a>
+      </div>
+    </section>
+
+    <!-- ───── Footer ───── -->
+    <footer>
+      <div class="foot-brand" data-r>Laneway<em>.</em></div>
+      <p class="foot-about">A specialty coffee house in the heart of Melbourne's Degraves Lane. Small batch, single origin, served with care.</p>
+
+      <div class="foot-social">
+        <a href="#" aria-label="Instagram">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="#" aria-label="Facebook">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+        </a>
+        <a href="#" aria-label="X">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+        </a>
+      </div>
+
+      <div class="foot-meta">
+        <div>
+          <div class="foot-lbl">Café</div>
+          <div class="foot-val">27 Degraves Lane<br/>Melbourne CBD 3000</div>
+        </div>
+        <div>
+          <div class="foot-lbl">Contact</div>
+          <div class="foot-val"><a href="tel:+610000000000">03 0000 0000</a><a href="mailto:hello@laneway.au">hello@laneway.au</a></div>
+        </div>
+        <div>
+          <div class="foot-lbl">Coffee</div>
+          <div class="foot-val"><a href="#">Roasting</a><a href="#">Origin stories</a><a href="#">Brew guides</a></div>
+        </div>
+        <div>
+          <div class="foot-lbl">Trade</div>
+          <div class="foot-val"><a href="#">Wholesale</a><a href="#">Subscriptions</a><a href="#">Work with us</a></div>
+        </div>
+      </div>
+
+      <div class="foot-bot">
+        <span>© 2026 · Laneway Pty Ltd</span>
+        <span>Privacy · Terms</span>
+      </div>
+    </footer>
+
+  </main>
+</div>
+
+<!-- ───── Sticky order bar ───── -->
+<div class="orderbar" id="orderbar">
+  <div class="orderbar-inner">
+    <div class="left"><b>Open now</b> — closes 5PM<br/><span style="color:rgba(245,237,226,0.5); font-size:11px;">27 Degraves Lane · 3-min wait</span></div>
+    <a href="#store" class="cta">Order <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6h7m-2-2 2 2-2 2" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  </div>
+</div>
+
+<script>
+// ── Loader ─────────────────────────────
+(function(){
+  const loader = document.getElementById('loader');
+  const bar = loader.querySelector('.l-bar span');
+  let w = 0;
+  const step = () => {
+    w += 5 + Math.random()*8;
+    if (w >= 100) w = 100;
+    bar.style.width = w + '%';
+    bar.style.transition = 'width 0.3s ease';
+    if (w < 100) setTimeout(step, 80);
+    else setTimeout(() => {
+      loader.style.transition = 'opacity 0.6s ease';
+      loader.style.opacity = '0';
+      setTimeout(() => loader.style.display = 'none', 650);
+    }, 160);
+  };
+  setTimeout(step, 80);
+})();
+
+// ── Progress ─────────────────────────────
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const p = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  document.getElementById('progress').style.width = p + '%';
+}, { passive: true });
+
+// ── Reveal ─────────────────────────────
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('[data-r]').forEach(el => revealObs.observe(el));
+
+// ── Counters ─────────────────────────────
+const counterObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+    const target = parseInt(el.dataset.count, 10);
+    const unit = el.querySelector('.unit')?.outerHTML || '';
+    const dur = 1600, start = performance.now();
+    const tick = now => {
+      const p = Math.min((now - start) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const val = target === 2017 ? Math.round(2000 + eased * 17) : Math.round(eased * target);
+      el.innerHTML = val.toLocaleString() + unit;
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    counterObs.unobserve(el);
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-count]').forEach(el => counterObs.observe(el));
+
+// ── Drawer ─────────────────────────────
+const btn = document.getElementById('menuBtn');
+const drawer = document.getElementById('drawer');
+btn.addEventListener('click', () => {
+  const open = drawer.classList.toggle('open');
+  btn.classList.toggle('open', open);
+});
+drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  drawer.classList.remove('open');
+  btn.classList.remove('open');
+}));
+
+// ── Tabs ─────────────────────────────
+const tabs = document.querySelectorAll('.tab');
+const panels = document.querySelectorAll('.menu-panel');
+tabs.forEach(t => {
+  t.addEventListener('click', () => {
+    tabs.forEach(x => x.classList.remove('on'));
+    panels.forEach(p => p.classList.remove('on'));
+    t.classList.add('on');
+    const panel = document.getElementById(t.dataset.tab);
+    panel.classList.add('on');
+    panel.querySelectorAll('[data-r]').forEach(el => {
+      el.classList.remove('in');
+      setTimeout(() => revealObs.observe(el), 40);
+    });
+  });
+});
+
+// ── Orderbar show ─────────────────────────────
+const bar = document.getElementById('orderbar');
+bar.style.opacity = '0'; bar.style.transform = 'translateY(100%)';
+bar.style.transition = 'opacity 0.6s ease, transform 0.6s cubic-bezier(.2,.9,.3,1)';
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 380) {
+    bar.style.opacity = '1'; bar.style.transform = 'translateY(0)';
+  }
+}, { passive: true });
+
+// ── Product add feedback ─────────────────────────────
+document.querySelectorAll('.prod-add').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    btn.animate([
+      { transform: 'scale(1)' },
+      { transform: 'scale(1.3)' },
+      { transform: 'scale(1)' }
+    ], { duration: 400, easing: 'cubic-bezier(.2,.9,.3,1)' });
+  });
+});
+</script>
+</body>
+</html>

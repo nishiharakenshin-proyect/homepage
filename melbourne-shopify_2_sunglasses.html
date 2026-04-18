@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUMEN — Eyewear for the Sun</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400;1,9..144,700&family=Archivo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0e1a;
+  --bg-2: #141826;
+  --cream: #f5efe0;
+  --cream-dim: #e8dfc8;
+  --amber: #e8a855;
+  --amber-light: #f5c97a;
+  --sunset: #ff7a59;
+  --gold: #d4af37;
+  --navy: #1a2138;
+  --text: #f5efe0;
+  --text-dim: #8a8578;
+  --line: rgba(245, 239, 224, 0.12);
+}
+
+html {
+  width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Archivo', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+body {
+  width: 100%;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Archivo', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  position: relative;
+  cursor: none;
+}
+
+/* ========== CUSTOM CURSOR (lens shape) ========== */
+.cursor {
+  position: fixed;
+  top: 0; left: 0;
+  width: 60px; height: 30px;
+  pointer-events: none;
+  z-index: 10000;
+  mix-blend-mode: difference;
+  transition: width 0.3s, height 0.3s;
+}
+.cursor::before, .cursor::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 26px; height: 26px;
+  border: 1.5px solid var(--cream);
+  border-radius: 50%;
+}
+.cursor::before { left: 0; }
+.cursor::after { right: 0; }
+.cursor .bridge {
+  position: absolute;
+  top: 12px; left: 26px;
+  width: 8px; height: 2px;
+  background: var(--cream);
+}
+.cursor.hover { transform: scale(1.5); }
+
+@media (hover: none) {
+  body { cursor: auto; }
+  .cursor { display: none; }
+}
+
+/* ========== LOADER ========== */
+.loader {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 20000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 1s ease 0.3s, visibility 1s ease 0.3s;
+}
+.loader.hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.loader-glasses {
+  width: 140px;
+  animation: loaderFloat 2.5s ease-in-out infinite;
+}
+@keyframes loaderFloat {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+}
+.loader-text {
+  font-family: 'Fraunces', serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.4em;
+  color: var(--amber);
+  margin-top: 2rem;
+  font-weight: 300;
+  font-style: italic;
+}
+.loader-text span {
+  display: inline-block;
+  animation: textPulse 2s ease-in-out infinite;
+}
+@keyframes textPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* ========== BACKGROUND SUNSET ========== */
+.sun {
+  position: fixed;
+  width: 800px;
+  height: 800px;
+  top: 50%;
+  left: 30%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(232, 168, 85, 0.35) 0%, rgba(255, 122, 89, 0.15) 30%, transparent 60%);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(20px);
+  will-change: transform;
+}
+.stars {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, #f5efe0, transparent),
+    radial-gradient(1px 1px at 30% 80%, #f5efe0, transparent),
+    radial-gradient(1.5px 1.5px at 50% 40%, #e8a855, transparent),
+    radial-gradient(1px 1px at 70% 60%, #f5efe0, transparent),
+    radial-gradient(1px 1px at 85% 30%, #f5efe0, transparent),
+    radial-gradient(1.5px 1.5px at 15% 70%, #e8a855, transparent),
+    radial-gradient(1px 1px at 45% 90%, #f5efe0, transparent),
+    radial-gradient(1px 1px at 90% 85%, #f5efe0, transparent);
+  background-size: 100% 100%;
+}
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ========== HEADER ========== */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  padding: 1.5rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 100;
+  mix-blend-mode: difference;
+}
+.logo {
+  font-family: 'Fraunces', serif;
+  font-size: 1.6rem;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  color: var(--cream);
+  text-decoration: none;
+}
+.logo em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--amber);
+}
+nav {
+  display: flex;
+  gap: 2.5rem;
+}
+nav a {
+  color: var(--cream);
+  text-decoration: none;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.3s;
+}
+nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -5px; left: 0;
+  width: 0; height: 1px;
+  background: var(--amber);
+  transition: width 0.4s;
+}
+nav a:hover::after { width: 100%; }
+.cart-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: 1px solid var(--cream);
+  color: var(--cream);
+  padding: 0.5rem 1rem;
+  font-family: 'Archivo', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border-radius: 100px;
+  cursor: none;
+  transition: all 0.3s;
+}
+.cart-btn:hover { background: var(--amber); color: var(--bg); border-color: var(--amber); }
+
+/* scroll-hint removed */
+
+/* ========== HORIZONTAL SCROLL TRACK ========== */
+.track {
+  position: fixed;
+  top: 0; left: 0;
+  height: 100vh;
+  display: flex;
+  will-change: transform;
+  z-index: 1;
+}
+
+.panel {
+  width: 100vw;
+  max-width: 100vw;
+  height: 100vh;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 clamp(2rem, 5vw, 6rem);
+  overflow: hidden;
+}
+
+/* ========== PANEL 1: HERO ========== */
+.panel-hero {
+  justify-content: flex-start;
+}
+.hero-content {
+  position: relative;
+  z-index: 5;
+  max-width: 48%;
+  min-width: 0;
+}
+.hero-eyebrow {
+  font-family: 'Archivo', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.4em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: var(--amber);
+}
+.hero-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(3rem, 8vw, 8rem);
+  line-height: 0.9;
+  font-weight: 300;
+  color: var(--cream);
+  letter-spacing: -0.02em;
+  margin-bottom: 2rem;
+  word-wrap: break-word;
+}
+.hero-title .word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+.hero-title .word > span {
+  display: inline-block;
+  transform: translateY(110%);
+  transition: transform 1.3s cubic-bezier(.2,.7,.2,1);
+}
+.hero-title.in .word > span { transform: translateY(0); }
+.hero-title .word:nth-child(2) > span { transition-delay: .12s; }
+.hero-title .word:nth-child(3) > span { transition-delay: .24s; }
+.hero-title .word:nth-child(4) > span { transition-delay: .36s; }
+
+/* Marquee strip — vertical edge */
+.lumen-marquee {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: rgba(245, 239, 224, 0.04);
+  border-top: 1px solid var(--line);
+  overflow: hidden;
+  padding: 14px 0;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.lumen-marquee .lm-track {
+  display: flex;
+  gap: 3rem;
+  width: max-content;
+  animation: lm-scroll 42s linear infinite;
+  will-change: transform;
+}
+.lumen-marquee .lm-track > span {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  color: var(--cream-dim);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 3rem;
+}
+.lumen-marquee .lm-track > span::after {
+  content: "✦";
+  color: var(--amber);
+  font-style: normal;
+}
+@keyframes lm-scroll {
+  from { transform: translate3d(0,0,0); }
+  to   { transform: translate3d(-50%,0,0); }
+}
+@media (prefers-reduced-motion: reduce) { .lumen-marquee .lm-track { animation: none; } }
+@media (max-width: 768px) { .lumen-marquee { display: none; } }
+.hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--amber);
+  display: block;
+}
+.hero-desc {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--cream-dim);
+  max-width: 420px;
+  margin-bottom: 2.5rem;
+  font-weight: 300;
+}
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  background: var(--amber);
+  color: var(--bg);
+  text-decoration: none;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-weight: 700;
+  border-radius: 100px;
+  transition: all 0.4s;
+  position: relative;
+  overflow: hidden;
+}
+.hero-cta:hover {
+  background: var(--cream);
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px rgba(232, 168, 85, 0.25);
+}
+.hero-cta svg {
+  width: 16px; height: 16px;
+  transition: transform 0.3s;
+}
+.hero-cta:hover svg { transform: translateX(4px); }
+
+/* Hero 3D sunglasses */
+.hero-glasses {
+  position: absolute;
+  right: clamp(2rem, 5vw, 6rem);
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(45vw, 720px);
+  max-width: 720px;
+  z-index: 3;
+  perspective: 1000px;
+}
+.hero-glasses-inner {
+  will-change: transform;
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out;
+  filter: drop-shadow(0 40px 60px rgba(232, 168, 85, 0.3));
+}
+.hero-glasses svg { width: 100%; height: auto; display: block; }
+
+/* Hero background big text */
+.hero-bg-text {
+  position: absolute;
+  font-family: 'Fraunces', serif;
+  font-size: 30vw;
+  font-weight: 900;
+  font-style: italic;
+  color: rgba(245, 239, 224, 0.02);
+  line-height: 0.8;
+  white-space: nowrap;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ========== PANEL 2: COLLECTION ========== */
+.panel-collection {
+  padding: 0 clamp(2rem, 4vw, 4rem) 0 clamp(2rem, 5vw, 5rem);
+  align-items: center;
+}
+.collection-header {
+  position: absolute;
+  top: 50%;
+  left: clamp(2rem, 5vw, 5rem);
+  transform: translateY(-50%);
+  width: clamp(220px, 22vw, 300px);
+  max-width: 40%;
+}
+.collection-header .label {
+  font-size: 0.65rem;
+  letter-spacing: 0.35em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+.collection-header h2 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(2.8rem, 4.5vw, 4.5rem);
+  line-height: 0.9;
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 1.5rem;
+}
+.collection-header h2 em {
+  font-style: italic;
+  color: var(--amber);
+}
+.collection-header p {
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--cream-dim);
+  font-weight: 300;
+}
+.collection-rail {
+  display: flex;
+  gap: clamp(1rem, 1.8vw, 2rem);
+  margin-left: clamp(260px, 26vw, 340px);
+  perspective: 1600px;
+  padding: 4rem 0;
+  min-width: 0;
+  will-change: transform;
+  transition: transform 0.15s ease-out;
+}
+.product {
+  flex-shrink: 0;
+  width: clamp(180px, 14vw, 240px);
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.product:hover {
+  transform: rotateY(-12deg) rotateX(3deg) translateY(-15px);
+}
+.product-frame {
+  width: 100%;
+  height: clamp(240px, 22vw, 320px);
+  background: linear-gradient(180deg, var(--bg-2) 0%, var(--navy) 100%);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.product-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(232, 168, 85, 0.1), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.product:hover .product-frame::before { opacity: 1; }
+.product-frame svg {
+  width: 75%;
+  height: auto;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.5));
+  transition: transform 0.6s;
+}
+.product:hover .product-frame svg {
+  transform: scale(1.1) rotate(-3deg);
+}
+.product-tag {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--amber);
+  text-transform: uppercase;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--amber);
+  border-radius: 100px;
+}
+.product-number {
+  position: absolute;
+  bottom: 1rem;
+  right: 1.2rem;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 4rem;
+  font-weight: 300;
+  color: rgba(245, 239, 224, 0.08);
+  line-height: 1;
+}
+.product-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.product-name {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(1rem, 1vw, 1.2rem);
+  font-weight: 500;
+  color: var(--cream);
+  margin-bottom: 0.2rem;
+}
+.product-type {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+.product-price {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(1rem, 1vw, 1.2rem);
+  color: var(--amber);
+  font-weight: 400;
+  white-space: nowrap;
+}
+.product-info {
+  gap: 0.5rem;
+}
+
+/* ========== PANEL 3: LOOKBOOK ========== */
+.panel-lookbook {
+  padding: 0;
+}
+.lookbook-inner {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  padding: 0 clamp(2rem, 5vw, 6rem);
+  min-width: 0;
+}
+.lookbook-text {
+  flex-shrink: 0;
+  width: clamp(260px, 26vw, 340px);
+  position: relative;
+  z-index: 3;
+  min-width: 0;
+}
+.lookbook-text .number {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--amber);
+  margin-bottom: 1rem;
+  letter-spacing: 0.2em;
+}
+.lookbook-text h2 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(2.6rem, 4vw, 4rem);
+  line-height: 0.95;
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 1.5rem;
+}
+.lookbook-text h2 em {
+  font-style: italic;
+  color: var(--amber);
+}
+.lookbook-text p {
+  font-size: 0.85rem;
+  line-height: 1.8;
+  color: var(--cream-dim);
+  font-weight: 300;
+  margin-bottom: 2rem;
+}
+.lookbook-text .link {
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  color: var(--amber);
+  text-transform: uppercase;
+  text-decoration: none;
+  border-bottom: 1px solid var(--amber);
+  padding-bottom: 4px;
+}
+.lookbook-images {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  perspective: 1200px;
+}
+.lb-img {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+}
+.lb-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(1.1) contrast(1.05);
+  transition: transform 0.8s;
+}
+.lb-img:hover img { transform: scale(1.06); }
+.lb-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(10, 14, 26, 0.5));
+}
+.lb-img.lb-1 { width: 260px; height: 380px; transform: translateY(-20px) rotateY(6deg); }
+.lb-img.lb-2 { width: 300px; height: 460px; transform: translateY(20px); }
+.lb-img.lb-3 { width: 240px; height: 340px; transform: translateY(-10px) rotateY(-6deg); }
+
+/* ========== PANEL 4: SHOP / BESTSELLERS ========== */
+.panel-shop {
+  padding: 0 6rem;
+  align-items: center;
+}
+.shop-inner {
+  display: flex;
+  width: 100%;
+  gap: 4rem;
+  align-items: center;
+}
+.shop-intro {
+  flex-shrink: 0;
+  width: 280px;
+}
+.shop-intro .label {
+  font-size: 0.65rem;
+  letter-spacing: 0.35em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+.shop-intro h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 3.5rem;
+  line-height: 0.95;
+  color: var(--cream);
+  margin-bottom: 1.2rem;
+  font-weight: 300;
+}
+.shop-intro h2 em { font-style: italic; color: var(--amber); }
+.shop-intro p {
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--cream-dim);
+}
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  flex: 1;
+}
+.shop-card {
+  background: rgba(245, 239, 224, 0.03);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1.2rem;
+  transition: all 0.4s;
+  position: relative;
+}
+.shop-card:hover {
+  background: rgba(232, 168, 85, 0.05);
+  border-color: rgba(232, 168, 85, 0.3);
+  transform: translateY(-5px);
+}
+.shop-card-img {
+  width: 100%;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.8rem;
+  background: var(--bg);
+  border-radius: 4px;
+}
+.shop-card-img svg {
+  width: 80%;
+  height: auto;
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
+  transition: transform 0.4s;
+}
+.shop-card:hover .shop-card-img svg { transform: scale(1.08); }
+.shop-card .name {
+  font-family: 'Fraunces', serif;
+  font-size: 1rem;
+  color: var(--cream);
+  margin-bottom: 0.2rem;
+}
+.shop-card .type {
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+.shop-card .bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.shop-card .price {
+  font-family: 'Fraunces', serif;
+  font-size: 1rem;
+  color: var(--amber);
+}
+.shop-card .add {
+  background: none;
+  border: 1px solid var(--cream);
+  color: var(--cream);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: none;
+  transition: all 0.3s;
+  line-height: 1;
+  padding: 0;
+}
+.shop-card .add:hover {
+  background: var(--amber);
+  color: var(--bg);
+  border-color: var(--amber);
+  transform: rotate(90deg);
+}
+
+/* ========== PANEL 5: STORY ========== */
+.panel-story {
+  padding: 0 8rem;
+  align-items: center;
+}
+.story-inner {
+  display: flex;
+  align-items: center;
+  gap: 5rem;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+.story-visual {
+  flex-shrink: 0;
+  width: 420px;
+  height: 560px;
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+}
+.story-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.9) contrast(1.1);
+}
+.story-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(232, 168, 85, 0.15), transparent 60%);
+}
+.story-visual .caption {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 0.8rem;
+  color: var(--cream);
+  border-top: 1px solid var(--cream);
+  padding-top: 0.8rem;
+}
+.story-text {
+  flex: 1;
+  max-width: 540px;
+}
+.story-text .number {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--amber);
+  margin-bottom: 1rem;
+}
+.story-text h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 4rem;
+  line-height: 0.95;
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 2rem;
+}
+.story-text h2 em { font-style: italic; color: var(--amber); }
+.story-text p {
+  font-size: 0.88rem;
+  line-height: 1.85;
+  color: var(--cream-dim);
+  margin-bottom: 1.2rem;
+  font-weight: 300;
+}
+.story-stats {
+  display: flex;
+  gap: 3rem;
+  margin-top: 2.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--line);
+}
+.story-stats .stat .num {
+  font-family: 'Fraunces', serif;
+  font-size: 2.2rem;
+  color: var(--amber);
+  font-weight: 300;
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+.story-stats .stat .label {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+/* ========== PANEL 6: CONTACT / FOOTER ========== */
+.panel-contact {
+  padding: 0 6rem;
+  justify-content: center;
+  text-align: center;
+}
+.contact-inner {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+.contact-inner .number {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--amber);
+  margin-bottom: 1rem;
+  letter-spacing: 0.15em;
+}
+.contact-inner h2 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.95;
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 2rem;
+}
+.contact-inner h2 em { font-style: italic; color: var(--amber); }
+.contact-inner p {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--cream-dim);
+  margin-bottom: 2.5rem;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.newsletter {
+  display: flex;
+  gap: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--cream-dim);
+  padding-bottom: 0.8rem;
+}
+.newsletter input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--cream);
+  font-family: 'Archivo', sans-serif;
+  font-size: 0.85rem;
+  padding: 0.5rem 0;
+}
+.newsletter input::placeholder { color: var(--text-dim); letter-spacing: 0.1em; }
+.newsletter button {
+  background: none;
+  border: none;
+  color: var(--amber);
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  cursor: none;
+  font-weight: 700;
+  transition: color 0.3s;
+  padding: 0.5rem 1rem;
+}
+.newsletter button:hover { color: var(--cream); }
+.footer-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+.footer-meta .social { display: flex; gap: 1.5rem; }
+.footer-meta a {
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.footer-meta a:hover { color: var(--amber); }
+
+/* ========== PROGRESS BAR ========== */
+.progress {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(245, 239, 224, 0.08);
+  z-index: 99;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--amber), var(--sunset));
+  width: 0%;
+  transition: width 0.15s ease;
+}
+
+/* ========== LENS TINT TOGGLE ========== */
+.tint-toggle {
+  position: fixed;
+  right: 2rem;
+  bottom: 3.8rem;
+  z-index: 101;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: rgba(245, 239, 224, 0.10);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(245, 239, 224, 0.35);
+  border-radius: 100px;
+  padding: 0.6rem 1.1rem;
+  cursor: none;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  color: var(--cream);
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+.tint-toggle:hover { border-color: var(--amber); }
+.tint-toggle svg { width: 18px; height: auto; }
+.tint-toggle .state::before {
+  content: 'ON';
+  color: var(--cream);
+  font-weight: 700;
+}
+body.tinted .tint-toggle .state::before { content: 'OFF'; color: var(--amber); }
+body.tinted .tint-toggle {
+  background: rgba(245, 239, 224, 0.04);
+  border-color: var(--line);
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(232, 168, 85, 0.22), rgba(255, 122, 89, 0.15));
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 98;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+body.tinted::after { opacity: 1; }
+
+/* ========== SECTION INDICATOR ========== */
+.indicator {
+  position: fixed;
+  top: 50%;
+  right: 2rem;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.indicator .dot {
+  width: 28px;
+  height: 2px;
+  background: rgba(245, 239, 224, 0.15);
+  transition: all 0.4s;
+  cursor: none;
+  border: none;
+  padding: 0;
+}
+.indicator .dot.active {
+  background: var(--amber);
+  width: 40px;
+}
+
+/* ========== SCROLL REVEAL ========== */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+.reveal.delay-1 { transition-delay: 0.1s; }
+.reveal.delay-2 { transition-delay: 0.2s; }
+.reveal.delay-3 { transition-delay: 0.3s; }
+.reveal.delay-4 { transition-delay: 0.4s; }
+
+/* ========== HAMBURGER MENU ========== */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  width: 30px;
+  height: 20px;
+  position: relative;
+  cursor: pointer;
+  z-index: 200;
+}
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--cream);
+  position: absolute;
+  left: 0;
+  transition: all 0.3s;
+}
+.hamburger span:nth-child(1) { top: 0; }
+.hamburger span:nth-child(2) { top: 9px; }
+.hamburger span:nth-child(3) { top: 18px; }
+.hamburger.open span:nth-child(1) { top: 9px; transform: rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { top: 9px; transform: rotate(-45deg); }
+
+.mobile-nav {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 14, 26, 0.97);
+  backdrop-filter: blur(20px);
+  z-index: 150;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s, visibility 0.4s;
+}
+.mobile-nav.open { opacity: 1; visibility: visible; }
+.mobile-nav a {
+  color: var(--cream);
+  text-decoration: none;
+  font-family: 'Fraunces', serif;
+  font-size: 2rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  transition: color 0.3s;
+}
+.mobile-nav a:hover { color: var(--amber); }
+
+/* ========== MOBILE FALLBACK ========== */
+@media (max-width: 900px) {
+  html, body { overflow-y: auto; overflow-x: hidden; cursor: auto; }
+  .cursor { display: none; }
+  header {
+    padding: 1rem 1.2rem;
+    mix-blend-mode: normal;
+    background: rgba(10,14,26,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  nav { display: none; }
+  .hamburger { display: block; }
+  .mobile-nav { display: flex; }
+  .logo { font-size: 1.2rem; letter-spacing: 0.25em; }
+  .cart-btn { padding: 0.4rem 0.8rem; font-size: 0.6rem; cursor: pointer; }
+  .indicator, .tint-toggle { display: none; }
+
+  .track {
+    position: relative;
+    flex-direction: column;
+    height: auto;
+    transform: none !important;
+  }
+  .panel {
+    width: 100%;
+    height: auto;
+    min-height: auto;
+    padding: 5rem 1.5rem 3.5rem;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* HERO */
+  .panel-hero {
+    min-height: 100svh;
+    padding-top: 6rem;
+    justify-content: center;
+  }
+  .hero-content {
+    max-width: 100%;
+    text-align: center;
+  }
+  .hero-eyebrow { justify-content: center; }
+  .hero-title { font-size: clamp(2.8rem, 10vw, 4rem); }
+  .hero-desc { margin-left: auto; margin-right: auto; max-width: 90%; }
+  .hero-cta { cursor: pointer; }
+  .hero-glasses {
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: none;
+    width: 90%;
+    max-width: 400px;
+    margin: 2.5rem auto 0;
+  }
+  .hero-bg-text { font-size: 40vw; }
+
+  /* COLLECTION */
+  .panel-collection { padding: 4rem 1.2rem 3rem; }
+  .collection-header {
+    position: relative;
+    top: auto; left: auto;
+    transform: none;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .collection-header h2 { font-size: 2.5rem; }
+  .collection-rail {
+    margin-left: 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 0;
+  }
+  .product {
+    width: 100%;
+    max-width: 320px;
+  }
+  .product:hover { transform: translateY(-4px); }
+  .product-frame { height: 240px; }
+
+  /* LOOKBOOK */
+  .panel-lookbook { padding: 4rem 1.2rem 3rem; }
+  .lookbook-inner {
+    flex-direction: column;
+    padding: 0;
+    gap: 2rem;
+  }
+  .lookbook-text { width: 100%; text-align: center; }
+  .lookbook-text h2 { font-size: 2.2rem; }
+  .lookbook-images {
+    gap: 0.6rem;
+    justify-content: center;
+    flex-wrap: nowrap;
+  }
+  .lb-img { transform: none !important; }
+  .lb-img.lb-1 { width: 28vw; height: 38vw; max-width: 120px; max-height: 170px; }
+  .lb-img.lb-2 { width: 32vw; height: 44vw; max-width: 140px; max-height: 200px; }
+  .lb-img.lb-3 { width: 28vw; height: 38vw; max-width: 120px; max-height: 170px; }
+
+  /* SHOP */
+  .panel-shop { padding: 4rem 1.2rem 3rem; }
+  .shop-inner { flex-direction: column; gap: 2rem; }
+  .shop-intro { width: 100%; text-align: center; }
+  .shop-intro h2 { font-size: 2.2rem; }
+  .shop-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    width: 100%;
+  }
+  .shop-card { padding: 0.8rem; cursor: pointer; }
+  .shop-card .add { cursor: pointer; }
+  .shop-card-img { height: 80px; }
+
+  /* STORY */
+  .panel-story { padding: 4rem 1.2rem 3rem; }
+  .story-inner {
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+  }
+  .story-visual {
+    width: 100%;
+    max-width: 320px;
+    height: 360px;
+  }
+  .story-text { text-align: center; max-width: 100%; }
+  .story-text h2 { font-size: 2.2rem; }
+  .story-stats {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  /* CONTACT */
+  .panel-contact { padding: 4rem 1.2rem 3rem; }
+  .contact-inner h2 { font-size: 2.2rem; }
+  .newsletter button { cursor: pointer; }
+  .footer-meta { flex-direction: column; gap: 1rem; margin-top: 2.5rem; }
+  .footer-meta a { cursor: pointer; }
+
+  .sun { width: 400px; height: 400px; }
+  .progress { display: none; }
+}
+
+/* ========== TABLET ========== */
+@media (min-width: 901px) and (max-width: 1200px) {
+  .panel { padding: 0 4rem; }
+  .hero-title { font-size: clamp(3rem, 7vw, 6rem); }
+  .hero-glasses { width: 40vw; right: 3rem; }
+  .collection-header h2 { font-size: 3.5rem; }
+  .collection-rail { gap: 2rem; }
+  .product { width: 260px; }
+  .product-frame { height: 320px; }
+  .shop-grid { grid-template-columns: repeat(2, 1fr); }
+  .story-visual { width: 340px; height: 460px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Bottom marquee strip -->
+<div class="lumen-marquee" aria-hidden="true">
+  <div class="lm-track">
+    <span>Handcrafted in Florence</span>
+    <span>SS26 collection now live</span>
+    <span>Polarized CR-39 lenses</span>
+    <span>Worldwide shipping</span>
+    <span>Lifetime adjustments</span>
+    <span>Designed in Tokyo</span>
+    <span>Handcrafted in Florence</span>
+    <span>SS26 collection now live</span>
+    <span>Polarized CR-39 lenses</span>
+    <span>Worldwide shipping</span>
+    <span>Lifetime adjustments</span>
+    <span>Designed in Tokyo</span>
+  </div>
+</div>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"><span class="bridge"></span></div>
+
+<!-- Loader -->
+<div class="loader" id="loader">
+  <svg class="loader-glasses" viewBox="0 0 300 100" fill="none">
+    <path d="M20 50 L60 50" stroke="#e8a855" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M240 50 L280 50" stroke="#e8a855" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="95" cy="50" rx="45" ry="30" stroke="#f5efe0" stroke-width="2.5" fill="rgba(232,168,85,0.1)"/>
+    <ellipse cx="205" cy="50" rx="45" ry="30" stroke="#f5efe0" stroke-width="2.5" fill="rgba(232,168,85,0.1)"/>
+    <path d="M140 50 Q150 42 160 50" stroke="#f5efe0" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  </svg>
+  <div class="loader-text"><span>L</span><span>O</span><span>A</span><span>D</span><span>I</span><span>N</span><span>G</span></div>
+</div>
+
+<!-- Background atmosphere -->
+<div class="sun" id="sun"></div>
+<div class="stars"></div>
+<div class="grain"></div>
+
+<!-- Header -->
+<header>
+  <a href="#" class="logo">LUMEN <em>/ 光</em></a>
+  <nav>
+    <a href="#collection" data-panel="1">Collection</a>
+    <a href="#lookbook" data-panel="2">Lookbook</a>
+    <a href="#shop" data-panel="3">Shop</a>
+    <a href="#story" data-panel="4">Story</a>
+    <a href="#contact" data-panel="5">Contact</a>
+  </nav>
+  <button class="cart-btn">Cart <span style="color:var(--amber)">(0)</span></button>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</header>
+
+<!-- Mobile Nav -->
+<nav class="mobile-nav" id="mobileNav">
+  <a href="#" data-section="1">Collection</a>
+  <a href="#" data-section="2">Lookbook</a>
+  <a href="#" data-section="3">Shop</a>
+  <a href="#" data-section="4">Story</a>
+  <a href="#" data-section="5">Contact</a>
+</nav>
+
+<!-- Section indicator -->
+<div class="indicator" id="indicator">
+  <button class="dot active" data-i="0"></button>
+  <button class="dot" data-i="1"></button>
+  <button class="dot" data-i="2"></button>
+  <button class="dot" data-i="3"></button>
+  <button class="dot" data-i="4"></button>
+  <button class="dot" data-i="5"></button>
+</div>
+
+<!-- Lens tint toggle -->
+<button class="tint-toggle" id="tintToggle">
+  <svg viewBox="0 0 40 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><circle cx="30" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M17 10 L23 10" stroke="currentColor" stroke-width="1.5"/></svg>
+  Lens <span class="state"></span>
+</button>
+
+<!-- Progress -->
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+<!-- Horizontal track -->
+<div class="track" id="track">
+
+  <!-- ===== PANEL 1: HERO ===== -->
+  <section class="panel panel-hero">
+    <div class="hero-bg-text">LUMEN</div>
+    <div class="hero-content">
+      <div class="hero-eyebrow reveal">SS26 — NEW COLLECTION</div>
+      <h1 class="hero-title reveal delay-1" id="heroTitle"><span class="word"><span>Light,</span></span><br><span class="word"><span>Made&nbsp;</span></span><span class="word"><span><em>Wearable.</em></span></span></h1>
+      <p class="hero-desc reveal delay-2">Handcrafted acetate frames with polarized, UV-protective lenses. Designed in Tokyo, assembled in Florence — for the hours between golden and sun-down.</p>
+      <a href="#" class="hero-cta reveal delay-3">
+        Explore SS26
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6l6 6-6 6"/></svg>
+      </a>
+    </div>
+    <div class="hero-glasses" id="heroGlasses">
+      <div class="hero-glasses-inner" id="heroGlassesInner">
+        <svg viewBox="0 0 600 220" fill="none">
+          <defs>
+            <linearGradient id="lens1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#2a1a08"/>
+              <stop offset="50%" stop-color="#e8a855" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#ff7a59" stop-opacity="0.35"/>
+            </linearGradient>
+            <linearGradient id="lens2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#2a1a08"/>
+              <stop offset="50%" stop-color="#e8a855" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#ff7a59" stop-opacity="0.35"/>
+            </linearGradient>
+            <linearGradient id="frame" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#2a2a2a"/>
+              <stop offset="50%" stop-color="#0a0a0a"/>
+              <stop offset="100%" stop-color="#1a1a1a"/>
+            </linearGradient>
+          </defs>
+          <!-- Left temple -->
+          <path d="M20 105 Q60 100 95 100" stroke="url(#frame)" stroke-width="8" stroke-linecap="round" fill="none"/>
+          <!-- Right temple -->
+          <path d="M580 105 Q540 100 505 100" stroke="url(#frame)" stroke-width="8" stroke-linecap="round" fill="none"/>
+          <!-- Left lens -->
+          <path d="M95 100 Q95 40 170 40 L260 40 Q280 40 280 90 L280 120 Q280 180 210 180 L150 180 Q95 180 95 120 Z" fill="url(#lens1)" stroke="url(#frame)" stroke-width="10" stroke-linejoin="round"/>
+          <!-- Lens 1 highlight -->
+          <path d="M115 60 Q130 50 155 50" stroke="rgba(255,255,255,0.25)" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M130 75 L140 70" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <!-- Right lens -->
+          <path d="M320 100 Q320 40 395 40 L485 40 Q505 40 505 90 L505 120 Q505 180 435 180 L375 180 Q320 180 320 120 Z" fill="url(#lens2)" stroke="url(#frame)" stroke-width="10" stroke-linejoin="round"/>
+          <!-- Lens 2 highlight -->
+          <path d="M340 60 Q355 50 380 50" stroke="rgba(255,255,255,0.25)" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M355 75 L365 70" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <!-- Bridge -->
+          <path d="M280 85 Q295 72 310 72 Q315 72 320 85" stroke="url(#frame)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PANEL 2: COLLECTION ===== -->
+  <section class="panel panel-collection">
+    <div class="collection-header">
+      <div class="label reveal">01 — The Edit</div>
+      <h2 class="reveal delay-1">Our <em>Frames.</em></h2>
+      <p class="reveal delay-2">Four silhouettes, each cut from Mazzucchelli acetate and finished by hand. Polarized CR-39 lenses, hinged with titanium pins.</p>
+    </div>
+    <div class="collection-rail">
+      <div class="product reveal">
+        <div class="product-frame">
+          <span class="product-tag">New</span>
+          <span class="product-number">01</span>
+          <svg viewBox="0 0 300 120" fill="none">
+            <path d="M10 60 L50 60" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/>
+            <path d="M290 60 L250 60" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/>
+            <path d="M50 60 Q50 20 100 20 L130 20 Q150 20 150 55 L150 75 Q150 105 110 105 L80 105 Q50 105 50 75 Z" fill="rgba(232,168,85,0.4)" stroke="#1a1a1a" stroke-width="6"/>
+            <path d="M150 60 Q150 20 200 20 L230 20 Q250 20 250 55 L250 75 Q250 105 210 105 L180 105 Q150 105 150 75 Z" fill="rgba(232,168,85,0.4)" stroke="#1a1a1a" stroke-width="6"/>
+            <path d="M150 50 Q155 45 160 45" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div>
+            <div class="product-name">Meridian</div>
+            <div class="product-type">Oversized / Tortoise</div>
+          </div>
+          <div class="product-price">$285</div>
+        </div>
+      </div>
+
+      <div class="product reveal delay-1">
+        <div class="product-frame">
+          <span class="product-tag">Bestseller</span>
+          <span class="product-number">02</span>
+          <svg viewBox="0 0 300 120" fill="none">
+            <path d="M10 60 L60 55" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/>
+            <path d="M290 60 L240 55" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="100" cy="60" r="42" fill="rgba(40,40,40,0.85)" stroke="#1a1a1a" stroke-width="6"/>
+            <circle cx="200" cy="60" r="42" fill="rgba(40,40,40,0.85)" stroke="#1a1a1a" stroke-width="6"/>
+            <path d="M142 55 Q150 48 158 55" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M80 45 Q90 38 105 40" stroke="rgba(255,255,255,0.2)" stroke-width="2" fill="none"/>
+            <path d="M180 45 Q190 38 205 40" stroke="rgba(255,255,255,0.2)" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div>
+            <div class="product-name">Lunar</div>
+            <div class="product-type">Round / Obsidian</div>
+          </div>
+          <div class="product-price">$265</div>
+        </div>
+      </div>
+
+      <div class="product reveal delay-2">
+        <div class="product-frame">
+          <span class="product-tag">Limited</span>
+          <span class="product-number">03</span>
+          <svg viewBox="0 0 300 120" fill="none">
+            <path d="M10 55 L55 55" stroke="#3a2a1a" stroke-width="5" stroke-linecap="round"/>
+            <path d="M290 55 L245 55" stroke="#3a2a1a" stroke-width="5" stroke-linecap="round"/>
+            <path d="M55 55 L145 55 L130 100 L70 100 Z" fill="rgba(255,122,89,0.4)" stroke="#3a2a1a" stroke-width="6" stroke-linejoin="round"/>
+            <path d="M155 55 L245 55 L230 100 L170 100 Z" fill="rgba(255,122,89,0.4)" stroke="#3a2a1a" stroke-width="6" stroke-linejoin="round"/>
+            <path d="M145 55 L155 55" stroke="#3a2a1a" stroke-width="5"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div>
+            <div class="product-name">Desert</div>
+            <div class="product-type">Square / Amber</div>
+          </div>
+          <div class="product-price">$310</div>
+        </div>
+      </div>
+
+      <div class="product reveal delay-3">
+        <div class="product-frame">
+          <span class="product-number">04</span>
+          <svg viewBox="0 0 300 120" fill="none">
+            <path d="M10 55 L50 55" stroke="#c0a060" stroke-width="4" stroke-linecap="round"/>
+            <path d="M290 55 L250 55" stroke="#c0a060" stroke-width="4" stroke-linecap="round"/>
+            <path d="M50 35 L140 35 Q145 35 145 40 L145 75 Q145 100 115 100 L75 100 Q50 100 50 75 Z" fill="rgba(232,168,85,0.3)" stroke="#c0a060" stroke-width="4"/>
+            <path d="M155 35 L245 35 Q250 35 250 40 L250 75 Q250 100 225 100 L185 100 Q155 100 155 75 Z" fill="rgba(232,168,85,0.3)" stroke="#c0a060" stroke-width="4"/>
+            <path d="M145 45 Q150 40 155 45" stroke="#c0a060" stroke-width="4"/>
+          </svg>
+        </div>
+        <div class="product-info">
+          <div>
+            <div class="product-name">Aviator 21</div>
+            <div class="product-type">Aviator / Gold</div>
+          </div>
+          <div class="product-price">$295</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== PANEL 3: LOOKBOOK ===== -->
+  <section class="panel panel-lookbook">
+    <div class="lookbook-inner">
+      <div class="lookbook-text">
+        <div class="number reveal">02 — Lookbook</div>
+        <h2 class="reveal delay-1">Shot in <em>Almería.</em></h2>
+        <p class="reveal delay-2">Our SS26 campaign was photographed across the Tabernas desert — Europe's only true desert — where the sun bleaches every surface and every frame earns its keep.</p>
+        <a href="#" class="link reveal delay-3">View full series →</a>
+      </div>
+      <div class="lookbook-images">
+        <div class="lb-img lb-1 reveal delay-1"><img src="https://images.unsplash.com/photo-1508296695146-257a814070b4?w=400&h=600&fit=crop" alt="" crossorigin="anonymous"></div>
+        <div class="lb-img lb-2 reveal delay-2"><img src="https://images.unsplash.com/photo-1577803645773-f96470509666?w=500&h=700&fit=crop" alt="" crossorigin="anonymous"></div>
+        <div class="lb-img lb-3 reveal delay-3"><img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=600&fit=crop" alt="" crossorigin="anonymous"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PANEL 4: SHOP ===== -->
+  <section class="panel panel-shop">
+    <div class="shop-inner">
+      <div class="shop-intro">
+        <div class="label reveal">03 — Shop</div>
+        <h2 class="reveal delay-1">Best <em>Sellers.</em></h2>
+        <p class="reveal delay-2">Free shipping worldwide on orders over $200. Every pair includes a leather case and microfiber cloth.</p>
+      </div>
+      <div class="shop-grid">
+        <div class="shop-card reveal">
+          <div class="shop-card-img"><svg viewBox="0 0 300 120" fill="none"><path d="M10 60 L50 60" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/><path d="M290 60 L250 60" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/><path d="M50 60 Q50 20 100 20 L130 20 Q150 20 150 55 L150 75 Q150 105 110 105 L80 105 Q50 105 50 75 Z" fill="rgba(232,168,85,0.4)" stroke="#1a1a1a" stroke-width="6"/><path d="M150 60 Q150 20 200 20 L230 20 Q250 20 250 55 L250 75 Q250 105 210 105 L180 105 Q150 105 150 75 Z" fill="rgba(232,168,85,0.4)" stroke="#1a1a1a" stroke-width="6"/></svg></div>
+          <div class="name">Meridian</div>
+          <div class="type">Oversized</div>
+          <div class="bottom"><div class="price">$285</div><button class="add">+</button></div>
+        </div>
+        <div class="shop-card reveal delay-1">
+          <div class="shop-card-img"><svg viewBox="0 0 300 120" fill="none"><path d="M10 60 L60 55" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/><path d="M290 60 L240 55" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="60" r="42" fill="rgba(40,40,40,0.85)" stroke="#1a1a1a" stroke-width="6"/><circle cx="200" cy="60" r="42" fill="rgba(40,40,40,0.85)" stroke="#1a1a1a" stroke-width="6"/></svg></div>
+          <div class="name">Lunar</div>
+          <div class="type">Round</div>
+          <div class="bottom"><div class="price">$265</div><button class="add">+</button></div>
+        </div>
+        <div class="shop-card reveal delay-2">
+          <div class="shop-card-img"><svg viewBox="0 0 300 120" fill="none"><path d="M10 55 L55 55" stroke="#3a2a1a" stroke-width="5" stroke-linecap="round"/><path d="M290 55 L245 55" stroke="#3a2a1a" stroke-width="5" stroke-linecap="round"/><path d="M55 55 L145 55 L130 100 L70 100 Z" fill="rgba(255,122,89,0.4)" stroke="#3a2a1a" stroke-width="6" stroke-linejoin="round"/><path d="M155 55 L245 55 L230 100 L170 100 Z" fill="rgba(255,122,89,0.4)" stroke="#3a2a1a" stroke-width="6" stroke-linejoin="round"/></svg></div>
+          <div class="name">Desert</div>
+          <div class="type">Square</div>
+          <div class="bottom"><div class="price">$310</div><button class="add">+</button></div>
+        </div>
+        <div class="shop-card reveal delay-1">
+          <div class="shop-card-img"><svg viewBox="0 0 300 120" fill="none"><path d="M10 55 L50 55" stroke="#c0a060" stroke-width="4" stroke-linecap="round"/><path d="M290 55 L250 55" stroke="#c0a060" stroke-width="4" stroke-linecap="round"/><path d="M50 35 L140 35 Q145 35 145 40 L145 75 Q145 100 115 100 L75 100 Q50 100 50 75 Z" fill="rgba(232,168,85,0.3)" stroke="#c0a060" stroke-width="4"/><path d="M155 35 L245 35 Q250 35 250 40 L250 75 Q250 100 225 100 L185 100 Q155 100 155 75 Z" fill="rgba(232,168,85,0.3)" stroke="#c0a060" stroke-width="4"/></svg></div>
+          <div class="name">Aviator 21</div>
+          <div class="type">Aviator</div>
+          <div class="bottom"><div class="price">$295</div><button class="add">+</button></div>
+        </div>
+        <div class="shop-card reveal delay-2">
+          <div class="shop-card-img"><svg viewBox="0 0 300 120" fill="none"><path d="M10 58 L55 55" stroke="#2a1a1a" stroke-width="5" stroke-linecap="round"/><path d="M290 58 L245 55" stroke="#2a1a1a" stroke-width="5" stroke-linecap="round"/><path d="M55 55 Q55 28 95 25 L125 25 Q145 28 148 55 L145 80 Q140 105 105 105 L80 105 Q55 100 55 75 Z" fill="rgba(232,168,85,0.35)" stroke="#2a1a1a" stroke-width="6"/><path d="M152 55 Q155 28 195 25 L225 25 Q245 28 248 55 L245 80 Q240 105 205 105 L180 105 Q155 100 155 75 Z" fill="rgba(232,168,85,0.35)" stroke="#2a1a1a" stroke-width="6"/><path d="M148 48 Q150 42 152 48" stroke="#2a1a1a" stroke-width="5" stroke-linecap="round" fill="none"/></svg></div>
+          <div class="name">Solstice</div>
+          <div class="type">Cat-eye</div>
+          <div class="bottom"><div class="price">$275</div><button class="add">+</button></div>
+        </div>
+        <div class="shop-card reveal delay-3">
+          <div class="shop-card-img"><svg viewBox="0 0 300 120" fill="none"><path d="M10 55 L50 52" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/><path d="M290 55 L250 52" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/><rect x="50" y="30" width="95" height="65" rx="10" fill="rgba(40,40,40,0.75)" stroke="#1a1a1a" stroke-width="6"/><rect x="155" y="30" width="95" height="65" rx="10" fill="rgba(40,40,40,0.75)" stroke="#1a1a1a" stroke-width="6"/><path d="M145 50 Q150 44 155 50" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round" fill="none"/></svg></div>
+          <div class="name">Dusk</div>
+          <div class="type">Wayfarer</div>
+          <div class="bottom"><div class="price">$255</div><button class="add">+</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PANEL 5: STORY ===== -->
+  <section class="panel panel-story">
+    <div class="story-inner">
+      <div class="story-visual reveal">
+        <img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&h=700&fit=crop" alt="" crossorigin="anonymous">
+        <div class="caption">Atelier — Firenze, 2019</div>
+      </div>
+      <div class="story-text">
+        <div class="number reveal">04 — Our Story</div>
+        <h2 class="reveal delay-1">Seven years of<br><em>chasing light.</em></h2>
+        <p class="reveal delay-2">LUMEN was founded in 2019 by two friends who shared an obsession with the way light bends through glass. We started with a single frame cut by hand in a Florence workshop — we're still cutting every frame there today.</p>
+        <p class="reveal delay-3">Every pair of LUMEN sunglasses passes through twelve sets of hands before it reaches yours. No shortcuts, no machine polishing, no compromises on the acetate. Just slow, careful work.</p>
+        <div class="story-stats reveal delay-4">
+          <div class="stat"><div class="num">7</div><div class="label">Years crafting</div></div>
+          <div class="stat"><div class="num">12</div><div class="label">Hands per frame</div></div>
+          <div class="stat"><div class="num">48</div><div class="label">Countries shipped</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PANEL 6: CONTACT ===== -->
+  <section class="panel panel-contact">
+    <div class="contact-inner">
+      <div class="number reveal">05 — Get in touch</div>
+      <h2 class="reveal delay-1">Stay in the <em>shade.</em></h2>
+      <p class="reveal delay-2">Join our list for private sales, new releases, and the occasional story from our atelier in Florence. No spam — we promise.</p>
+      <form class="newsletter reveal delay-3" onsubmit="event.preventDefault(); this.querySelector('input').value=''; alert('Thanks for subscribing!');">
+        <input type="email" placeholder="your@email.com" required>
+        <button type="submit">Subscribe →</button>
+      </form>
+      <div class="footer-meta">
+        <div>© 2026 LUMEN Eyewear — Florence / Tokyo</div>
+        <div class="social">
+          <a href="#">Instagram</a>
+          <a href="#">Pinterest</a>
+          <a href="#">TikTok</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// ===== LOADER =====
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    document.getElementById('loader').classList.add('hide');
+    // Kick the hero title split-word reveal right after loader drops
+    var heroTitle = document.getElementById('heroTitle');
+    if (heroTitle) heroTitle.classList.add('in');
+  }, 1800);
+});
+
+// ===== CUSTOM CURSOR =====
+var cursorEl = document.getElementById('cursor');
+var cx = 0, cy = 0, tx = 0, ty = 0;
+document.addEventListener('mousemove', function(e) { tx = e.clientX - 30; ty = e.clientY - 15; });
+function animCursor() {
+  cx += (tx - cx) * 0.15;
+  cy += (ty - cy) * 0.15;
+  cursorEl.style.transform = 'translate(' + cx + 'px,' + cy + 'px)';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+document.querySelectorAll('a, button, .product, .shop-card').forEach(function(el) {
+  el.addEventListener('mouseenter', function() { cursorEl.classList.add('hover'); });
+  el.addEventListener('mouseleave', function() { cursorEl.classList.remove('hover'); });
+});
+
+// ===== CORE REFERENCES =====
+var track = document.getElementById('track');
+var panels = document.querySelectorAll('.panel');
+var progressBar = document.getElementById('progressBar');
+var sun = document.getElementById('sun');
+var dots = document.querySelectorAll('.indicator .dot');
+var isMobile = window.innerWidth <= 900;
+
+// ===== DESKTOP: HORIZONTAL SNAP SCROLL =====
+if (!isMobile) {
+  var currentPanel = 0;
+  var currentX = 0;
+  var targetX = 0;
+  var totalPanels = panels.length;
+  var maxScroll = (totalPanels - 1) * window.innerWidth;
+  var isAnimating = false;
+  var wheelCooldown = false;
+
+  // --- Collection rail (panel index 1) scroll trapping ---
+  var collectionPanelIndex = 1; // "Our Frames." panel
+  var collectionRail = document.querySelector('.panel-collection .collection-rail');
+  var railScrollPos = 0;
+  var railMaxScroll = 0;
+
+  function updateRailMaxScroll() {
+    if (collectionRail) {
+      railMaxScroll = collectionRail.scrollWidth - collectionRail.parentElement.clientWidth;
+      // Account for the left offset of the rail (margin-left of the rail)
+      var railStyle = window.getComputedStyle(collectionRail);
+      var railML = parseInt(railStyle.marginLeft) || 0;
+      railMaxScroll = collectionRail.scrollWidth - (window.innerWidth - railML);
+      if (railMaxScroll < 0) railMaxScroll = 0;
+    }
+  }
+
+  // Remove fake body height - we no longer use native scroll hijack
+  document.body.style.height = 'auto';
+  document.body.style.overflow = 'hidden';
+
+  function onResize() {
+    maxScroll = (totalPanels - 1) * window.innerWidth;
+    targetX = currentPanel * window.innerWidth;
+    currentX = targetX;
+    track.style.transform = 'translateX(' + (-currentX) + 'px)';
+    updateRailMaxScroll();
+  }
+  window.addEventListener('resize', onResize);
+  // Calculate rail max scroll after layout
+  setTimeout(updateRailMaxScroll, 100);
+
+  // Debounced wheel event for snap behavior
+  window.addEventListener('wheel', function(e) {
+    e.preventDefault();
+
+    if (wheelCooldown) return;
+
+    var delta = e.deltaY;
+    // Require a minimum threshold to avoid accidental tiny scrolls
+    if (Math.abs(delta) < 15) return;
+
+    // --- Collection rail trapping logic ---
+    if (currentPanel === collectionPanelIndex && collectionRail && railMaxScroll > 0) {
+      if (delta > 0) {
+        // Scrolling down/right: scroll the rail first
+        if (railScrollPos < railMaxScroll - 5) {
+          railScrollPos = Math.min(railScrollPos + Math.abs(delta) * 2.5, railMaxScroll);
+          collectionRail.style.transform = 'translateX(' + (-railScrollPos) + 'px)';
+          return; // Trap scroll in the rail
+        }
+        // Rail fully scrolled, proceed to next panel
+      } else {
+        // Scrolling up/left: scroll the rail back first
+        if (railScrollPos > 5) {
+          railScrollPos = Math.max(railScrollPos - Math.abs(delta) * 2.5, 0);
+          collectionRail.style.transform = 'translateX(' + (-railScrollPos) + 'px)';
+          return; // Trap scroll in the rail
+        }
+        // Rail at start, proceed to previous panel
+      }
+    }
+
+    wheelCooldown = true;
+
+    if (delta > 0 && currentPanel < totalPanels - 1) {
+      currentPanel++;
+    } else if (delta < 0 && currentPanel > 0) {
+      currentPanel--;
+    }
+
+    // Reset collection rail when leaving the collection panel
+    if (currentPanel !== collectionPanelIndex && collectionRail) {
+      // If navigating forward past collection, keep rail at end
+      // If navigating backward past collection, reset rail to start
+      if (currentPanel < collectionPanelIndex) {
+        railScrollPos = 0;
+        collectionRail.style.transform = 'translateX(0)';
+      }
+    }
+
+    targetX = currentPanel * window.innerWidth;
+
+    // Allow next wheel after animation settles
+    setTimeout(function() { wheelCooldown = false; }, 700);
+  }, { passive: false });
+
+  function animateScroll() {
+    var diff = targetX - currentX;
+    // Smooth easing toward target
+    currentX += diff * 0.10;
+    // Snap when close enough
+    if (Math.abs(diff) < 0.5) {
+      currentX = targetX;
+    }
+    track.style.transform = 'translateX(' + (-currentX) + 'px)';
+
+    // Sun parallax
+    sun.style.transform = 'translate(calc(-50% + ' + (-currentX * 0.25) + 'px), -50%)';
+
+    // Progress bar
+    if (maxScroll > 0) {
+      progressBar.style.width = Math.min((currentX / maxScroll) * 100, 100) + '%';
+    }
+
+    // Active indicator dot
+    var activeIdx = Math.min(Math.round(currentX / window.innerWidth), totalPanels - 1);
+    dots.forEach(function(d, i) { d.classList.toggle('active', i === activeIdx); });
+
+    // Reveal elements in visible panels
+    panels.forEach(function(panel, i) {
+      var panelX = i * window.innerWidth;
+      if (currentX > panelX - window.innerWidth && currentX < panelX + window.innerWidth) {
+        panel.querySelectorAll('.reveal:not(.in)').forEach(function(el) {
+          el.classList.add('in');
+        });
+      }
+    });
+
+    requestAnimationFrame(animateScroll);
+  }
+  animateScroll();
+
+  // Navigate to a specific panel (used by dots and nav links)
+  function goToPanel(idx) {
+    idx = Math.max(0, Math.min(idx, totalPanels - 1));
+    // Reset collection rail if we're jumping away from or to it
+    if (collectionRail) {
+      if (idx !== collectionPanelIndex) {
+        if (idx < collectionPanelIndex) {
+          railScrollPos = 0;
+          collectionRail.style.transform = 'translateX(0)';
+        } else {
+          railScrollPos = railMaxScroll;
+          collectionRail.style.transform = 'translateX(' + (-railMaxScroll) + 'px)';
+        }
+      } else {
+        // Arriving at collection panel - reset rail to start
+        railScrollPos = 0;
+        collectionRail.style.transform = 'translateX(0)';
+      }
+    }
+    currentPanel = idx;
+    targetX = idx * window.innerWidth;
+  }
+
+  // Dot click navigation
+  dots.forEach(function(dot, i) {
+    dot.addEventListener('click', function() {
+      goToPanel(i);
+    });
+  });
+
+  // Nav link click navigation
+  document.querySelectorAll('nav a[data-panel]').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var idx = parseInt(link.dataset.panel);
+      goToPanel(idx);
+    });
+  });
+
+  // Touch support for snap scroll on desktop touch devices
+  var touchStartX = 0, touchStartY = 0;
+  window.addEventListener('touchstart', function(e) {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  window.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    var dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      if (dx < 0 && currentPanel < totalPanels - 1) {
+        currentPanel++;
+      } else if (dx > 0 && currentPanel > 0) {
+        currentPanel--;
+      }
+      targetX = currentPanel * window.innerWidth;
+    }
+  }, { passive: true });
+
+  // Keyboard navigation
+  window.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (currentPanel < totalPanels - 1) {
+        currentPanel++;
+        targetX = currentPanel * window.innerWidth;
+      }
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (currentPanel > 0) {
+        currentPanel--;
+        targetX = currentPanel * window.innerWidth;
+      }
+    }
+  });
+
+  // Reveal hero immediately
+  panels[0].querySelectorAll('.reveal').forEach(function(el) { el.classList.add('in'); });
+
+} else {
+  // ===== MOBILE: VERTICAL SCROLL =====
+  // Immediately show all reveals with IntersectionObserver
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px 50px 0px' });
+  document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+}
+
+// ===== HERO GLASSES MOUSE TILT =====
+var heroGlassesInner = document.getElementById('heroGlassesInner');
+if (heroGlassesInner && !isMobile) {
+  var grx = 0, gry = 0, gtrx = 0, gtry = 0;
+  document.addEventListener('mousemove', function(e) {
+    var mx = (e.clientX / window.innerWidth - 0.5) * 2;
+    var my = (e.clientY / window.innerHeight - 0.5) * 2;
+    gtrx = my * -10;
+    gtry = mx * 15;
+  });
+  function tiltGlasses() {
+    grx += (gtrx - grx) * 0.06;
+    gry += (gtry - gry) * 0.06;
+    heroGlassesInner.style.transform = 'rotateX(' + grx + 'deg) rotateY(' + gry + 'deg) translateZ(20px)';
+    requestAnimationFrame(tiltGlasses);
+  }
+  tiltGlasses();
+}
+
+// ===== LENS TINT TOGGLE =====
+document.getElementById('tintToggle').addEventListener('click', function() {
+  document.body.classList.toggle('tinted');
+});
+
+// ===== HAMBURGER MENU =====
+var hamburger = document.getElementById('hamburger');
+var mobileNav = document.getElementById('mobileNav');
+if (hamburger && mobileNav) {
+  hamburger.addEventListener('click', function() {
+    hamburger.classList.toggle('open');
+    mobileNav.classList.toggle('open');
+  });
+  mobileNav.querySelectorAll('a[data-section]').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      hamburger.classList.remove('open');
+      mobileNav.classList.remove('open');
+      var idx = parseInt(link.dataset.section);
+      var targetPanel = panels[idx];
+      if (targetPanel) {
+        targetPanel.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+}
+</script>
+</body>
+</html>

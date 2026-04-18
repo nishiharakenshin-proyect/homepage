@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUMIÈ — Organic Hair Studio · South Yarra, Melbourne · Book Online</title>
+    <meta name="description" content="LUMIÈ is a boutique organic hair studio in South Yarra, Melbourne. Signature cuts, ammonia-free colour, scalp rituals. Book online — open 6 days.">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@200;300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --milk: #FDFCFB;
+            --bone: #F6F5F2;
+            --sand: #F0ECE4;
+            --sage: #E5E7E1;
+            --sage-deep: #C8CFC2;
+            --clay: #DED0C1;
+            --clay-deep: #B89A7D;
+            --charcoal: #1A1A1A;
+            --ink: #0F0F0F;
+            --muted: rgba(26, 26, 26, 0.5);
+            --border: rgba(26, 26, 26, 0.08);
+        }
+
+        * { -webkit-font-smoothing: antialiased; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--milk);
+            color: var(--charcoal);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        .font-serif { font-family: 'Cormorant Garamond', serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        ::-webkit-scrollbar { width: 0; height: 0; }
+
+        /* ── Scroll progress line (1px top) ────────────────────── */
+        #scroll-progress {
+            position: fixed;
+            top: 0; left: 0;
+            width: 0%;
+            height: 1px;
+            background: var(--charcoal);
+            z-index: 2100;
+            transition: width 0.08s linear;
+            pointer-events: none;
+        }
+
+        /* ── Custom cursor ────────────────────── */
+        #cursor {
+            position: fixed;
+            width: 22px; height: 22px;
+            border: 1px solid white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 2000;
+            mix-blend-mode: difference;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background 0.3s;
+        }
+        #cursor.hover {
+            width: 58px; height: 58px;
+            background: rgba(255,255,255,0.08);
+        }
+        #cursor.drag::after {
+            content: 'DRAG';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.15em;
+            color: white;
+            mix-blend-mode: normal;
+        }
+        #cursor.drag { width: 74px; height: 74px; background: rgba(255,255,255,0.1); }
+
+        /* ── Buttons ────────────────────── */
+        .btn-reserve {
+            background: var(--charcoal);
+            color: white;
+            padding: 0.85rem 2rem;
+            border-radius: 9999px;
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            font-weight: 600;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            border: 1px solid var(--charcoal);
+        }
+        .btn-reserve:hover {
+            transform: translateY(-2px);
+            background: transparent;
+            color: var(--charcoal);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+        }
+        .btn-reserve .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #7BC47F;
+            box-shadow: 0 0 0 3px rgba(123,196,127,0.22);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 3px rgba(123,196,127,0.22); }
+            50%      { box-shadow: 0 0 0 6px rgba(123,196,127,0.05); }
+        }
+        .btn-ghost {
+            padding: 0.85rem 2rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(26,26,26,0.18);
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .btn-ghost:hover {
+            border-color: var(--charcoal);
+            background: var(--charcoal);
+            color: white;
+        }
+
+        /* ── Image zoom container ────────────────────── */
+        .img-zoom-container {
+            overflow: hidden;
+            border-radius: 2px;
+            background: #f0f0f0;
+            position: relative;
+            display: block;
+            width: 100%;
+        }
+        .img-zoom-container img {
+            transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        @media (hover: hover) {
+            .img-zoom-container:hover img { transform: scale(1.05); }
+        }
+
+        /* ── Section headings ────────────────────── */
+        .eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            opacity: 0.4;
+            display: inline-block;
+        }
+        .roman {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 11px;
+            letter-spacing: 0.3em;
+            opacity: 0.45;
+            text-transform: uppercase;
+        }
+
+        /* ── HERO: image crossfade slider ────────────────────── */
+        .hero {
+            position: relative;
+            min-height: 100svh;
+            padding-top: 7rem;
+            padding-bottom: 6rem;
+            overflow: hidden;
+        }
+        .hero-split {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        @media (min-width: 1024px) {
+            .hero-split { grid-template-columns: 1.05fr 1fr; gap: 5rem; }
+        }
+        .hero-text { position: relative; z-index: 5; }
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 7.2vw, 7.4rem);
+            font-weight: 300;
+            line-height: 0.92;
+            letter-spacing: -0.015em;
+            color: var(--charcoal);
+        }
+        .hero-slider {
+            position: relative;
+            width: 90%;
+            max-width: 540px;
+            aspect-ratio: 3 / 4;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 2px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.12);
+        }
+        .hero-slider .slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1.6s cubic-bezier(.4, 0, .2, 1);
+            will-change: opacity;
+        }
+        .hero-slider .slide.on { opacity: 1; }
+        .hero-slider .slide img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+            transform: scale(1.02);
+        }
+        .hero-slider .slide.on img {
+            animation: kenburns 9s ease-out both;
+        }
+        @keyframes kenburns {
+            from { transform: scale(1.02) translate(0, 0); }
+            to   { transform: scale(1.10) translate(-1%, -1%); }
+        }
+        .hero-slider .counter {
+            position: absolute;
+            bottom: 1.1rem;
+            left: 1.1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            color: white;
+            padding: 0.45rem 0.85rem;
+            background: rgba(0,0,0,0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 1px;
+            text-transform: uppercase;
+        }
+        .hero-slider .dots {
+            position: absolute;
+            bottom: 1.3rem;
+            right: 1.1rem;
+            display: flex;
+            gap: 5px;
+        }
+        .hero-slider .dots span {
+            width: 16px; height: 1px;
+            background: rgba(255,255,255,0.35);
+            transition: background 0.5s, width 0.5s;
+        }
+        .hero-slider .dots span.on { background: white; width: 28px; }
+        .hero-caption {
+            position: absolute;
+            bottom: -1rem;
+            left: -1rem;
+            background: white;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.12);
+            border: 1px solid rgba(26,26,26,0.05);
+            padding: 1.1rem 1.3rem;
+            border-radius: 2px;
+            z-index: 3;
+        }
+        @media (max-width: 640px) {
+            .hero-caption { left: 0.5rem; bottom: -0.5rem; }
+        }
+        .hero-vert-label {
+            position: absolute;
+            top: 50%;
+            right: -0.5rem;
+            transform: rotate(90deg) translateY(-50%);
+            transform-origin: right top;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            opacity: 0.4;
+            white-space: nowrap;
+        }
+        @media (max-width: 1023px) {
+            .hero-vert-label { display: none; }
+        }
+        /* Social proof strip — SINGLE ELEGANT LINE (no 3-col) */
+        .proof-line {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1.4rem;
+            padding: 0.8rem 1.3rem;
+            border: 1px solid var(--border);
+            border-radius: 9999px;
+            background: white;
+            font-size: 11px;
+            letter-spacing: 0.1em;
+        }
+        .proof-line .sep {
+            width: 3px; height: 3px;
+            border-radius: 50%;
+            background: var(--clay-deep);
+            opacity: 0.6;
+        }
+        .proof-line .stars { color: var(--clay-deep); letter-spacing: 1px; }
+
+        /* ── Press bar (replaces old text marquee — cleaner) ────────────────────── */
+        .press-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3.5rem;
+            padding: 2.2rem 2rem;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+        .press-bar .press-item {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1rem;
+            opacity: 0.42;
+            letter-spacing: 0.02em;
+            transition: opacity 0.5s;
+        }
+        .press-bar .press-item:hover { opacity: 0.85; }
+
+        /* ── Ritual sticky-stack (immersive: each ritual pins while next arrives) ─ */
+        .ritual-stack {
+            position: relative;
+            background: var(--bone);
+        }
+        .ritual-card {
+            position: sticky;
+            top: 0;
+            min-height: 100svh;
+            display: flex;
+            align-items: center;
+            transform-origin: center center;
+            background: var(--bone);
+            border-bottom: 1px solid var(--border);
+            contain: layout paint;
+        }
+        .ritual-card-inner {
+            will-change: transform, opacity;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+        .ritual-card-inner {
+            width: 100%;
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 5rem 2rem 5rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        @media (min-width: 900px) {
+            .ritual-card-inner {
+                grid-template-columns: 1.1fr 1fr;
+                gap: 6rem;
+                padding: 4rem 4rem 4rem;
+            }
+        }
+        @media (min-width: 1280px) {
+            .ritual-card-inner { padding: 4rem 6rem 4rem; }
+        }
+        .ritual-img {
+            position: relative;
+            aspect-ratio: 4 / 5;
+            width: 100%;
+            max-width: 540px;
+            overflow: hidden;
+            border-radius: 2px;
+            background: var(--sage);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.08);
+        }
+        .ritual-img img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .ritual-img .num {
+            position: absolute;
+            top: 1.3rem; left: 1.3rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            background: rgba(255,255,255,0.88);
+            padding: 0.4rem 0.7rem;
+            backdrop-filter: blur(6px);
+            text-transform: uppercase;
+        }
+        .ritual-copy .r-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            opacity: 0.4;
+            display: block;
+            margin-bottom: 1.4rem;
+        }
+        .ritual-copy h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.2rem, 5.5vw, 4.8rem);
+            font-weight: 300;
+            line-height: 0.98;
+            letter-spacing: -0.01em;
+            margin-bottom: 1.6rem;
+        }
+        .ritual-copy h3 em { font-style: italic; color: rgba(26,26,26,0.4); }
+        .ritual-copy p {
+            font-size: 0.95rem;
+            line-height: 1.9;
+            opacity: 0.6;
+            max-width: 430px;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+        .ritual-meta {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2.2rem;
+            padding-top: 1.4rem;
+            border-top: 1px solid var(--border);
+        }
+        .ritual-meta > div {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        .ritual-meta .lbl {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            opacity: 0.4;
+        }
+        .ritual-meta .val {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-style: italic;
+        }
+        .ritual-steps {
+            margin-top: 1.4rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .ritual-steps span {
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 0.5rem 0.9rem;
+            border: 1px solid var(--border);
+            border-radius: 9999px;
+            opacity: 0.65;
+        }
+        /* Progress ticker (fixed inside stack area) */
+        .ritual-ticker {
+            position: absolute;
+            top: 50%;
+            right: 2.2rem;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1.1rem;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .ritual-ticker .tk {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.25em;
+            color: var(--charcoal);
+            opacity: 0.2;
+            transition: opacity 0.5s, transform 0.5s;
+            padding-left: 18px;
+            position: relative;
+        }
+        .ritual-ticker .tk::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 50%;
+            width: 10px; height: 1px;
+            background: currentColor;
+            transition: width 0.5s;
+        }
+        .ritual-ticker .tk.on {
+            opacity: 1;
+            transform: translateX(4px);
+        }
+        .ritual-ticker .tk.on::before { width: 14px; }
+        @media (max-width: 900px) {
+            .ritual-ticker { display: none; }
+            .ritual-card { min-height: auto; position: relative; }
+        }
+
+        /* ── Before/After drag reveal ────────────────────── */
+        .transform-section {
+            padding: 7rem 0 8rem;
+            background: var(--milk);
+            position: relative;
+            overflow: hidden;
+        }
+        .ba-wrap {
+            position: relative;
+            width: 100%;
+            max-width: 1160px;
+            margin: 0 auto;
+            aspect-ratio: 16 / 10;
+            overflow: hidden;
+            border-radius: 2px;
+            background: #ddd;
+            user-select: none;
+            touch-action: pan-y;
+            cursor: col-resize;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.1);
+        }
+        .ba-wrap img {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+            display: block;
+        }
+        .ba-wrap .ba-before img { filter: grayscale(1) brightness(0.78) contrast(1.02); }
+        .ba-wrap .ba-after {
+            position: absolute;
+            inset: 0;
+            clip-path: inset(0 0 0 50%);
+            will-change: clip-path;
+        }
+        .ba-wrap .ba-handle {
+            position: absolute;
+            top: 0; bottom: 0;
+            left: 50%;
+            width: 2px;
+            background: white;
+            pointer-events: none;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 0 24px rgba(0,0,0,0.12);
+            transform: translateX(-1px);
+            will-change: left;
+        }
+        .ba-wrap .ba-handle::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 14px 40px rgba(0,0,0,0.22);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%231A1A1A' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='15 18 9 12 15 6'/%3E%3Cpolyline points='9 6 15 12 9 18'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .ba-label {
+            position: absolute;
+            top: 1.2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: white;
+            background: rgba(0,0,0,0.35);
+            backdrop-filter: blur(8px);
+            padding: 0.5rem 0.85rem;
+            border-radius: 1px;
+        }
+        .ba-label.before { left: 1.2rem; }
+        .ba-label.after { right: 1.2rem; }
+
+        /* ── Team card ────────────────────── */
+        .team-card { position: relative; }
+        .team-card .team-img {
+            aspect-ratio: 4 / 5;
+            overflow: hidden;
+            border-radius: 2px;
+            background: var(--sage);
+        }
+        .team-card .team-img img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.15);
+            transition: transform 1.6s cubic-bezier(.22, 1, .3, 1), filter 0.8s ease;
+        }
+        .team-card:hover .team-img img {
+            transform: scale(1.06);
+            filter: grayscale(0);
+        }
+
+        /* ── Instagram handle pill ─ */
+        .ig-handle {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 22px 14px 18px;
+            background: rgba(255, 255, 255, 0.55);
+            border: 1px solid rgba(26, 26, 26, 0.12);
+            border-radius: 999px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: background .4s, border-color .4s, transform .4s;
+            align-self: flex-start;
+        }
+        @media (min-width: 768px) {
+            .ig-handle { align-self: flex-end; }
+        }
+        .ig-handle:hover {
+            background: #1a1a1a;
+            color: #fff;
+            border-color: #1a1a1a;
+            transform: translateY(-2px);
+        }
+        .ig-handle .ig-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid currentColor;
+            opacity: 0.7;
+        }
+        .ig-handle:hover .ig-icon { opacity: 1; }
+        .ig-handle .ig-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.1;
+            gap: 4px;
+        }
+        .ig-handle .ig-at {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.15rem;
+        }
+        .ig-handle .ig-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            opacity: 0.55;
+        }
+
+        /* ── Gallery: horizontal infinite marquee (immersive, hover pause) ─ */
+        .mq-gallery {
+            overflow: hidden;
+            padding: 1rem 0;
+            position: relative;
+        }
+        .mq-gallery::before,
+        .mq-gallery::after {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 80px;
+            z-index: 3;
+            pointer-events: none;
+        }
+        .mq-gallery::before { left: 0; background: linear-gradient(90deg, var(--milk), transparent); }
+        .mq-gallery::after  { right: 0; background: linear-gradient(-90deg, var(--milk), transparent); }
+        .mq-gallery.on-sand::before { background: linear-gradient(90deg, var(--sand), transparent); }
+        .mq-gallery.on-sand::after  { background: linear-gradient(-90deg, var(--sand), transparent); }
+        .mq-track {
+            display: flex;
+            gap: 1.2rem;
+            width: max-content;
+            animation: mq-scroll 58s linear infinite;
+            will-change: transform;
+        }
+        .mq-track.reverse {
+            animation-name: mq-scroll-rev;
+            animation-duration: 72s;
+        }
+        @keyframes mq-scroll {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+        @keyframes mq-scroll-rev {
+            from { transform: translateX(-50%); }
+            to   { transform: translateX(0); }
+        }
+        .mq-gallery:hover .mq-track { animation-play-state: paused; }
+        .mq-item {
+            flex: 0 0 auto;
+            width: 280px;
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+            border-radius: 2px;
+            position: relative;
+            background: var(--sage);
+        }
+        .mq-item.wide { width: 380px; aspect-ratio: 16 / 10; }
+        .mq-item img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 2s cubic-bezier(.2, 1, .3, 1), filter 0.6s;
+            filter: grayscale(0.15);
+        }
+        .mq-item:hover img { transform: scale(1.07); filter: grayscale(0); }
+
+        /* ── Testimonial ────────────────────── */
+        .testimonial-card {
+            background: var(--milk);
+            border: 1px solid var(--border);
+            padding: 2.4rem;
+            border-radius: 2px;
+            transition: all 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+            height: 100%;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(26,26,26,0.22);
+            box-shadow: 0 14px 40px rgba(0,0,0,0.04);
+        }
+        .star-row { color: var(--clay-deep); letter-spacing: 2px; font-size: 11px; }
+
+        /* ── FAQ accordion ────────────────────── */
+        .faq-item { border-bottom: 1px solid var(--border); }
+        .faq-item summary {
+            list-style: none;
+            cursor: pointer;
+            padding: 1.75rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+        .faq-item summary::-webkit-details-marker { display: none; }
+        .faq-item summary .plus {
+            font-size: 1.5rem;
+            font-weight: 200;
+            transition: transform 0.4s ease;
+            flex-shrink: 0;
+            opacity: 0.5;
+        }
+        .faq-item[open] summary .plus { transform: rotate(45deg); opacity: 1; }
+        .faq-item summary:hover { color: var(--clay-deep); }
+        .faq-item .faq-body {
+            padding: 0 0 1.75rem 0;
+            font-size: 0.9rem;
+            line-height: 1.9;
+            color: var(--muted);
+            max-width: 640px;
+        }
+
+        /* ── Booking form ────────────────────── */
+        .book-card {
+            background: var(--milk);
+            border: 1px solid var(--border);
+            padding: 2.6rem 2.4rem;
+            border-radius: 2px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.05);
+        }
+        .book-card label {
+            display: block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            opacity: 0.45;
+            margin-bottom: 0.7rem;
+        }
+        .book-card input,
+        .book-card select {
+            width: 100%;
+            padding: 0.9rem 0;
+            background: transparent;
+            border: 0;
+            border-bottom: 1px solid var(--border);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--charcoal);
+            transition: border-color 0.3s;
+            outline: none;
+            border-radius: 0;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .book-card input:focus,
+        .book-card select:focus { border-bottom-color: var(--charcoal); }
+        .book-card select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231A1A1A' stroke-width='1.2' fill='none'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            padding-right: 2rem;
+        }
+        .book-card .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        @media (max-width: 520px) { .book-card .field-row { grid-template-columns: 1fr; } }
+
+        /* ── Sticky floating book button ────────────────────── */
+        #sticky-book {
+            position: fixed;
+            bottom: 1.25rem;
+            right: 1.25rem;
+            z-index: 900;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        #sticky-book.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+        #sticky-book a {
+            background: var(--charcoal);
+            color: white;
+            padding: 1rem 1.6rem;
+            border-radius: 9999px;
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.22);
+        }
+
+        /* ── Reveal init ────────────────────── */
+        .reveal, .reveal-scale, .reveal-text, .reveal-title, .reveal-stagger > * { opacity: 0; }
+
+        /* ── Header ────────────────────── */
+        header.nav {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            transition: background 0.5s ease, border-color 0.5s ease, backdrop-filter 0.5s;
+        }
+        header.nav.scrolled {
+            background: rgba(253, 252, 251, 0.85);
+            border-color: rgba(26, 26, 26, 0.06);
+        }
+
+        /* ── Mobile nav ────────────────────── */
+        #mobile-menu {
+            position: fixed;
+            inset: 0;
+            background: var(--milk);
+            z-index: 1500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+        #mobile-menu.open { opacity: 1; visibility: visible; }
+        #mobile-menu a {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            letter-spacing: 0.02em;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            color: var(--charcoal);
+        }
+        #mobile-menu.open a { opacity: 0.85; transform: translateY(0); }
+        #mobile-menu.open a:nth-child(1) { transition-delay: 0.1s; }
+        #mobile-menu.open a:nth-child(2) { transition-delay: 0.18s; }
+        #mobile-menu.open a:nth-child(3) { transition-delay: 0.26s; }
+        #mobile-menu.open a:nth-child(4) { transition-delay: 0.34s; }
+        #mobile-menu.open a:nth-child(5) { transition-delay: 0.42s; }
+        #mobile-menu .btn-reserve { font-size: 11px; padding: 1rem 2.4rem; }
+
+        #burger {
+            width: 32px; height: 32px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            border: 0;
+            cursor: pointer;
+            z-index: 1600;
+            position: relative;
+        }
+        #burger span {
+            display: block;
+            width: 22px; height: 1px;
+            background: var(--charcoal);
+            transition: transform 0.4s, opacity 0.4s;
+        }
+        #burger.open span:nth-child(1) { transform: translateY(3.5px) rotate(45deg); }
+        #burger.open span:nth-child(2) { opacity: 0; }
+        #burger.open span:nth-child(3) { transform: translateY(-3.5px) rotate(-45deg); }
+
+        @media (max-width: 1024px) { #burger { display: flex; } }
+
+        /* ── Cursor hidden on touch ────────────────────── */
+        @media (hover: none) and (pointer: coarse) {
+            #cursor { display: none !important; }
+            body { cursor: auto; }
+        }
+
+        /* ── Small responsive tweaks ────────────────────── */
+        @media (max-width: 640px) {
+            .hero-title { font-size: clamp(2.5rem, 12vw, 4rem) !important; }
+            .section-title { font-size: clamp(2rem, 10vw, 3.5rem) !important; }
+        }
+        @media (min-width: 1440px) {
+            .container { max-width: 1360px; }
+        }
+
+        /* ── Reduced motion ────────────────────── */
+        @media (prefers-reduced-motion: reduce) {
+            .hero-slider .slide.on img { animation: none; }
+            .mq-track { animation: none; }
+            .reveal, .reveal-scale, .reveal-text, .reveal-title, .reveal-stagger > * { opacity: 1 !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Scroll progress line -->
+    <div id="scroll-progress"></div>
+
+    <!-- Cursor -->
+    <div id="cursor" class="hidden md:block"></div>
+
+    <!-- Header -->
+    <header class="nav fixed top-0 left-0 w-full z-[1000] px-6 md:px-12 flex justify-between items-center bg-white/50 backdrop-blur-xl border-b border-black/[0.03]">
+        <div class="flex items-center gap-12 lg:gap-16">
+            <a href="#" class="font-serif text-2xl font-medium tracking-tight">LUMIÈ.</a>
+            <nav class="hidden lg:flex gap-10 text-[9px] font-bold tracking-[0.4em] uppercase opacity-40">
+                <a href="#about" class="hover:text-black hover:opacity-100 transition-all">Concept</a>
+                <a href="#rituals" class="hover:text-black hover:opacity-100 transition-all">Rituals</a>
+                <a href="#transform" class="hover:text-black hover:opacity-100 transition-all">Transform</a>
+                <a href="#team" class="hover:text-black hover:opacity-100 transition-all">Team</a>
+                <a href="#visit" class="hover:text-black hover:opacity-100 transition-all">Visit</a>
+            </nav>
+        </div>
+        <div class="flex items-center gap-5 md:gap-8">
+            <a href="tel:+61300000000" class="hidden md:flex items-center gap-2 text-[10px] font-bold tracking-[0.25em] uppercase opacity-60 hover:opacity-100 transition-all">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <span>03 0000 0000</span>
+            </a>
+            <button id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu">
+        <a href="#about">Concept</a>
+        <a href="#rituals">Rituals</a>
+        <a href="#transform">Transform</a>
+        <a href="#team">Team</a>
+        <a href="#visit">Visit</a>
+        <a href="#book" class="btn-reserve mt-6"><span class="dot"></span>Book Now</a>
+    </div>
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <section class="hero">
+        <div class="container mx-auto px-8 md:px-16 hero-split">
+            <div class="hero-text">
+                <div class="mb-8 flex items-center gap-3 reveal-text">
+                    <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-black/5 text-[9px] tracking-[0.25em] uppercase font-bold">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#7BC47F]"></span>
+                        Now taking autumn bookings
+                    </span>
+                </div>
+                <h1 class="hero-title mb-10 reveal-title">
+                    Sculpting Light,<br><span class="italic">Defining</span> Texture.
+                </h1>
+                <p class="max-w-md text-sm md:text-base opacity-55 leading-loose font-light mb-10 reveal-text">
+                    A boutique organic hair studio in South Yarra. European precision, conscious formulations, and a quiet ritual for every chair we fill.
+                </p>
+                <div class="flex flex-wrap gap-5 reveal-text mb-12">
+                    <a href="#book" class="btn-reserve"><span class="dot"></span>Book Online</a>
+                    <a href="#rituals" class="btn-ghost">View Rituals</a>
+                </div>
+                <!-- Single-line elegant social proof (replaces 3-col stat triple) -->
+                <div class="reveal-text">
+                    <div class="proof-line">
+                        <span class="stars">★ ★ ★ ★ ★</span>
+                        <span class="font-mono text-[11px] font-medium">5.0</span>
+                        <span class="sep"></span>
+                        <span class="opacity-55">340 reviews on Google</span>
+                        <span class="sep"></span>
+                        <span class="font-serif italic text-base">12 years of craft</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative flex justify-center items-center">
+                <!-- Immersive hero image slider: 3 images crossfade + Ken Burns -->
+                <div class="hero-slider reveal-scale" id="heroSlider">
+                    <div class="slide on" data-idx="1">
+                        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?q=75&w=900&auto=format&fit=crop" alt="Hair design aesthetic 1" width="900" height="1200" fetchpriority="high" decoding="async">
+                    </div>
+                    <div class="slide" data-idx="2">
+                        <img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?q=72&w=900&auto=format&fit=crop" alt="Hair design aesthetic 2" width="900" height="1200" loading="lazy" decoding="async">
+                    </div>
+                    <div class="slide" data-idx="3">
+                        <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=72&w=900&auto=format&fit=crop" alt="Hair design aesthetic 3" width="900" height="1200" loading="lazy" decoding="async">
+                    </div>
+                    <div class="counter" id="heroCounter">01 / 03</div>
+                    <div class="dots" id="heroDots">
+                        <span class="on"></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+
+                <div class="hero-vert-label">Looking&nbsp;&nbsp;·&nbsp;&nbsp;Listening&nbsp;&nbsp;·&nbsp;&nbsp;Sculpting</div>
+
+                <!-- Floating "next available" card -->
+                <div class="hero-caption reveal-scale">
+                    <p class="text-[9px] font-bold tracking-[0.3em] uppercase opacity-50 mb-1">Next available</p>
+                    <p class="font-serif text-lg italic leading-none">Thu · 10:30 AM</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ Press strip (cleaner than old marquee) ═══════════ -->
+    <div class="press-bar">
+        <span class="press-item">Featured in <em>Broadsheet Melbourne</em></span>
+        <span class="press-item">Winner · 2025 Aveda Salon Awards</span>
+        <span class="press-item">Certified Organic · ACO</span>
+        <span class="press-item">Vogue AU "Best of South Yarra"</span>
+    </div>
+
+    <!-- ═══════════ S1: Ethos ═══════════ -->
+    <section id="about" class="py-28 md:py-40 container mx-auto px-8 md:px-16">
+        <div class="grid lg:grid-cols-12 gap-16 lg:gap-24 items-center">
+            <div class="lg:col-span-5 order-2 lg:order-1">
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="aspect-square img-zoom-container reveal-scale">
+                        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?q=70&w=600&auto=format&fit=crop" alt="Salon interior" width="600" height="600" loading="lazy" decoding="async">
+                    </div>
+                    <div class="aspect-square img-zoom-container mt-16 reveal-scale">
+                        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?q=70&w=600&auto=format&fit=crop" alt="Styling detail" width="600" height="600" loading="lazy" decoding="async">
+                    </div>
+                </div>
+            </div>
+            <div class="lg:col-span-7 lg:pl-16 order-1 lg:order-2">
+                <div class="flex items-baseline justify-between mb-8 reveal">
+                    <span class="eyebrow">I — The Ethos</span>
+                    <span class="roman">Chapter one</span>
+                </div>
+                <h2 class="section-title font-serif text-4xl md:text-7xl font-light mb-10 leading-[1.02] reveal">
+                    Conscious hair,<br><span class="italic text-black/40">soulful</span> details.
+                </h2>
+                <div class="space-y-7 max-w-xl text-base opacity-55 leading-loose font-light reveal">
+                    <p>We believe in sustainable beauty. European precision, a relaxed Melbourne aesthetic, and a shortlist of botanical-rich products that respect both your hair and the earth.</p>
+                    <p>Every appointment begins with a conversation. We don't chase trends — we edit to reveal the most honest version of you.</p>
+                </div>
+                <div class="mt-14 flex flex-wrap gap-10 reveal">
+                    <div>
+                        <p class="font-serif text-4xl md:text-5xl italic leading-none">100%</p>
+                        <p class="text-[9px] font-bold uppercase tracking-widest opacity-40 mt-3">Organic care</p>
+                    </div>
+                    <div>
+                        <p class="font-serif text-4xl md:text-5xl italic leading-none">Zero</p>
+                        <p class="text-[9px] font-bold uppercase tracking-widest opacity-40 mt-3">Synthetics</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ S2: Ritual sticky-stack (pinned, immersive) ═══════════ -->
+    <section id="rituals" class="ritual-stack">
+
+        <!-- Stack header (not pinned) -->
+        <div class="container mx-auto px-8 md:px-16 pt-28 md:pt-36 pb-6 reveal">
+            <div class="flex items-baseline justify-between mb-8">
+                <span class="eyebrow">II — The Rituals</span>
+                <span class="roman">Seven chapters</span>
+            </div>
+            <h2 class="section-title font-serif text-4xl md:text-8xl font-light italic leading-none max-w-4xl">
+                A tailored menu.
+            </h2>
+            <p class="max-w-xl mt-8 text-sm md:text-base opacity-55 leading-loose font-light">
+                Scroll slowly — each ritual stacks atop the last. Every booking is customised; prices below are starting points.
+            </p>
+        </div>
+
+        <!-- Side ticker (desktop only) -->
+        <div class="ritual-ticker" id="ritualTicker">
+            <div class="tk on" data-tk="1">I · Signature</div>
+            <div class="tk" data-tk="2">II · Luminous</div>
+            <div class="tk" data-tk="3">III · Balayage</div>
+            <div class="tk" data-tk="4">IV · Scalp</div>
+            <div class="tk" data-tk="5">V · Bridal</div>
+            <div class="tk" data-tk="6">VI · Keratin</div>
+            <div class="tk" data-tk="7">VII · First visit</div>
+        </div>
+
+        <!-- Card 1 -->
+        <div class="ritual-card" data-idx="1">
+            <div class="ritual-card-inner">
+                <div class="ritual-img">
+                    <span class="num">I / VII</span>
+                    <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=1000&q=80" alt="Signature cut" loading="lazy" decoding="async">
+                </div>
+                <div class="ritual-copy">
+                    <span class="r-label">Ritual no. 01</span>
+                    <h3>Signature <em>Cut</em></h3>
+                    <p>A full consultation, botanical scalp cleanse, precision cut, and a finish tailored to how you actually wear your hair at home — not on a runway.</p>
+                    <div class="ritual-meta">
+                        <div><span class="lbl">Duration</span><span class="val">75 min</span></div>
+                        <div><span class="lbl">From</span><span class="val">$120</span></div>
+                    </div>
+                    <a href="#book" class="btn-ghost">Reserve this ritual →</a>
+                    <div class="ritual-steps">
+                        <span>Consult</span><span>Scalp cleanse</span><span>Precision cut</span><span>Blow finish</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="ritual-card" data-idx="2">
+            <div class="ritual-card-inner">
+                <div class="ritual-img">
+                    <span class="num">II / VII</span>
+                    <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?q=70&w=900&auto=format&fit=crop" alt="Luminous colour" loading="lazy" decoding="async">
+                </div>
+                <div class="ritual-copy">
+                    <span class="r-label">Ritual no. 02</span>
+                    <h3>Luminous <em>Colour</em></h3>
+                    <p>Sun-kissed dimension built on ammonia-free formulations and finished with a plant-oil gloss. Kind to the scalp, honest to the light of your skin.</p>
+                    <div class="ritual-meta">
+                        <div><span class="lbl">Duration</span><span class="val">180 min</span></div>
+                        <div><span class="lbl">From</span><span class="val">$280</span></div>
+                    </div>
+                    <a href="#book" class="btn-ghost">Reserve this ritual →</a>
+                    <div class="ritual-steps">
+                        <span>Consult</span><span>Root melt</span><span>Gloss finish</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="ritual-card" data-idx="3">
+            <div class="ritual-card-inner">
+                <div class="ritual-img">
+                    <span class="num">III / VII</span>
+                    <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?q=70&w=900&auto=format&fit=crop" alt="Balayage" loading="lazy" decoding="async">
+                </div>
+                <div class="ritual-copy">
+                    <span class="r-label">Ritual no. 03</span>
+                    <h3>Balayage <em>Sculpt</em></h3>
+                    <p>Hand-painted lights, custom toner, and Olaplex bond-builder. The slow craft of shaping light — painted into the hair strand by strand.</p>
+                    <div class="ritual-meta">
+                        <div><span class="lbl">Duration</span><span class="val">210 min</span></div>
+                        <div><span class="lbl">From</span><span class="val">$360</span></div>
+                    </div>
+                    <a href="#book" class="btn-ghost">Reserve this ritual →</a>
+                    <div class="ritual-steps">
+                        <span>Hand-paint</span><span>Bond build</span><span>Toner</span><span>Gloss</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="ritual-card" data-idx="4">
+            <div class="ritual-card-inner">
+                <div class="ritual-img">
+                    <span class="num">IV / VII</span>
+                    <img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?auto=format&fit=crop&w=1000&q=80" alt="Scalp detox" loading="lazy" decoding="async">
+                </div>
+                <div class="ritual-copy">
+                    <span class="r-label">Ritual no. 04</span>
+                    <h3>Scalp <em>Detox</em></h3>
+                    <p>A clay-mask cleanse, pressure-point massage at the temples and nape, and a cold rinse. Forty-five minutes of complete stillness and botanical reset.</p>
+                    <div class="ritual-meta">
+                        <div><span class="lbl">Duration</span><span class="val">45 min</span></div>
+                        <div><span class="lbl">From</span><span class="val">$110</span></div>
+                    </div>
+                    <a href="#book" class="btn-ghost">Reserve this ritual →</a>
+                    <div class="ritual-steps">
+                        <span>Clay mask</span><span>Massage</span><span>Cold rinse</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="ritual-card" data-idx="5">
+            <div class="ritual-card-inner">
+                <div class="ritual-img">
+                    <span class="num">V / VII</span>
+                    <img src="https://images.unsplash.com/photo-1552642986-ccb41e7059e7?q=70&w=900&auto=format&fit=crop" alt="Bridal atelier" loading="lazy" decoding="async">
+                </div>
+                <div class="ritual-copy">
+                    <span class="r-label">Ritual no. 05</span>
+                    <h3>Bridal <em>Atelier</em></h3>
+                    <p>A private chair for your entire day — trial styling, on-day finish, and a quiet glass of something. For the bride, the maids, and the mother of the bride.</p>
+                    <div class="ritual-meta">
+                        <div><span class="lbl">Format</span><span class="val">Full day</span></div>
+                        <div><span class="lbl">From</span><span class="val">$680</span></div>
+                    </div>
+                    <a href="#book" class="btn-ghost">Enquire about bridal →</a>
+                    <div class="ritual-steps">
+                        <span>Trial</span><span>On-day</span><span>Private chair</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="ritual-card" data-idx="6">
+            <div class="ritual-card-inner">
+                <div class="ritual-img">
+                    <span class="num">VI / VII</span>
+                    <img src="https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?q=70&w=900&auto=format&fit=crop" alt="Keratin silk" loading="lazy" decoding="async">
+                </div>
+                <div class="ritual-copy">
+                    <span class="r-label">Ritual no. 06</span>
+                    <h3>Keratin <em>Silk</em></h3>
+                    <p>A formaldehyde-free smoothing treatment that soft-relaxes the cuticle. Twelve weeks of effortless mornings without compromising the integrity of your hair.</p>
+                    <div class="ritual-meta">
+                        <div><span class="lbl">Duration</span><span class="val">150 min</span></div>
+                        <div><span class="lbl">From</span><span class="val">$320</span></div>
+                    </div>
+                    <a href="#book" class="btn-ghost">Reserve this ritual →</a>
+                    <div class="ritual-steps">
+                        <span>Prep wash</span><span>Apply</span><span>Seal</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 7 -->
+        <div class="ritual-card" data-idx="7">
+            <div class="ritual-card-inner">
+                <div class="ritual-img">
+                    <span class="num">VII / VII</span>
+                    <img src="https://images.unsplash.com/photo-1600948836101-f9ffda59d250?auto=format&fit=crop&w=1000&q=80" alt="First visit ritual — salon interior" loading="lazy" decoding="async">
+                </div>
+                <div class="ritual-copy">
+                    <span class="r-label">Ritual no. 07</span>
+                    <h3>First-Visit <em>Ritual</em></h3>
+                    <p>For new guests. A sixty-minute introduction that includes a proper consultation, a scalp ritual, a precision cut, and a blow-finish to take home.</p>
+                    <div class="ritual-meta">
+                        <div><span class="lbl">Duration</span><span class="val">100 min</span></div>
+                        <div><span class="lbl">Price</span><span class="val">$140</span></div>
+                    </div>
+                    <a href="#book" class="btn-reserve"><span class="dot"></span>Reserve your first chair</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ NEW S3: Transformation (Before/After drag) ═══════════ -->
+    <section id="transform" class="transform-section">
+        <div class="container mx-auto px-8 md:px-16 mb-16">
+            <div class="flex items-baseline justify-between mb-8 reveal">
+                <span class="eyebrow">III — Transformation</span>
+                <span class="roman">Drag to reveal</span>
+            </div>
+            <div class="grid lg:grid-cols-12 gap-10 items-end reveal">
+                <h2 class="lg:col-span-8 font-serif text-4xl md:text-7xl font-light leading-[1.02]">
+                    Before, and <span class="italic text-black/40">after</span>.
+                </h2>
+                <p class="lg:col-span-4 text-sm md:text-base opacity-55 leading-loose font-light">
+                    Drag the handle across the image to see a three-hour balayage unfold. Every guest who passes through our chair has their own version of this quiet metamorphosis.
+                </p>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="ba-wrap" id="baWrap">
+                <div class="ba-before">
+                    <img src="https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?q=72&w=1400&auto=format&fit=crop" alt="Before — natural hair" width="1400" height="875" loading="lazy" decoding="async">
+                </div>
+                <div class="ba-after">
+                    <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?q=72&w=1400&auto=format&fit=crop" alt="After — luminous balayage" width="1400" height="875" loading="lazy" decoding="async">
+                </div>
+                <div class="ba-label before">Before</div>
+                <div class="ba-label after">After · 3 hrs</div>
+                <div class="ba-handle" id="baHandle"></div>
+            </div>
+            <div class="flex justify-center mt-8">
+                <p class="text-[10px] font-bold tracking-[0.4em] uppercase opacity-40">↔&nbsp;&nbsp;Drag the handle&nbsp;&nbsp;↔</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ S4: Team ═══════════ -->
+    <section id="team" class="py-28 md:py-40 container mx-auto px-8 md:px-16">
+        <div class="flex items-baseline justify-between mb-8 reveal">
+            <span class="eyebrow">IV — The Team</span>
+            <span class="roman">Three pairs of hands</span>
+        </div>
+        <div class="max-w-3xl mb-20 reveal">
+            <h2 class="section-title font-serif text-4xl md:text-7xl font-light leading-[1.02]">
+                The hands<br>that <span class="italic text-black/40">listen</span>.
+            </h2>
+            <p class="mt-8 text-sm md:text-base opacity-55 leading-loose font-light max-w-xl">
+                A small team of senior stylists. No chair rentals, no juniors on your head — only practitioners with 8+ years behind them.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-10 md:gap-12">
+            <div class="team-card reveal">
+                <div class="team-img">
+                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=70&w=560&auto=format&fit=crop" alt="Amélie — Senior Stylist" width="560" height="700" loading="lazy" decoding="async">
+                </div>
+                <div class="pt-6 flex items-start justify-between gap-6">
+                    <div>
+                        <h3 class="font-serif text-2xl md:text-3xl leading-none">Amélie L.</h3>
+                        <p class="text-[10px] mt-3 opacity-45 uppercase tracking-[0.25em]">Creative Director</p>
+                    </div>
+                    <span class="font-mono text-[10px] opacity-40 pt-1">/ 01</span>
+                </div>
+                <p class="text-sm opacity-55 leading-loose font-light mt-5">Trained in Paris with a precision-cut focus. Thirteen years refining the balance between architecture and movement.</p>
+                <div class="flex gap-2 flex-wrap mt-5">
+                    <span class="text-[9px] font-bold tracking-[0.25em] uppercase opacity-40 px-3 py-1.5 border border-black/10 rounded-full">Precision cut</span>
+                    <span class="text-[9px] font-bold tracking-[0.25em] uppercase opacity-40 px-3 py-1.5 border border-black/10 rounded-full">Curls</span>
+                </div>
+            </div>
+            <div class="team-card reveal">
+                <div class="team-img">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=70&w=560&auto=format&fit=crop" alt="Sora — Colour Specialist" width="560" height="700" loading="lazy" decoding="async">
+                </div>
+                <div class="pt-6 flex items-start justify-between gap-6">
+                    <div>
+                        <h3 class="font-serif text-2xl md:text-3xl leading-none">Sora K.</h3>
+                        <p class="text-[10px] mt-3 opacity-45 uppercase tracking-[0.25em]">Colour Specialist</p>
+                    </div>
+                    <span class="font-mono text-[10px] opacity-40 pt-1">/ 02</span>
+                </div>
+                <p class="text-sm opacity-55 leading-loose font-light mt-5">Ten years immersed in ammonia-free colour. Known for sun-kissed balayage and the softest lived-in grey blends.</p>
+                <div class="flex gap-2 flex-wrap mt-5">
+                    <span class="text-[9px] font-bold tracking-[0.25em] uppercase opacity-40 px-3 py-1.5 border border-black/10 rounded-full">Balayage</span>
+                    <span class="text-[9px] font-bold tracking-[0.25em] uppercase opacity-40 px-3 py-1.5 border border-black/10 rounded-full">Grey blending</span>
+                </div>
+            </div>
+            <div class="team-card reveal">
+                <div class="team-img">
+                    <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?q=70&w=560&auto=format&fit=crop" alt="Noah — Textural Stylist" width="560" height="700" loading="lazy" decoding="async">
+                </div>
+                <div class="pt-6 flex items-start justify-between gap-6">
+                    <div>
+                        <h3 class="font-serif text-2xl md:text-3xl leading-none">Noah R.</h3>
+                        <p class="text-[10px] mt-3 opacity-45 uppercase tracking-[0.25em]">Textural Stylist</p>
+                    </div>
+                    <span class="font-mono text-[10px] opacity-40 pt-1">/ 03</span>
+                </div>
+                <p class="text-sm opacity-55 leading-loose font-light mt-5">Eight years specialising in short crops, soft masculines, and the kind of texture that doesn't need a product at home.</p>
+                <div class="flex gap-2 flex-wrap mt-5">
+                    <span class="text-[9px] font-bold tracking-[0.25em] uppercase opacity-40 px-3 py-1.5 border border-black/10 rounded-full">Short cuts</span>
+                    <span class="text-[9px] font-bold tracking-[0.25em] uppercase opacity-40 px-3 py-1.5 border border-black/10 rounded-full">Texture</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ S5: Gallery — Instagram header + horizontal marquee ═══════════ -->
+    <section id="gallery" class="py-24 md:py-32" style="background: var(--sand);">
+        <div class="container mx-auto px-8 md:px-16 mb-14">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
+                <div class="reveal">
+                    <div class="flex items-baseline gap-6 mb-6">
+                        <span class="eyebrow">V — Instagram</span>
+                        <span class="roman">Live from the studio</span>
+                    </div>
+                    <h2 class="section-title font-serif text-4xl md:text-7xl font-light italic leading-[1.02]">
+                        Work from the chair.
+                    </h2>
+                </div>
+                <a href="https://instagram.com" target="_blank" rel="noopener" class="ig-handle reveal">
+                    <span class="ig-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2.5" y="2.5" width="19" height="19" rx="5"></rect>
+                            <circle cx="12" cy="12" r="4.2"></circle>
+                            <circle cx="17.6" cy="6.4" r=".9" fill="currentColor"></circle>
+                        </svg>
+                    </span>
+                    <span class="ig-text">
+                        <span class="ig-at">@lumie.studio</span>
+                        <span class="ig-meta">Follow on Instagram →</span>
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <div class="mq-gallery on-sand" aria-label="Recent client work — row 1">
+            <div class="mq-track">
+                <!-- original set -->
+                <div class="mq-item"><img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?q=70&w=700&auto=format&fit=crop" alt="Work 1" loading="lazy" decoding="async"></div>
+                <div class="mq-item wide"><img src="https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?q=70&w=900&auto=format&fit=crop" alt="Work 2" loading="lazy" decoding="async"></div>
+                <div class="mq-item"><img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?q=70&w=700&auto=format&fit=crop" alt="Work 3" loading="lazy" decoding="async"></div>
+                <div class="mq-item"><img src="https://images.unsplash.com/photo-1552642986-ccb41e7059e7?q=70&w=700&auto=format&fit=crop" alt="Work 4" loading="lazy" decoding="async"></div>
+                <div class="mq-item wide"><img src="https://images.unsplash.com/photo-1600948836101-f9ffda59d250?q=70&w=900&auto=format&fit=crop" alt="Work 5" loading="lazy" decoding="async"></div>
+                <div class="mq-item"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=70&w=700&auto=format&fit=crop" alt="Work 6" loading="lazy" decoding="async"></div>
+                <!-- duplicate set (seamless loop) -->
+                <div class="mq-item"><img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?q=70&w=700&auto=format&fit=crop" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
+                <div class="mq-item wide"><img src="https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?q=70&w=900&auto=format&fit=crop" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
+                <div class="mq-item"><img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?q=70&w=700&auto=format&fit=crop" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
+                <div class="mq-item"><img src="https://images.unsplash.com/photo-1552642986-ccb41e7059e7?q=70&w=700&auto=format&fit=crop" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
+                <div class="mq-item wide"><img src="https://images.unsplash.com/photo-1600948836101-f9ffda59d250?q=70&w=900&auto=format&fit=crop" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
+                <div class="mq-item"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=70&w=700&auto=format&fit=crop" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
+            </div>
+        </div>
+
+        <div class="mq-gallery on-sand mt-6" aria-label="Recent client work — row 2">
+            <div class="mq-track reverse">
+                <div class="mq-item wide"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?q=70&w=900&auto=format&fit=crop" alt="Work 7" loading="lazy" decoding="async"></div>
+                <div class="mq-item"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?q=70&w=700&auto=format&fit=crop" alt="Work 8" loading="lazy" decoding="async"></div>
+                <div class="mq-item"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?q=70&w=700&auto=format&fit=crop" alt="Work 9" loading="lazy" decoding="async"></div>
+                <div class="mq-item wide"><img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=70&w=900&auto=format&fit=crop" alt="Work 10" loading="lazy" decoding="async"></div>
+                <div class="mq-item"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=70&w=700&auto=format&fit=crop" alt="Work 11" loading="lazy" decoding="async"></div>
+                <div class="mq-item"><img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?q=70&w=700&auto=format&fit=crop" alt="Work 12" loading="lazy" decoding="async"></div>
+                <!-- duplicate set -->
+                <div class="mq-item wide"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?q=70&w=900&auto=format&fit=crop" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
+                <div class="mq-item"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?q=70&w=700&auto=format&fit=crop" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
+                <div class="mq-item"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?q=70&w=700&auto=format&fit=crop" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
+                <div class="mq-item wide"><img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=70&w=900&auto=format&fit=crop" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
+                <div class="mq-item"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=70&w=700&auto=format&fit=crop" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
+                <div class="mq-item"><img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?q=70&w=700&auto=format&fit=crop" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ S6: Studio Space ═══════════ -->
+    <section id="studio" class="py-28 md:py-40 container mx-auto px-8 md:px-16">
+        <div class="grid lg:grid-cols-12 gap-14 lg:gap-20 items-center">
+            <div class="lg:col-span-7">
+                <div class="flex items-baseline justify-between mb-8 reveal">
+                    <span class="eyebrow">VI — The Space</span>
+                    <span class="roman">A quiet sanctuary</span>
+                </div>
+                <h2 class="section-title font-serif text-4xl md:text-7xl font-light mb-12 leading-[1.02] reveal text-black">
+                    Light, wood,<br>and <span class="italic text-black/30">silence</span>.
+                </h2>
+                <div class="aspect-[5/4] w-full img-zoom-container shadow-2xl reveal-scale">
+                    <img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?auto=format&fit=crop&w=1000&q=80" alt="LUMIÈ studio interior — light, wood, and silence" width="1000" height="800" loading="lazy" decoding="async">
+                </div>
+            </div>
+            <div class="lg:col-span-5 space-y-14 lg:pt-24">
+                <div class="reveal">
+                    <p class="text-xs font-bold uppercase tracking-[0.4em] opacity-40 mb-6">A quiet sanctuary</p>
+                    <p class="text-sm md:text-base opacity-55 leading-loose font-light">Tucked into a peaceful South Yarra laneway. No clinical lights — only the soft wash of Melbourne afternoons and the scent of local botanicals.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-5 reveal">
+                    <div class="aspect-[3/4] img-zoom-container">
+                        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1000&q=80" alt="Product shelf — zen wood interior" loading="lazy" decoding="async">
+                    </div>
+                    <div class="aspect-[3/4] img-zoom-container mt-10">
+                        <img src="https://images.unsplash.com/photo-1600948836101-f9ffda59d250?auto=format&fit=crop&w=1000&q=80" alt="Minimalist wood and light interior" loading="lazy" decoding="async">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ S7: Testimonials ═══════════ -->
+    <section class="py-28 md:py-36" style="background: var(--bone); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+        <div class="container mx-auto px-8 md:px-16">
+            <div class="text-center mb-16 md:mb-20 reveal">
+                <span class="eyebrow mb-8 block">VII — In Their Words</span>
+                <h2 class="section-title font-serif text-3xl md:text-6xl font-light italic max-w-3xl mx-auto leading-[1.05] mt-6">"A studio that listens before it cuts."</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
+                <div class="testimonial-card reveal">
+                    <span class="star-row">★ ★ ★ ★ ★</span>
+                    <p class="font-serif text-xl md:text-2xl italic leading-snug text-black/80">"I've never had a colour appointment feel this calm. Sora matched my greys exactly, and my scalp hasn't felt this good in years."</p>
+                    <div class="mt-auto pt-4 border-t border-black/5">
+                        <p class="font-serif text-lg">Hannah M.</p>
+                        <p class="text-[9px] font-bold tracking-[0.3em] uppercase opacity-40 mt-1">Armadale · Client since 2023</p>
+                    </div>
+                </div>
+                <div class="testimonial-card reveal">
+                    <span class="star-row">★ ★ ★ ★ ★</span>
+                    <p class="font-serif text-xl md:text-2xl italic leading-snug text-black/80">"Amélie somehow cut my hair exactly how I pictured it in my head but couldn't describe. The consultation alone is worth the visit."</p>
+                    <div class="mt-auto pt-4 border-t border-black/5">
+                        <p class="font-serif text-lg">Rory V.</p>
+                        <p class="text-[9px] font-bold tracking-[0.3em] uppercase opacity-40 mt-1">Prahran · Client since 2022</p>
+                    </div>
+                </div>
+                <div class="testimonial-card reveal">
+                    <span class="star-row">★ ★ ★ ★ ★</span>
+                    <p class="font-serif text-xl md:text-2xl italic leading-snug text-black/80">"Booked for my wedding — trial, on-the-day, and follow-up gloss. Flawless. My bridesmaids have now all defected to LUMIÈ."</p>
+                    <div class="mt-auto pt-4 border-t border-black/5">
+                        <p class="font-serif text-lg">Eloise T.</p>
+                        <p class="text-[9px] font-bold tracking-[0.3em] uppercase opacity-40 mt-1">Toorak · Bridal 2025</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ S8: Booking Form + FAQ ═══════════ -->
+    <section id="book" class="py-28 md:py-40">
+        <div class="container mx-auto px-8 md:px-16">
+            <div class="grid lg:grid-cols-12 gap-14 lg:gap-20">
+                <div class="lg:col-span-6">
+                    <div class="flex items-baseline justify-between mb-8 reveal">
+                        <span class="eyebrow">VIII — Reserve</span>
+                        <span class="roman">Begin a ritual</span>
+                    </div>
+                    <h2 class="section-title font-serif text-4xl md:text-7xl font-light mb-10 leading-[1.02] reveal">
+                        Begin your<br><span class="italic">ritual</span>.
+                    </h2>
+                    <p class="text-sm md:text-base opacity-55 leading-loose font-light max-w-lg mb-14 reveal">
+                        Fill the form and we'll confirm your chair within an hour during studio hours. First-time guests, mention it below — we'll block an extra 20 minutes for consultation.
+                    </p>
+
+                    <div class="reveal">
+                        <p class="text-[10px] font-bold tracking-[0.4em] uppercase opacity-40 mb-2">Frequently asked</p>
+                        <details class="faq-item" open>
+                            <summary>How far in advance should I book? <span class="plus">+</span></summary>
+                            <div class="faq-body">Signature cuts book 1–2 weeks ahead. Colour and balayage are typically 3–4 weeks. Bridal parties, please reach out 6+ months in advance.</div>
+                        </details>
+                        <details class="faq-item">
+                            <summary>What's your cancellation policy? <span class="plus">+</span></summary>
+                            <div class="faq-body">Free changes with 48 hours notice. Inside 48 hours a 50% fee applies to cover our team's time. We'll always work with you if something unexpected comes up.</div>
+                        </details>
+                        <details class="faq-item">
+                            <summary>Do you take first-time guests? <span class="plus">+</span></summary>
+                            <div class="faq-body">Yes, and we love meeting new clients. Choose "First-Visit Ritual" when booking — it includes an extended consultation and our gentlest approach.</div>
+                        </details>
+                        <details class="faq-item">
+                            <summary>Are your products truly organic? <span class="plus">+</span></summary>
+                            <div class="faq-body">Every product on our shelf is ACO-certified or equivalent. Our colour is 100% ammonia-free; our smoothing treatment is formaldehyde-free. We publish the full list on request.</div>
+                        </details>
+                        <details class="faq-item">
+                            <summary>Gift cards & packages? <span class="plus">+</span></summary>
+                            <div class="faq-body">Digital gift cards are available from $50–$500 and can be emailed instantly. Multi-visit ritual packages give you ~15% off when prepaid for three visits.</div>
+                        </details>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 reveal">
+                    <div class="book-card">
+                        <div class="flex items-start justify-between mb-10">
+                            <div>
+                                <p class="eyebrow">Reserve a chair</p>
+                                <p class="font-serif text-3xl mt-2">Booking request</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[9px] font-bold tracking-[0.3em] uppercase opacity-40">Response</p>
+                                <p class="font-serif text-sm italic mt-1">within 60 minutes</p>
+                            </div>
+                        </div>
+
+                        <form id="book-form" class="space-y-7" novalidate>
+                            <div class="field-row">
+                                <div>
+                                    <label for="bk-name">Full name</label>
+                                    <input type="text" id="bk-name" name="name" required placeholder="Your name">
+                                </div>
+                                <div>
+                                    <label for="bk-phone">Phone</label>
+                                    <input type="tel" id="bk-phone" name="phone" required placeholder="04 0000 0000">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="bk-email">Email</label>
+                                <input type="email" id="bk-email" name="email" required placeholder="you@email.com">
+                            </div>
+
+                            <div class="field-row">
+                                <div>
+                                    <label for="bk-service">Ritual</label>
+                                    <select id="bk-service" name="service" required>
+                                        <option value="">Select a ritual</option>
+                                        <option>First-Visit Ritual — $140</option>
+                                        <option>Signature Cut — from $120</option>
+                                        <option>Luminous Colour — from $280</option>
+                                        <option>Balayage Sculpt — from $360</option>
+                                        <option>Scalp Detox — from $110</option>
+                                        <option>Keratin Silk — from $320</option>
+                                        <option>Bridal Atelier — from $680</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="bk-stylist">Stylist</label>
+                                    <select id="bk-stylist" name="stylist">
+                                        <option>No preference</option>
+                                        <option>Amélie L. — Creative Director</option>
+                                        <option>Sora K. — Colour Specialist</option>
+                                        <option>Noah R. — Textural Stylist</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="field-row">
+                                <div>
+                                    <label for="bk-date">Preferred date</label>
+                                    <input type="date" id="bk-date" name="date">
+                                </div>
+                                <div>
+                                    <label for="bk-time">Preferred time</label>
+                                    <select id="bk-time" name="time">
+                                        <option>10:00 — 12:00</option>
+                                        <option>12:00 — 14:00</option>
+                                        <option>14:00 — 16:00</option>
+                                        <option>16:00 — 18:00</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="bk-notes">Notes (optional)</label>
+                                <input type="text" id="bk-notes" name="notes" placeholder="First visit? Allergies? A reference image?">
+                            </div>
+
+                            <div class="pt-6">
+                                <button type="submit" class="btn-reserve w-full justify-center"><span class="dot"></span>Request booking</button>
+                                <p class="mt-5 text-center text-[9px] font-bold tracking-[0.3em] uppercase opacity-40">We'll confirm by email · No card needed to reserve</p>
+                            </div>
+
+                            <div id="book-success" class="hidden pt-4">
+                                <div class="bg-[#F6F5F2] border border-black/5 p-5 rounded-sm text-center">
+                                    <p class="font-serif text-xl italic">Thank you — request received.</p>
+                                    <p class="text-[10px] mt-2 opacity-50 tracking-[0.2em] uppercase">We'll be in touch shortly</p>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ S9: Visit ═══════════ -->
+    <section id="visit" class="py-24 md:py-32 border-t border-black/[0.03]" style="background: var(--sand);">
+        <div class="container mx-auto px-8 md:px-16">
+            <div class="grid lg:grid-cols-12 gap-14 lg:gap-20 items-start">
+                <div class="lg:col-span-5">
+                    <div class="flex items-baseline justify-between mb-8 reveal">
+                        <span class="eyebrow">IX — Visit</span>
+                        <span class="roman">Find the door</span>
+                    </div>
+                    <h2 class="section-title font-serif text-4xl md:text-7xl font-light italic mb-12 leading-[1.02] reveal">Find us.</h2>
+                    <div class="space-y-10">
+                        <div class="reveal">
+                            <p class="text-[10px] font-bold tracking-[0.4em] uppercase opacity-40 mb-3">Location</p>
+                            <p class="text-base font-light leading-relaxed uppercase tracking-[0.08em]">
+                                00 Garden Lane<br>South Yarra, VIC 0000
+                            </p>
+                            <a href="#" class="inline-block mt-4 border-b border-black/20 pb-1 text-[10px] font-bold tracking-[0.3em] uppercase hover:border-black transition-all">Open in Maps →</a>
+                        </div>
+                        <div class="reveal">
+                            <p class="text-[10px] font-bold tracking-[0.4em] uppercase opacity-40 mb-3">Hours</p>
+                            <div class="text-[12px] font-medium space-y-3 uppercase tracking-[0.18em]">
+                                <p class="flex justify-between max-w-xs"><span>Tuesday — Friday</span><span>10 — 19</span></p>
+                                <p class="flex justify-between max-w-xs"><span>Saturday</span><span>09 — 17</span></p>
+                                <p class="flex justify-between max-w-xs opacity-35 italic"><span>Sun & Mon</span><span>By appointment</span></p>
+                            </div>
+                        </div>
+                        <div class="reveal">
+                            <p class="text-[10px] font-bold tracking-[0.4em] uppercase opacity-40 mb-3">Contact</p>
+                            <a href="tel:+61300000000" class="block text-sm hover:opacity-100 opacity-70 transition-opacity">03 0000 0000</a>
+                            <a href="mailto:hello@lumie.au" class="block text-sm hover:opacity-100 opacity-70 transition-opacity">hello@lumie.au</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 reveal-scale">
+                    <div class="aspect-[16/11] rounded-sm overflow-hidden border border-black/5 relative" style="background: #EEEDE8;">
+                        <svg viewBox="0 0 800 560" class="w-full h-full" preserveAspectRatio="xMidYMid slice">
+                            <defs>
+                                <pattern id="dots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+                                    <circle cx="2" cy="2" r="0.8" fill="#1A1A1A" opacity="0.12"/>
+                                </pattern>
+                            </defs>
+                            <rect width="800" height="560" fill="url(#dots)"/>
+                            <path d="M40 380 Q160 300 280 340 T520 360 T740 330 L740 560 L40 560 Z" fill="#E5E7E1" opacity="0.7"/>
+                            <line x1="0" y1="220" x2="800" y2="230" stroke="#1A1A1A" stroke-width="1" opacity="0.18"/>
+                            <line x1="0" y1="340" x2="800" y2="350" stroke="#1A1A1A" stroke-width="1" opacity="0.18"/>
+                            <line x1="180" y1="0" x2="220" y2="560" stroke="#1A1A1A" stroke-width="1" opacity="0.18"/>
+                            <line x1="420" y1="0" x2="460" y2="560" stroke="#1A1A1A" stroke-width="1" opacity="0.18"/>
+                            <line x1="620" y1="0" x2="660" y2="560" stroke="#1A1A1A" stroke-width="1" opacity="0.18"/>
+                            <line x1="0" y1="280" x2="800" y2="285" stroke="#1A1A1A" stroke-width="3" opacity="0.3"/>
+                            <text x="680" y="275" font-family="JetBrains Mono" font-size="10" fill="#1A1A1A" opacity="0.4" letter-spacing="2">TOORAK RD</text>
+                            <text x="25" y="218" font-family="JetBrains Mono" font-size="10" fill="#1A1A1A" opacity="0.4" letter-spacing="2">COMMERCIAL RD</text>
+                            <text x="430" y="80" font-family="JetBrains Mono" font-size="10" fill="#1A1A1A" opacity="0.4" letter-spacing="2">CHAPEL ST</text>
+                            <circle cx="400" cy="282" r="38" fill="#1A1A1A" opacity="0.06">
+                                <animate attributeName="r" values="38;56;38" dur="3s" repeatCount="indefinite"/>
+                                <animate attributeName="opacity" values="0.1;0.02;0.1" dur="3s" repeatCount="indefinite"/>
+                            </circle>
+                            <circle cx="400" cy="282" r="10" fill="#1A1A1A"/>
+                            <circle cx="400" cy="282" r="3" fill="#FDFCFB"/>
+                            <text x="400" y="258" text-anchor="middle" font-family="Cormorant Garamond" font-size="22" font-style="italic" fill="#1A1A1A">LUMIÈ.</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ Footer ═══════════ -->
+    <footer id="site-footer" class="py-20 md:py-28 border-t border-black/[0.05] text-center">
+        <div class="container mx-auto px-8">
+            <h2 class="font-serif text-5xl md:text-7xl font-medium tracking-tighter mb-10">LUMIÈ.</h2>
+            <p class="font-serif italic text-lg md:text-xl opacity-55 mb-14 max-w-xl mx-auto">"Quiet craft, conscious hair."</p>
+            <div class="flex justify-center flex-wrap gap-8 md:gap-12 text-[10px] font-bold tracking-[0.5em] uppercase opacity-40 mb-14">
+                <a href="#" class="hover:text-black hover:opacity-100 transition-all">Instagram</a>
+                <a href="#" class="hover:text-black hover:opacity-100 transition-all">Journal</a>
+                <a href="#" class="hover:text-black hover:opacity-100 transition-all">Gift cards</a>
+                <a href="#" class="hover:text-black hover:opacity-100 transition-all">Privacy</a>
+            </div>
+            <p class="text-[9px] font-bold opacity-25 tracking-[0.8em] uppercase">© 2026 LUMIÈ STUDIO MELBOURNE · CRAFTED IN STILLNESS</p>
+        </div>
+    </footer>
+
+    <!-- Sticky mobile book button -->
+    <div id="sticky-book">
+        <a href="#book"><span class="btn-reserve dot-wrap" style="display:inline-flex;align-items:center;gap:0.7rem;"><span style="width:6px;height:6px;border-radius:50%;background:#7BC47F;display:inline-block;"></span>Book Now</span></a>
+    </div>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // ── Cursor (rAF-throttled) ──
+        const cursor = document.getElementById('cursor');
+        if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+            let cx = 0, cy = 0, tx = 0, ty = 0, raf = null;
+            const loop = () => {
+                cx += (tx - cx) * 0.22;
+                cy += (ty - cy) * 0.22;
+                cursor.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
+                if (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.3) {
+                    raf = requestAnimationFrame(loop);
+                } else { raf = null; }
+            };
+            window.addEventListener('mousemove', (e) => {
+                tx = e.clientX; ty = e.clientY;
+                if (!raf) raf = requestAnimationFrame(loop);
+            }, { passive: true });
+            document.querySelectorAll('a, button, .ritual-card, .team-card, .mq-item').forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+            });
+        } else if (cursor) {
+            cursor.style.display = 'none';
+        }
+
+        // ── Header scroll state + scroll progress (rAF-throttled) ──
+        const nav = document.querySelector('header.nav');
+        const stickyBook = document.getElementById('sticky-book');
+        const bookSection = document.getElementById('book');
+        const progressBar = document.getElementById('scroll-progress');
+        let scrollTicking = false;
+        const updateScroll = () => {
+            const y = window.scrollY;
+            const doc = document.documentElement;
+            const height = doc.scrollHeight - window.innerHeight;
+            const progress = height > 0 ? (y / height) * 100 : 0;
+            nav.classList.toggle('scrolled', y > 40);
+            // Hide sticky book once the "Begin your ritual." booking section enters view
+            let bookVisible = false;
+            if (bookSection) {
+                const r = bookSection.getBoundingClientRect();
+                bookVisible = r.top < window.innerHeight * 0.85;
+            }
+            stickyBook.classList.toggle('visible', y > window.innerHeight * 0.6 && !bookVisible);
+            progressBar.style.width = progress + '%';
+            scrollTicking = false;
+        };
+        window.addEventListener('scroll', () => {
+            if (!scrollTicking) { requestAnimationFrame(updateScroll); scrollTicking = true; }
+        }, { passive: true });
+        updateScroll();
+
+        // ── Mobile menu ──
+        const burger = document.getElementById('burger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const toggleMenu = (force) => {
+            const willOpen = force !== undefined ? force : !mobileMenu.classList.contains('open');
+            mobileMenu.classList.toggle('open', willOpen);
+            burger.classList.toggle('open', willOpen);
+            document.body.style.overflow = willOpen ? 'hidden' : '';
+        };
+        burger.addEventListener('click', () => toggleMenu());
+        mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => toggleMenu(false)));
+
+        // ── Hero image slider (crossfade, auto-advance, pauses when tab hidden) ──
+        (function heroSlider() {
+            const slides = document.querySelectorAll('#heroSlider .slide');
+            const dots = document.querySelectorAll('#heroDots span');
+            const counter = document.getElementById('heroCounter');
+            if (slides.length < 2) return;
+            let idx = 0;
+            const total = slides.length;
+            const go = (next) => {
+                slides[idx].classList.remove('on');
+                dots[idx]?.classList.remove('on');
+                idx = (next + total) % total;
+                slides[idx].classList.add('on');
+                dots[idx]?.classList.add('on');
+                if (counter) counter.textContent = String(idx + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+            };
+            let timer = setInterval(() => go(idx + 1), 5600);
+            document.addEventListener('visibilitychange', () => {
+                clearInterval(timer);
+                if (!document.hidden) timer = setInterval(() => go(idx + 1), 5600);
+            });
+            // Click dots
+            dots.forEach((d, i) => d.addEventListener('click', () => {
+                clearInterval(timer);
+                go(i);
+                timer = setInterval(() => go(idx + 1), 5600);
+            }));
+        })();
+
+        // ── Before/After drag reveal ──
+        (function beforeAfter() {
+            const wrap = document.getElementById('baWrap');
+            if (!wrap) return;
+            const after = wrap.querySelector('.ba-after');
+            const handle = document.getElementById('baHandle');
+            let dragging = false;
+            const set = (clientX) => {
+                const rect = wrap.getBoundingClientRect();
+                let pct = ((clientX - rect.left) / rect.width) * 100;
+                pct = Math.max(0, Math.min(100, pct));
+                after.style.clipPath = `inset(0 0 0 ${pct}%)`;
+                handle.style.left = pct + '%';
+            };
+            const start = (e) => {
+                dragging = true;
+                if (cursor) cursor.classList.add('drag');
+                const x = e.touches ? e.touches[0].clientX : e.clientX;
+                set(x);
+                e.preventDefault();
+            };
+            const move = (e) => {
+                if (!dragging) return;
+                const x = e.touches ? e.touches[0].clientX : e.clientX;
+                set(x);
+            };
+            const end = () => {
+                dragging = false;
+                if (cursor) cursor.classList.remove('drag');
+            };
+            wrap.addEventListener('mousedown', start);
+            window.addEventListener('mousemove', move, { passive: true });
+            window.addEventListener('mouseup', end);
+            wrap.addEventListener('touchstart', start, { passive: false });
+            window.addEventListener('touchmove', move, { passive: true });
+            window.addEventListener('touchend', end);
+            // Hover cursor state
+            wrap.addEventListener('mouseenter', () => { if (cursor) cursor.classList.add('drag'); });
+            wrap.addEventListener('mouseleave', () => { if (!dragging && cursor) cursor.classList.remove('drag'); });
+            // Auto-demo on first enter
+            let demoed = false;
+            const demoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting && !demoed) {
+                        demoed = true;
+                        let p = 50;
+                        let dir = -1;
+                        const tick = () => {
+                            p += dir * 0.6;
+                            if (p <= 22) { dir = 1; }
+                            else if (p >= 78) {
+                                // settle back to 50
+                                const settle = setInterval(() => {
+                                    p += (50 - p) * 0.12;
+                                    after.style.clipPath = `inset(0 0 0 ${p}%)`;
+                                    handle.style.left = p + '%';
+                                    if (Math.abs(50 - p) < 0.4) { clearInterval(settle); }
+                                }, 16);
+                                return;
+                            }
+                            after.style.clipPath = `inset(0 0 0 ${p}%)`;
+                            handle.style.left = p + '%';
+                            requestAnimationFrame(tick);
+                        };
+                        setTimeout(() => requestAnimationFrame(tick), 650);
+                    }
+                });
+            }, { threshold: 0.4 });
+            demoObserver.observe(wrap);
+        })();
+
+        // ── Ritual sticky-stack: depth fade + ticker sync (perf-tuned) ──
+        (function ritualStack() {
+            const cards = gsap.utils.toArray('.ritual-card');
+            if (!cards.length) return;
+            const ticks = document.querySelectorAll('#ritualTicker .tk');
+
+            // Desktop-only: depth fade scrub. On mobile the cards aren't sticky,
+            // so scrubbing scale/opacity leaves them stuck at the end state.
+            const mm = gsap.matchMedia();
+            mm.add('(min-width: 900px)', () => {
+                cards.forEach((card, i) => {
+                    if (i === cards.length - 1) return;
+                    const inner = card.querySelector('.ritual-card-inner') || card;
+                    gsap.to(inner, {
+                        scale: 0.95,
+                        opacity: 0.35,
+                        ease: 'none',
+                        force3D: true,
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top top',
+                            end: '+=90%',
+                            scrub: 0.4,
+                        }
+                    });
+                });
+            });
+
+            // Mobile: simple entrance reveal so cards don't pop — scroll animation
+            // still fires, but without the sticky-stack scrub that caused jank.
+            mm.add('(max-width: 899px)', () => {
+                cards.forEach((card) => {
+                    const inner = card.querySelector('.ritual-card-inner') || card;
+                    gsap.set(inner, { opacity: 0, y: 40, scale: 1 });
+                    gsap.to(inner, {
+                        opacity: 1, y: 0,
+                        duration: 0.9,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 85%',
+                            once: true,
+                        }
+                    });
+                });
+            });
+
+            // Sync ticker (desktop only — ticker is display:none on mobile)
+            cards.forEach((card, i) => {
+                ScrollTrigger.create({
+                    trigger: card,
+                    start: 'top 55%',
+                    end: 'bottom 45%',
+                    onEnter: () => setTicker(i),
+                    onEnterBack: () => setTicker(i),
+                });
+            });
+            function setTicker(i) {
+                ticks.forEach((t, j) => t.classList.toggle('on', j <= i));
+            }
+        })();
+
+        // ── GSAP reveals (batched for perf) ──
+        window.addEventListener('load', () => {
+            gsap.to('.reveal-title', { opacity: 1, y: 0, duration: 1.4, ease: 'power3.out' });
+
+            gsap.utils.toArray('.reveal-text').forEach((el, i) => {
+                gsap.fromTo(el,
+                    { opacity: 0, y: 18 },
+                    { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: 0.3 + (i * 0.12) }
+                );
+            });
+
+            ScrollTrigger.batch('.reveal', {
+                start: 'top 92%',
+                onEnter: (els) => gsap.fromTo(els,
+                    { opacity: 0, y: 28 },
+                    { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.06, overwrite: true }
+                ),
+                once: true
+            });
+
+            ScrollTrigger.batch('.reveal-scale', {
+                start: 'top 92%',
+                onEnter: (els) => gsap.fromTo(els,
+                    { opacity: 0, scale: 0.95 },
+                    { opacity: 1, scale: 1, duration: 1.1, ease: 'expo.out', stagger: 0.06, overwrite: true }
+                ),
+                once: true
+            });
+
+            gsap.utils.toArray('.reveal-stagger').forEach(container => {
+                const children = container.children;
+                gsap.fromTo(children,
+                    { opacity: 0, y: 22 },
+                    {
+                        opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+                        stagger: 0.07,
+                        scrollTrigger: { trigger: container, start: 'top 88%', once: true }
+                    }
+                );
+            });
+
+            // Force a refresh after initial setup so mobile viewport heights settle
+            ScrollTrigger.refresh();
+
+            // Safety net: after 2s any still-hidden reveal element (e.g. if a trigger
+            // failed to fire due to layout shift on mobile) is forced visible.
+            setTimeout(() => {
+                document.querySelectorAll('.reveal, .reveal-scale, .reveal-text, .reveal-title, .reveal-stagger > *').forEach(el => {
+                    const cs = getComputedStyle(el);
+                    if (parseFloat(cs.opacity) < 0.1) {
+                        el.style.opacity = '1';
+                        el.style.transform = 'none';
+                    }
+                });
+                ScrollTrigger.refresh();
+            }, 2000);
+
+            // Let ScrollTrigger recalc on resize (throttled)
+            let resizeT = null;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeT);
+                resizeT = setTimeout(() => ScrollTrigger.refresh(), 200);
+            });
+            // Mobile browsers fire this when the URL bar shows/hides
+            window.addEventListener('orientationchange', () => {
+                setTimeout(() => ScrollTrigger.refresh(), 300);
+            });
+        });
+
+        // ── Booking form ──
+        const form = document.getElementById('book-form');
+        const success = document.getElementById('book-success');
+        const dateInput = document.getElementById('bk-date');
+        if (dateInput) {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            dateInput.min = `${yyyy}-${mm}-${dd}`;
+            const soon = new Date(today.getTime() + 3 * 86400000);
+            const sy = soon.getFullYear();
+            const sm = String(soon.getMonth() + 1).padStart(2, '0');
+            const sd = String(soon.getDate()).padStart(2, '0');
+            dateInput.value = `${sy}-${sm}-${sd}`;
+        }
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const required = form.querySelectorAll('[required]');
+            let ok = true;
+            required.forEach(f => {
+                if (!f.value.trim()) {
+                    f.style.borderBottomColor = '#d43b3b';
+                    ok = false;
+                } else {
+                    f.style.borderBottomColor = '';
+                }
+            });
+            if (!ok) return;
+            const btn = form.querySelector('button[type="submit"]');
+            btn.style.opacity = '0.5';
+            btn.style.pointerEvents = 'none';
+            btn.innerHTML = 'Sending...';
+            setTimeout(() => {
+                form.querySelectorAll('input, select, button').forEach(f => f.style.display = 'none');
+                success.classList.remove('hidden');
+            }, 900);
+        });
+
+        // ── Smooth anchor scroll (header offset) ──
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', (e) => {
+                const id = a.getAttribute('href');
+                if (id.length < 2) return;
+                const el = document.querySelector(id);
+                if (!el) return;
+                e.preventDefault();
+                const top = el.getBoundingClientRect().top + window.scrollY - 60;
+                window.scrollTo({ top, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

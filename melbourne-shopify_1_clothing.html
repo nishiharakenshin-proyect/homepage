@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEO-CHROME | Atelier Melbourne</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@100;300;400;600&family=Space+Mono&display=swap" rel="stylesheet">
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --bg-cream: #F9F8F6;
+            --gray-deep: #1A1A1A;
+            --gray-soft: #333333;
+            --accent-green: #C4FF00;
+            --text-main: #1A1A1A;
+            --border: rgba(26, 26, 26, 0.06);
+        }
+
+        html, body {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+        body {
+            background-color: var(--bg-cream);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            margin: 0;
+        }
+
+        img { max-width: 100%; height: auto; }
+
+        .font-space { font-family: 'Space Grotesk', sans-serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+
+        /* スクロールバー非表示 */
+        ::-webkit-scrollbar { display: none; }
+
+        /* アニメーション用初期状態 */
+        .reveal, .reveal-scale, .reveal-text, .reveal-title { 
+            opacity: 0; 
+            will-change: transform, opacity;
+        }
+
+        /* タブのアクティブ状態 */
+        .tab-active {
+            color: var(--accent-green);
+            background-color: var(--gray-deep);
+            padding: 0.3rem 1.5rem;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+        }
+
+        /* アクションボタン */
+        .btn-action {
+            position: relative;
+            background-color: var(--gray-deep);
+            color: #fff;
+            padding: 1.1rem 2.5rem;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.35em;
+            font-weight: 700;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+            display: inline-block;
+            white-space: nowrap;
+            text-align: center;
+            min-height: 44px;
+            line-height: 1.2;
+        }
+        @media (min-width: 768px) {
+            .btn-action {
+                padding: 1.2rem 3.5rem;
+                letter-spacing: 0.4em;
+            }
+        }
+        .btn-action:hover {
+            background-color: var(--accent-green);
+            color: #000;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(196, 255, 0, 0.2);
+        }
+
+        /* 商品カード共通ホバー設定 */
+        .prod-card {
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .prod-card:hover {
+            transform: translateY(-8px);
+        }
+        .prod-card img {
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .prod-card:hover img {
+            transform: scale(1.1);
+        }
+
+        /* インスタグリッド: アイテム同士の余白を大きく確保 */
+        .insta-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+        @media (max-width: 1024px) {
+            .insta-grid { gap: 24px; }
+        }
+        @media (max-width: 640px) {
+            .insta-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 14px;
+            }
+        }
+        .insta-item { 
+            background: #fff; 
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+            border: 1px solid var(--border);
+        }
+        .insta-item img {
+            transition: transform 1.5s ease;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .insta-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .edge-label {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+
+        /* KVキャラクターのスタイル */
+        .hero-character-wrapper {
+            position: absolute;
+            right: 0%;
+            bottom: 0;
+            height: 98vh;
+            z-index: 10;
+        }
+        .hero-character {
+            height: 100%;
+            object-fit: contain;
+            filter: grayscale(1) brightness(0.9);
+            transition: filter 1s cubic-bezier(0.16, 1, 0.3, 1);
+            mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+            cursor: pointer;
+        }
+        .hero-character:hover {
+            filter: grayscale(0) brightness(1);
+        }
+
+        /* 背景デコレーション */
+        .bg-grid {
+            background-image: radial-gradient(var(--border) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* クイックアクションボタンのイージング */
+        .ease-expo {
+            transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* タブボタンのタッチターゲット */
+        .tab-btn {
+            min-height: 40px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        /* ヒーロー見出しのレスポンシブ化 */
+        .hero-title {
+            font-size: clamp(3.25rem, 11vw, 10rem);
+            line-height: 0.88;
+        }
+
+        /* KVセクション下部のScroll Down を画面幅に適応 */
+        @media (max-width: 768px) {
+            .scroll-indicator {
+                left: 2rem !important;
+                bottom: 2rem !important;
+                gap: 1rem !important;
+            }
+            .scroll-indicator .scroll-line { width: 2rem !important; }
+            .scroll-indicator span {
+                letter-spacing: 0.6em !important;
+                font-size: 8px !important;
+            }
+        }
+
+        /* フッター最下部のコピーライト文字間隔をモバイルで調整 */
+        @media (max-width: 768px) {
+            .footer-meta {
+                letter-spacing: 0.4em !important;
+                font-size: 8px;
+                text-align: center;
+                word-break: break-word;
+            }
+        }
+
+        /* ヘッダー: モバイルで窮屈にならないよう微調整 */
+        @media (max-width: 1023px) {
+            header {
+                padding-top: 1.25rem !important;
+                padding-bottom: 1.25rem !important;
+            }
+        }
+        @media (max-width: 640px) {
+            header .header-right {
+                gap: 1.25rem !important;
+            }
+            header .header-left {
+                gap: 0 !important;
+            }
+            header a.brand-link {
+                font-size: 1.1rem !important;
+            }
+        }
+
+        /* Studio 見出しのはみ出し対策 */
+        .studio-title {
+            font-size: clamp(2rem, 6.5vw, 4.5rem);
+            line-height: 1;
+            word-break: break-word;
+        }
+
+        /* Visit 見出しのはみ出し対策 */
+        .visit-title {
+            font-size: clamp(2rem, 9vw, 6rem);
+            line-height: 0.95;
+            word-break: break-word;
+        }
+
+        /* タッチターゲット (ナビリンク) */
+        header nav a,
+        header .header-right a {
+            display: inline-flex;
+            align-items: center;
+            min-height: 32px;
+        }
+
+        /* 商品カードコンテンツの微調整 */
+        @media (max-width: 480px) {
+            .prod-card h3 {
+                letter-spacing: 0.2em !important;
+            }
+        }
+
+        /* Popular セクションの右ブロック: モバイル時に収まるよう */
+        @media (max-width: 768px) {
+            #popular .browse-row {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+
+        /* ── Scroll progress bar ─ */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            width: 0%;
+            background: linear-gradient(90deg, #C4FF00, #fff, #C4FF00);
+            z-index: 9998;
+            mix-blend-mode: difference;
+            transition: width .12s linear;
+            box-shadow: 0 0 12px rgba(196, 255, 0, .55);
+        }
+
+        /* ── Marquee strip (CSS-only, GPU-cheap) ─ */
+        .marquee-strip {
+            background: var(--gray-deep);
+            color: var(--accent-green);
+            border-top: 1px solid rgba(255,255,255,.05);
+            border-bottom: 1px solid rgba(255,255,255,.05);
+            overflow: hidden;
+            padding: 22px 0;
+            position: relative;
+        }
+        .marquee-strip.invert {
+            background: var(--accent-green);
+            color: var(--gray-deep);
+        }
+        .marquee-track {
+            display: flex;
+            gap: 3rem;
+            width: max-content;
+            animation: mq-strip 40s linear infinite;
+            will-change: transform;
+        }
+        .marquee-track.fast { animation-duration: 28s; }
+        .marquee-track > span {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.6rem, 4.4vw, 3.2rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 3rem;
+        }
+        .marquee-track > span::after {
+            content: "";
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            background: currentColor;
+            transform: rotate(45deg);
+        }
+        @keyframes mq-strip {
+            from { transform: translate3d(0,0,0); }
+            to   { transform: translate3d(-50%,0,0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .marquee-track { animation: none; }
+        }
+
+        /* ── Split-word hero title reveal ─ */
+        .hero-title .word {
+            display: inline-block;
+            overflow: hidden;
+            vertical-align: bottom;
+        }
+        .hero-title .word > span {
+            display: inline-block;
+            transform: translateY(110%);
+            transition: transform 1.2s cubic-bezier(.2,.7,.2,1);
+        }
+        .hero-title.in .word > span { transform: translateY(0); }
+        .hero-title .word:nth-child(2) > span { transition-delay: .12s; }
+
+        /* ── Magnetic CTA ─ */
+        .magnetic { display: inline-block; will-change: transform; }
+
+        /* ── Spec ticker bar (just under hero) ─ */
+        .spec-bar {
+            background: var(--bg-cream);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 0;
+            overflow: hidden;
+        }
+        .spec-bar .spec-track {
+            display: flex;
+            gap: 4rem;
+            width: max-content;
+            animation: mq-strip 60s linear infinite;
+            will-change: transform;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: rgba(0,0,0,.45);
+        }
+        .spec-bar .spec-track > span {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .spec-bar .spec-track > span::before {
+            content: "◆";
+            color: var(--accent-green);
+            font-size: 8px;
+        }
+
+        /* ── Floating buy CTA ─ */
+        .floating-buy {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 900;
+            background: var(--gray-deep);
+            color: #fff;
+            padding: 14px 22px 14px 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            border: 1px solid rgba(255,255,255,.15);
+            transform: translateY(120%) scale(.96);
+            opacity: 0;
+            transition: transform .55s cubic-bezier(.2,.7,.2,1), opacity .4s, background .3s;
+            box-shadow: 0 16px 38px rgba(0,0,0,.25);
+        }
+        .floating-buy.show { transform: translateY(0) scale(1); opacity: 1; }
+        .floating-buy:hover { background: var(--accent-green); color: #000; }
+        .floating-buy .pulse {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 var(--accent-green);
+            animation: pulse-ring 1.8s infinite;
+        }
+        .floating-buy:hover .pulse { background: #000; box-shadow: 0 0 0 0 #000; }
+        @keyframes pulse-ring {
+            0%   { box-shadow: 0 0 0 0 rgba(196,255,0,.55); }
+            70%  { box-shadow: 0 0 0 12px rgba(196,255,0,0); }
+            100% { box-shadow: 0 0 0 0 rgba(196,255,0,0); }
+        }
+        @media (max-width: 640px) {
+            .floating-buy { right: 14px; bottom: 14px; padding: 12px 16px; font-size: 9px; letter-spacing: 0.22em; }
+        }
+    </style>
+</head>
+<body class="bg-grid">
+
+    <div class="scroll-progress" id="scrollProgress"></div>
+    <div id="cursor" class="fixed top-0 left-0 w-2.5 h-2.5 bg-[#C4FF00] rounded-full z-[9999] pointer-events-none -translate-x-1/2 -translate-y-1/2 mix-blend-difference hidden md:block"></div>
+
+    <a href="#popular" class="floating-buy" id="floatingBuy">
+        <span class="pulse"></span>
+        Shop new drop
+    </a>
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full z-[1000] px-5 sm:px-8 md:px-12 py-5 md:py-8 flex justify-between items-center gap-4 bg-white/40 backdrop-blur-2xl border-b border-black/[0.03]">
+        <div class="header-left flex items-center gap-10 xl:gap-20 min-w-0">
+            <a href="#" class="brand-link font-space text-xl md:text-2xl font-bold tracking-[-0.06em] flex items-center gap-3 group shrink-0">
+                <div class="w-3.5 h-3.5 bg-[#C4FF00] group-hover:rotate-90 transition-transform duration-700"></div>
+                NEO-CHROME
+            </a>
+            <nav class="hidden lg:flex gap-10 xl:gap-12 text-[10px] font-bold tracking-[0.5em] uppercase text-black/40">
+                <a href="#popular" class="hover:text-[#C4FF00] hover:opacity-100 transition-all duration-300">Drops</a>
+                <a href="#lineup" class="hover:text-[#C4FF00] hover:opacity-100 transition-all duration-300">Catalogue</a>
+                <a href="#about" class="hover:text-[#C4FF00] hover:opacity-100 transition-all duration-300">Studio</a>
+            </nav>
+        </div>
+        <div class="header-right flex items-center gap-6 sm:gap-8 md:gap-12 text-[10px] font-bold tracking-[0.3em] uppercase text-black/40 shrink-0">
+            <a href="#" class="hidden sm:inline-flex hover:text-[#C4FF00] hover:opacity-100 transition-all duration-300">Search</a>
+            <a href="#" class="flex items-center gap-2 group hover:opacity-100 transition-all whitespace-nowrap">
+                Inventory <span class="font-mono text-[9px] group-hover:text-[#C4FF00] transition-colors">[0]</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- KV (Hero Section) -->
+    <section class="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#EFEEED] pt-28 pb-24 md:pt-0 md:pb-0">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1541519227354-08fa5d50c820?q=80&w=2000&auto=format&fit=crop"
+                 class="w-full h-full object-cover opacity-20 parallax-bg" alt="Architecture Background">
+        </div>
+
+        <!-- パーカー着用の男性 -->
+        <div class="hero-character-wrapper hidden lg:block floating-char">
+            <img src="https://images.unsplash.com/photo-1578587018452-892bacefd3f2?q=80&w=1200&auto=format&fit=crop"
+                 class="hero-character reveal-right" alt="Person in Hoodie">
+        </div>
+
+        <div class="absolute right-10 top-1/2 -translate-y-1/2 hidden lg:block z-20">
+            <span class="edge-label text-[9px] font-mono tracking-[1em] uppercase opacity-10">CORE SYSTEM ONLINE / VERSION 6.2.0</span>
+        </div>
+
+        <div class="relative z-20 w-full px-6 sm:px-8 md:px-20 container mx-auto">
+            <div class="max-w-5xl">
+                <div class="overflow-hidden mb-6 md:mb-8">
+                    <span class="font-mono text-[9px] md:text-[10px] tracking-[0.8em] md:tracking-[1.2em] block uppercase text-black/30 reveal-text">Connection Established / Melbourne HQ</span>
+                </div>
+                <h1 class="hero-title font-space font-bold tracking-tighter mb-10 md:mb-12 text-black reveal-title" id="heroTitle">
+                    <span class="word"><span>VIVID</span></span><br><span class="word"><span class="text-transparent" style="-webkit-text-stroke: 1.5px #000;">DYNAMICS.</span></span>
+                </h1>
+                <p class="text-xs sm:text-sm md:text-base opacity-50 max-w-sm leading-loose mb-12 md:mb-16 uppercase tracking-[0.22em] md:tracking-[0.25em] font-medium reveal-text">
+                    Precision-engineered silhouettes for the modern urban habitat. Functional architecture in motion.
+                </p>
+                <div class="flex flex-wrap gap-6 md:gap-10 items-center reveal-text">
+                    <a href="#lineup" class="btn-action">Enter Archive</a>
+                    <a href="#" class="text-[10px] font-bold uppercase tracking-[0.4em] md:tracking-[0.5em] border-b-2 border-black/10 pb-1 hover:border-[#C4FF00] transition-all">Digital Lookbook</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="scroll-indicator absolute bottom-8 left-6 md:bottom-12 md:left-12 hidden sm:flex items-center gap-4 md:gap-8 z-20">
+            <div class="scroll-line w-10 md:w-16 h-[1px] bg-black opacity-10"></div>
+            <span class="text-[9px] tracking-[1em] md:tracking-[1.2em] uppercase font-black opacity-20 animate-pulse">Scroll Down</span>
+        </div>
+    </section>
+
+    <!-- Spec ticker (under hero) -->
+    <div class="spec-bar" aria-hidden="true">
+        <div class="spec-track">
+            <span>SS / 2026 collection</span>
+            <span>3-layer technical shell</span>
+            <span>Made in Melbourne</span>
+            <span>Engineered in Tokyo</span>
+            <span>Free shipping AU/NZ</span>
+            <span>Lifetime repairs</span>
+            <span>SS / 2026 collection</span>
+            <span>3-layer technical shell</span>
+            <span>Made in Melbourne</span>
+            <span>Engineered in Tokyo</span>
+            <span>Free shipping AU/NZ</span>
+            <span>Lifetime repairs</span>
+        </div>
+    </div>
+
+    <!-- Popular Items Section (New Essentials.) -->
+    <section id="popular" class="py-20 md:py-24 container mx-auto px-6 sm:px-8 md:px-10">
+        <div class="mb-12 flex flex-col md:flex-row md:justify-between md:items-end gap-8 md:gap-10">
+            <div class="reveal">
+                <span class="font-mono text-[10px] tracking-[0.6em] md:tracking-[0.8em] uppercase text-black/30 block mb-5 md:mb-6">/ Curated Selection</span>
+                <h2 class="font-space text-[2rem] sm:text-4xl md:text-5xl font-bold tracking-tight text-black uppercase leading-tight">New Essentials.</h2>
+            </div>
+            <div class="browse-row flex items-center gap-6 reveal">
+                <span class="text-[9px] font-bold tracking-[0.4em] uppercase opacity-20 text-black">Browse All Drops</span>
+                <div class="h-12 w-12 border border-black/5 rounded-full flex items-center justify-center group cursor-pointer hover:border-[#C4FF00] hover:bg-black transition-all">
+                    <div class="w-2 h-2 bg-black group-hover:bg-[#C4FF00]"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 lg:gap-16 xl:gap-20">
+            <!-- Item 1 -->
+            <div class="prod-card reveal-scale group cursor-pointer">
+                <div class="aspect-[3/4] overflow-hidden bg-white mb-6 relative shadow-sm border border-black/5">
+                    <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=1000&auto=format&fit=crop" alt="Graphite Shell">
+                    <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="absolute bottom-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-expo">
+                        <div class="w-10 h-10 bg-[#C4FF00] flex items-center justify-center shadow-xl">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-start px-2">
+                    <div class="space-y-2">
+                        <h3 class="text-[11px] font-bold uppercase tracking-[0.3em]">Graphite Shell 0.1</h3>
+                        <p class="text-[9px] opacity-40 uppercase font-medium tracking-[0.2em]">3-Layer Tech / Waterproof</p>
+                    </div>
+                    <span class="font-mono text-xs font-bold text-black">$320.00</span>
+                </div>
+            </div>
+            <!-- Item 2 -->
+            <div class="prod-card reveal-scale group cursor-pointer">
+                <div class="aspect-[3/4] overflow-hidden bg-white mb-6 relative shadow-sm border border-black/5">
+                    <img src="https://images.unsplash.com/photo-1555529733-0e670560f7e1?q=80&w=1000&auto=format&fit=crop" alt="Linear Trousers">
+                    <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="absolute bottom-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-expo">
+                        <div class="w-10 h-10 bg-[#C4FF00] flex items-center justify-center shadow-xl">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-start px-2">
+                    <div class="space-y-2">
+                        <h3 class="text-[11px] font-bold uppercase tracking-[0.3em]">Linear Trousers</h3>
+                        <p class="text-[9px] opacity-40 uppercase font-medium tracking-[0.2em]">Articulated / Slate Grey</p>
+                    </div>
+                    <span class="font-mono text-xs font-bold text-black">$280.00</span>
+                </div>
+            </div>
+            <!-- Item 3 -->
+            <div class="prod-card reveal-scale group cursor-pointer">
+                <div class="aspect-[3/4] overflow-hidden bg-white mb-6 relative shadow-sm border border-black/5">
+                    <img src="https://images.unsplash.com/photo-1511405946472-a37e3b5ccd47?q=80&w=1000&auto=format&fit=crop" alt="Carry-all Pod">
+                    <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="absolute bottom-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-expo">
+                        <div class="w-10 h-10 bg-[#C4FF00] flex items-center justify-center shadow-xl">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-start px-2">
+                    <div class="space-y-2">
+                        <h3 class="text-[11px] font-bold uppercase tracking-[0.3em]">Carry-all Pod</h3>
+                        <p class="text-[9px] opacity-40 uppercase font-medium tracking-[0.2em]">Ballistic Nylon / Carbon</p>
+                    </div>
+                    <span class="font-mono text-xs font-bold text-black">$195.00</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Marquee strip -->
+    <div class="marquee-strip" aria-hidden="true">
+        <div class="marquee-track">
+            <span>NEO-CHROME&nbsp;/&nbsp;SS26</span>
+            <span>FORM FOLLOWS FRICTION</span>
+            <span>NEW DROP&nbsp;//&nbsp;LIVE NOW</span>
+            <span>BUILT FOR THE GRID</span>
+            <span>NEO-CHROME&nbsp;/&nbsp;SS26</span>
+            <span>FORM FOLLOWS FRICTION</span>
+            <span>NEW DROP&nbsp;//&nbsp;LIVE NOW</span>
+            <span>BUILT FOR THE GRID</span>
+        </div>
+    </div>
+
+    <!-- Catalogue Section (Inventory.) -->
+    <section id="lineup" class="py-20 md:py-24 bg-white border-y border-black/[0.03]">
+        <div class="container mx-auto px-6 sm:px-8 md:px-10">
+            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-12 md:mb-16 gap-8 md:gap-10">
+                <h2 class="font-space text-[2rem] sm:text-4xl font-bold tracking-tight text-black uppercase">Inventory.</h2>
+                <div class="flex flex-wrap gap-x-6 sm:gap-x-8 md:gap-x-10 gap-y-4 text-[9px] sm:text-[10px] font-black tracking-[0.35em] sm:tracking-[0.5em] uppercase">
+                    <button class="tab-btn tab-active cursor-pointer transition-all duration-700" onclick="filterCat('all', this)">All Items</button>
+                    <button class="tab-btn opacity-25 hover:text-[#C4FF00] hover:opacity-100 transition-all cursor-pointer text-black" onclick="filterCat('tops', this)">Tops</button>
+                    <button class="tab-btn opacity-25 hover:text-[#C4FF00] hover:opacity-100 transition-all cursor-pointer text-black" onclick="filterCat('bottoms', this)">Bottoms</button>
+                    <button class="tab-btn opacity-25 hover:text-[#C4FF00] hover:opacity-100 transition-all cursor-pointer text-black" onclick="filterCat('acc', this)">Acc.</button>
+                </div>
+            </div>
+
+            <div id="catalog-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-12">
+                <div class="prod-card tops reveal-scale group cursor-pointer">
+                    <div class="aspect-[4/5] bg-[#f2f2f2] mb-6 overflow-hidden relative border border-black/5">
+                        <img src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=800&auto=format&fit=crop" alt="Cyber Tee">
+                        <div class="absolute bottom-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-expo">
+                            <div class="w-10 h-10 bg-[#C4FF00] flex items-center justify-center shadow-xl">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-1">
+                        <p class="text-[11px] font-bold tracking-[0.2em] uppercase text-black">Cyber Tee / G1</p>
+                        <p class="font-mono text-[10px] opacity-30 mt-2 font-bold text-black">$85.00</p>
+                    </div>
+                </div>
+                <div class="prod-card bottoms reveal-scale group cursor-pointer">
+                    <div class="aspect-[4/5] bg-[#f2f2f2] mb-6 overflow-hidden relative border border-black/5">
+                        <img src="https://images.unsplash.com/photo-1511105612320-2e62a04dd044?q=80&w=800&auto=format&fit=crop" alt="Grid Trousers">
+                        <div class="absolute bottom-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-expo">
+                            <div class="w-10 h-10 bg-[#C4FF00] flex items-center justify-center shadow-xl">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-1">
+                        <p class="text-[11px] font-bold tracking-[0.2em] uppercase text-black">Grid Trousers</p>
+                        <p class="font-mono text-[10px] opacity-30 mt-2 font-bold text-black">$210.00</p>
+                    </div>
+                </div>
+                <div class="prod-card acc reveal-scale group cursor-pointer">
+                    <div class="aspect-[4/5] bg-[#f2f2f2] mb-6 overflow-hidden relative border border-black/5">
+                        <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=800&auto=format&fit=crop" alt="Neon Sole">
+                        <div class="absolute bottom-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-expo">
+                            <div class="w-10 h-10 bg-[#C4FF00] flex items-center justify-center shadow-xl">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-1">
+                        <p class="text-[11px] font-bold tracking-[0.2em] uppercase text-black">Neon Sole</p>
+                        <p class="font-mono text-[10px] opacity-30 mt-2 font-bold text-black">$340.00</p>
+                    </div>
+                </div>
+                <div class="prod-card tops reveal-scale group cursor-pointer">
+                    <div class="aspect-[4/5] bg-[#f2f2f2] mb-6 overflow-hidden relative border border-black/5">
+                        <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=800&auto=format&fit=crop" alt="Aura Knit">
+                        <div class="absolute bottom-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-expo">
+                            <div class="w-10 h-10 bg-[#C4FF00] flex items-center justify-center shadow-xl">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-1">
+                        <p class="text-[11px] font-bold tracking-[0.2em] uppercase text-black">Aura Knitwear</p>
+                        <p class="font-mono text-[10px] opacity-30 mt-2 font-bold text-black">$160.00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visual Feed / @neochrome Section -->
+    <section class="py-20 md:py-32">
+        <div class="container mx-auto px-6 sm:px-8 md:px-10 mb-10 md:mb-12 flex flex-wrap justify-between items-center gap-4">
+            <h3 class="text-[9px] sm:text-[10px] font-bold tracking-[0.5em] sm:tracking-[0.8em] uppercase opacity-30 text-black">Visual Feed / @neochrome</h3>
+            <div class="flex items-center gap-4">
+                <div class="w-2.5 h-2.5 bg-[#C4FF00] rounded-full animate-ping"></div>
+                <span class="text-[9px] font-mono uppercase tracking-[0.4em] font-bold text-black/40">Live Link</span>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-6 sm:px-8 md:px-10">
+            <div class="insta-grid">
+                <div class="insta-item reveal-scale shadow-sm"><img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=600&auto=format&fit=crop"></div>
+                <div class="insta-item reveal-scale shadow-sm"><img src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=600&auto=format&fit=crop"></div>
+                <div class="insta-item reveal-scale shadow-sm"><img src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?q=80&w=600&auto=format&fit=crop"></div>
+                <div class="insta-item reveal-scale shadow-sm"><img src="https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?q=80&w=600&auto=format&fit=crop"></div>
+                <div class="insta-item reveal-scale shadow-sm"><img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=600&auto=format&fit=crop"></div>
+                <div class="insta-item reveal-scale shadow-sm"><img src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?q=80&w=600&auto=format&fit=crop"></div>
+                <div class="insta-item reveal-scale shadow-sm"><img src="https://images.unsplash.com/photo-1506152983158-b4a74a01c721?q=80&w=600&auto=format&fit=crop"></div>
+                <div class="insta-item reveal-scale shadow-sm"><img src="https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?q=80&w=600&auto=format&fit=crop"></div>
+                <div class="insta-item reveal-scale shadow-sm"><img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=600&auto=format&fit=crop"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Studio Info: 修正（画像をPC/スマホ共に正方形に） -->
+    <section id="about" class="py-20 md:py-40 bg-[#1A1A1A] text-white">
+        <div class="container mx-auto px-6 sm:px-8 md:px-10 grid lg:grid-cols-12 gap-12 md:gap-16 lg:gap-20">
+            <div class="lg:col-span-7 min-w-0">
+                <span class="font-mono text-[#C4FF00] text-[9px] sm:text-[10px] tracking-[0.8em] sm:tracking-[1.2em] mb-8 md:mb-10 block uppercase reveal">Studio Identity</span>
+                <h2 class="studio-title font-space font-bold tracking-tight mb-10 md:mb-12 reveal">Human precision,<br>digital form.</h2>
+                <div class="max-w-xl space-y-8 md:space-y-10 reveal opacity-50 text-[11px] md:text-sm tracking-[0.22em] md:tracking-[0.3em] uppercase font-medium leading-[2.2]">
+                    <p>Based in Melbourne's industrial fringes, Neo-Chrome operates at the sensory edge of traditional precision and synthetic innovation.</p>
+                    <p>Every stitch is a commitment to the enduring architecture of the minimalist wardrobe.</p>
+                </div>
+            </div>
+            <div class="lg:col-span-5 reveal flex flex-col justify-end">
+                <!-- aspect-square を適用し、PCでもスマホでも正方形に -->
+                <div class="aspect-square bg-white/5 overflow-hidden border border-white/10 relative group">
+                    <img src="https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-1000" alt="Atelier">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Place -->
+    <section id="visit" class="py-24 bg-[#F9F8F6]">
+        <div class="container mx-auto px-10">
+            <div class="w-full h-[600px] relative overflow-hidden group border border-black/5 shadow-2xl reveal">
+                <img src="https://images.unsplash.com/photo-1541519227354-08fa5d50c820?q=80&w=2000&auto=format&fit=crop" 
+                     class="w-full h-full object-cover brightness-[0.98] group-hover:scale-105 transition-transform duration-[6000ms]">
+                <div class="absolute inset-0 bg-white/10 backdrop-blur-[1px] flex flex-col items-center justify-center text-center p-12">
+                    <span class="font-mono text-black text-[11px] tracking-[1.2em] mb-12 uppercase font-black">Distribution / Sector 12</span>
+                    <h2 class="font-space text-4xl md:text-8xl font-bold tracking-tighter text-black mb-12">MELBOURNE CBD.</h2>
+                    <p class="text-[12px] font-bold tracking-[0.6em] uppercase text-black/60 mb-16">27 Little Collins St, Victoria 3000 AU</p>
+                    <a href="#" class="btn-action">Request Access</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-24 bg-white border-t border-black/[0.05]">
+        <div class="container mx-auto px-10 grid md:grid-cols-12 gap-16">
+            <div class="md:col-span-6 space-y-12">
+                <h2 class="font-space text-3xl font-bold tracking-tighter flex items-center gap-4 text-black">
+                    <div class="w-4 h-4 bg-[#C4FF00]"></div>
+                    NEO-CHROME
+                </h2>
+                <div class="flex flex-col gap-6 text-[10px] font-bold tracking-[0.5em] uppercase">
+                    <p class="opacity-30 text-black">Newsletter Stream</p>
+                    <form class="flex border-b-2 border-black/10 pb-4 max-w-lg focus-within:border-[#C4FF00] transition-colors">
+                        <input type="email" placeholder="IDENTITY@DOMAIN.COM" class="bg-transparent w-full focus:outline-none text-[10px] font-mono uppercase text-black">
+                        <button type="submit" class="text-black hover:text-[#C4FF00] transition-colors">Join</button>
+                    </form>
+                </div>
+            </div>
+            <div class="md:col-span-3 space-y-10 text-[11px] font-bold tracking-[0.3em] uppercase opacity-40 text-black">
+                <p class="text-[9px] tracking-[0.8em]">Store</p>
+                <nav class="flex flex-col gap-5">
+                    <a href="#" class="hover:text-[#C4FF00] transition-colors">New Drops</a>
+                    <a href="#" class="hover:text-[#C4FF00] transition-colors">Archive</a>
+                </nav>
+            </div>
+            <div class="md:col-span-3 space-y-10 text-[11px] font-bold tracking-[0.3em] uppercase opacity-40 text-black">
+                <p class="text-[9px] tracking-[0.8em]">Support</p>
+                <nav class="flex flex-col gap-5">
+                    <a href="#" class="hover:text-[#C4FF00] transition-colors">Contact</a>
+                    <a href="#" class="hover:text-[#C4FF00] transition-colors">Terms</a>
+                </nav>
+            </div>
+        </div>
+        <div class="container mx-auto px-10 mt-32 pt-12 border-t border-black/5 flex flex-col md:flex-row justify-between items-center gap-10 text-[8px] font-black opacity-20 tracking-[1.5em] uppercase text-black">
+            <p>© 2026 NEO-CHROME ATELIER | ALL RIGHTS ENCRYPTED</p>
+            <p>Melbourne / AU</p>
+        </div>
+    </footer>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        window.addEventListener('load', () => {
+            const cursor = document.getElementById('cursor');
+            window.addEventListener('mousemove', (e) => {
+                gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1 });
+            });
+
+            // 1. KV タイトルとテキスト
+            gsap.to(".reveal-title", {
+                opacity: 1,
+                y: 0,
+                duration: 1.5,
+                ease: "power4.out"
+            });
+
+            gsap.utils.toArray('.reveal-text').forEach((el, i) => {
+                gsap.to(el, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    ease: "power3.out",
+                    delay: 0.4 + (i * 0.2)
+                });
+            });
+
+            // 2. セクション全体の登場
+            gsap.utils.toArray('.reveal').forEach(el => {
+                gsap.to(el, {
+                    scrollTrigger: {
+                        trigger: el,
+                        start: "top 95%",
+                    },
+                    opacity: 1,
+                    y: 0,
+                    duration: 1.2,
+                    ease: "power2.out"
+                });
+            });
+
+            // 3. 商品カードの登場
+            gsap.utils.toArray('.reveal-scale').forEach(el => {
+                gsap.to(el, {
+                    scrollTrigger: {
+                        trigger: el,
+                        start: "top 98%",
+                    },
+                    opacity: 1,
+                    scale: 1,
+                    duration: 1.2,
+                    ease: "power3.out"
+                });
+            });
+
+            // 4. KVキャラクターの浮遊
+            gsap.to(".floating-char", {
+                y: -20,
+                duration: 2.5,
+                repeat: -1,
+                yoyo: true,
+                ease: "power1.inOut"
+            });
+
+            // 5. 背景パララックス
+            gsap.to(".parallax-bg", {
+                scrollTrigger: {
+                    trigger: "section",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: true
+                },
+                y: 60,
+                ease: "none"
+            });
+
+            // キャラクター登場
+            gsap.to(".reveal-right", {
+                opacity: 1,
+                x: 0,
+                duration: 1.8,
+                ease: "power4.out",
+                delay: 0.3
+            });
+
+            // Hero split-word title
+            const heroTitle = document.getElementById('heroTitle');
+            if (heroTitle) {
+                requestAnimationFrame(() => heroTitle.classList.add('in'));
+            }
+
+            // Magnetic CTA — single passive listener, opt-in via .btn-action
+            const magneticTargets = document.querySelectorAll('.btn-action');
+            magneticTargets.forEach(t => {
+                t.classList.add('magnetic');
+                t.addEventListener('mousemove', (e) => {
+                    const r = t.getBoundingClientRect();
+                    const x = e.clientX - r.left - r.width / 2;
+                    const y = e.clientY - r.top - r.height / 2;
+                    t.style.transform = `translate(${x * 0.18}px, ${y * 0.22}px)`;
+                });
+                t.addEventListener('mouseleave', () => {
+                    t.style.transform = '';
+                });
+            });
+
+            // Scroll progress + floating buy
+            const progress = document.getElementById('scrollProgress');
+            const floatingBuy = document.getElementById('floatingBuy');
+            let progressTicking = false;
+            const onProgress = () => {
+                const h = document.documentElement;
+                const max = h.scrollHeight - h.clientHeight;
+                const p = max > 0 ? (h.scrollTop / max) * 100 : 0;
+                if (progress) progress.style.width = p + '%';
+                if (floatingBuy) floatingBuy.classList.toggle('show', h.scrollTop > window.innerHeight * 0.7);
+                progressTicking = false;
+            };
+            window.addEventListener('scroll', () => {
+                if (!progressTicking) { requestAnimationFrame(onProgress); progressTicking = true; }
+            }, { passive: true });
+            onProgress();
+        });
+
+        // フィルター
+        function filterCat(cat, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('tab-active');
+                b.classList.add('opacity-25');
+            });
+            btn.classList.add('tab-active');
+            btn.classList.remove('opacity-25');
+
+            const items = document.querySelectorAll('.prod-card');
+            
+            gsap.to(items, {
+                opacity: 0,
+                scale: 0.98,
+                duration: 0.2,
+                onComplete: () => {
+                    items.forEach(item => {
+                        if (cat === 'all' || item.classList.contains(cat)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                    gsap.to(items, { 
+                        opacity: 1, 
+                        scale: 1, 
+                        duration: 0.6, 
+                        stagger: 0.05, 
+                        ease: "expo.out" 
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>
