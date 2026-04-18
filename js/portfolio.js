@@ -38,7 +38,7 @@ const I18N = {
     /* App page */
     'app.hero.tag':'AI Phrase Search App',
     'app.hero.name':'Phrame',
-    'app.hero.desc':'Search for an English phrase. AI answers instantly.\nAuto-saved — your own phrasebook builds itself.',
+    'app.hero.desc':'Instantly search and save the phrases you want to remember,\nthen review them anytime — an app built for learning English phrases.',
     'app.coming':'Coming soon...',
     'app.section.how':'How it works',
     'app.how1.title':'Search a phrase','app.how1.desc':'Type what you want to say in English. No need to write "translate to English" — just search naturally.',
@@ -96,7 +96,7 @@ const I18N = {
     /* App page */
     'app.hero.tag':'AI Phrase Search App',
     'app.hero.name':'Phrame',
-    'app.hero.desc':'英語フレーズを検索。AIが即回答。\n自動保存で、自分だけのフレーズ帳が出来上がる。',
+    'app.hero.desc':'覚えたいフレーズをすぐに検索・保存して、\nいつでも見返せる「英語フレーズ学習特化」のアプリです。',
     'app.coming':'Coming soon...',
     'app.section.how':'How it works',
     'app.how1.title':'フレーズを検索','app.how1.desc':'英語で言いたいことをそのまま入力。「〜を英語で」と書く必要はありません。',
@@ -154,7 +154,7 @@ const I18N = {
     /* App page */
     'app.hero.tag':'AI Phrase Search App',
     'app.hero.name':'Phrame',
-    'app.hero.desc':'Busca una frase. La IA responde al instante.\nSe guarda sola — tu propio cuaderno de frases se crea solo.',
+    'app.hero.desc':'Busca y guarda al instante las frases que quieras recordar,\ny repásalas cuando quieras — una app especializada en aprender frases en inglés.',
     'app.coming':'Coming soon...',
     'app.section.how':'How it works',
     'app.how1.title':'Busca una frase','app.how1.desc':'Escribe lo que quieres decir en inglés. Sin necesidad de escribir "traduce al inglés" — solo busca.',
