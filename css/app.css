@@ -67,7 +67,10 @@
 
 /* ===== Store buttons ===== */
 .store-buttons{
-  display:flex;justify-content:center;gap:10px;margin-top:28px;flex-wrap:wrap;
+  display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:28px;
+}
+.store-row{
+  display:flex;justify-content:center;gap:10px;flex-wrap:wrap;
 }
 .store-btn{
   display:inline-flex;align-items:center;gap:10px;
@@ -77,10 +80,23 @@
   transition:transform .25s var(--ease), background .3s var(--ease);
   text-decoration:none;
   border:1px solid color-mix(in srgb, var(--dark) 80%, transparent);
+  min-width:170px;
 }
 .store-btn:hover{
   background:var(--accent);transform:translateY(-2px);
   border-color:var(--accent);
+}
+.store-btn.web-btn{
+  background:#1f6feb;border-color:#1f6feb;color:#fff;
+}
+.store-btn.web-btn:hover{
+  background:#1857b8;border-color:#1857b8;
+}
+.store-btn.disabled{
+  background:color-mix(in srgb, var(--dark) 10%, #d9d9d4);
+  color:color-mix(in srgb, var(--dark) 55%, transparent);
+  border-color:color-mix(in srgb, var(--dark) 14%, transparent);
+  cursor:not-allowed;pointer-events:none;
 }
 .store-btn svg{width:20px;height:20px;flex:0 0 auto}
 .store-btn .store-text{display:flex;flex-direction:column;align-items:flex-start;line-height:1.2}
@@ -213,6 +229,14 @@
   line-height:1.6;
 }
 .cta-banner .store-buttons{margin-top:24px;position:relative}
+.cta-banner .store-btn{background:var(--light);color:var(--dark);border-color:var(--light)}
+.cta-banner .store-btn.web-btn{background:#1f6feb;border-color:#1f6feb;color:#fff}
+.cta-banner .store-btn.web-btn:hover{background:#1857b8;border-color:#1857b8}
+.cta-banner .store-btn.disabled{
+  background:color-mix(in srgb, var(--light) 18%, transparent);
+  color:color-mix(in srgb, var(--light) 55%, transparent);
+  border-color:color-mix(in srgb, var(--light) 14%, transparent);
+}
 .cta-banner .store-btn{
   background:var(--light);color:var(--dark);
   border-color:color-mix(in srgb, var(--light) 80%, transparent);
