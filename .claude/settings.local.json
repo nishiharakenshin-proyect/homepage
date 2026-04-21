@@ -13,7 +13,10 @@
       "Read(//tmp/**)",
       "Bash(git -c user.email=you@example.com -c user.name=you commit -m \"Perf: replace iframe previews with CSS placeholders; shrink images\")",
       "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --screenshot=/tmp/test.png --window-size=1440,900 --hide-scrollbars \"file:///Users/kenshinnishihara/Desktop/test/portfolio/melbourne-cafe_1.html\")",
-      "Bash(git -c user.email=you@example.com -c user.name=you commit -m \"Use template KV screenshots as thumbnails \\(no more iframes\\)\")"
+      "Bash(git -c user.email=you@example.com -c user.name=you commit -m \"Use template KV screenshots as thumbnails \\(no more iframes\\)\")",
+      "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --hide-scrollbars --virtual-time-budget=3000 --window-size=1440,900 --screenshot=\"/tmp/test3s.png\" \"file:///Users/kenshinnishihara/Desktop/test/portfolio/melbourne-cafe_1.html\")",
+      "Bash(sips -s format jpeg -s formatOptions 80 --resampleWidth 720 /tmp/test3s.png --out /tmp/test3s.jpg)",
+      "Bash(git commit *)"
     ]
   }
 }

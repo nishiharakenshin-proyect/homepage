@@ -1,5 +1,5 @@
 /* ============================================================
-   App Page — Phrame LP Scripts
+   App Page — Phramo LP Scripts
    ============================================================ */
 
 /* Video: autoplay immediately, no lazy warm-up delay */
