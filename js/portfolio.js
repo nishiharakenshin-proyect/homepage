@@ -204,6 +204,18 @@ function setLang(l){
   document.querySelectorAll('.lang button').forEach(b=>
     b.setAttribute('aria-pressed', b.dataset.lang===l ? 'true':'false')
   );
+  /* Swap app video by language */
+  const appV = document.getElementById('appVideo');
+  if (appV){
+    const file = l==='es' ? 'phramo-es.mp4' : 'phramo-ja.mp4';
+    const src = appV.querySelector('source');
+    if (src && !src.src.endsWith(file)){
+      const wasPlaying = !appV.paused;
+      src.src = file;
+      appV.load();
+      if (wasPlaying || appV.autoplay) appV.play().catch(()=>{});
+    }
+  }
   // Fire custom event so page-specific JS can react
   document.dispatchEvent(new CustomEvent('langchange', {detail:{lang:l}}));
 }

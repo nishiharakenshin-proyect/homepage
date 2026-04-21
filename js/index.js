@@ -48,6 +48,21 @@ function setLang(l){
     const k=el.getAttribute('data-i18n'),v=I18N[l][k]; if(v!=null) { if(v.includes('\n')) el.innerHTML=v.replace(/\n/g,'<br>'); else el.textContent=v; }
   });
   document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.lang===l ? 'true':'false'));
+  /* Swap app video by language */
+  const appV = document.getElementById('appVideo');
+  if (appV){
+    const file = l==='es' ? 'phramo-es.mp4' : 'phramo-ja.mp4';
+    if (appV.dataset.src !== file){
+      appV.dataset.src = file;
+      const existing = appV.querySelector('source');
+      if (existing){
+        existing.src = file;
+        const wasPlaying = !appV.paused;
+        appV.load();
+        if (wasPlaying) appV.play().catch(()=>{});
+      }
+    }
+  }
 }
 document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
 setLang((function(){ try { return localStorage.getItem('portfolio_lang'); } catch(_){} return null; })() || 'en');
