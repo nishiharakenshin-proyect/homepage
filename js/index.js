@@ -10,7 +10,7 @@ const I18N = {
     'app.title':'App','app.name':'Phramo — an app for making your own English phrase notes.','app.desc':'Instantly search and save the phrases you want to remember, then review them anytime — an app built for learning English phrases.','app.cta':'About the app',
     'social.title':'Social','social.sub':'Photos I\'ve taken before.\nI also take on photography work.','social.cta':'Follow on Instagram',
     'video.title':'Social','video.name':'Kenshin | 兼臣','video.desc':'Videos about daily life.','video.cta':'Watch on YouTube',
-    'article.title':'Social','article.name':'Kenshin | 兼臣','article.desc':'Notes on my project, language, and everyday things in Japanese.','article.cta':'Read on note',
+    'article.title':'Social','article.name':'Kenshin | 兼臣','article.desc':'Notes on my project, language, and everyday things in Japanese.','article.cta':'Coming soon...',
     'contact.label':'06','contact.heading.sub':'/ Contact','contact.sub':'Available for work. Feel free to reach out.','contact.name':'Name','contact.email':'Email','contact.msg':'Message','contact.send':'Send message',
   },
   jp: {
@@ -23,7 +23,7 @@ const I18N = {
     'app.title':'アプリ','app.name':'Phramo — 自分だけの英語フレーズ帳を作るアプリ。','app.desc':'覚えたいフレーズをすぐに検索・保存して、いつでも見返せる「英語フレーズ学習特化」のアプリです。','app.cta':'アプリついて',
     'social.title':'ソーシャル','social.sub':'これまでに撮った写真を投稿。\n撮影のお仕事もお受けしています。','social.cta':'Instagramを見る',
     'video.title':'ソーシャル','video.name':'Kenshin | 兼臣','video.desc':'自分のアイデアや思考、海外での生活など、Vlogスタイルで動画を投稿。','video.cta':'YouTubeを見る',
-    'article.title':'ソーシャル','article.name':'Kenshin | 兼臣','article.desc':'プロジェクト、アイデア、英語、日々のことについてのブログ記事を投稿。','article.cta':'noteを読む',
+    'article.title':'ソーシャル','article.name':'Kenshin | 兼臣','article.desc':'プロジェクト、アイデア、英語、日々のことについてのブログ記事を投稿。','article.cta':'近日公開...',
     'contact.label':'06','contact.heading.sub':'/ お問い合わせ','contact.sub':'お仕事のご依頼はこちらからどうぞ。','contact.name':'お名前','contact.email':'メール','contact.msg':'メッセージ','contact.send':'メッセージを送る',
   },
   es: {
@@ -36,7 +36,7 @@ const I18N = {
     'app.title':'App','app.name':'Phramo — una app para crear tus propias notas de frases en inglés.','app.desc':'Busca y guarda al instante las frases que quieras recordar, y repásalas cuando quieras — una app especializada en aprender frases en inglés.','app.cta':'Sobre la app',
     'social.title':'Social','social.sub':'Fotos que he tomado.\nTambién acepto trabajos de fotografía.','social.cta':'Seguir en Instagram',
     'video.title':'Social','video.name':'Kenshin | 兼臣','video.desc':'Vídeos sobre la vida cotidiana.','video.cta':'Ver en YouTube',
-    'article.title':'Social','article.name':'Kenshin | 兼臣','article.desc':'Notas sobre mi proyecto, idiomas y cosas cotidianas en japonés.','article.cta':'Leer en note',
+    'article.title':'Social','article.name':'Kenshin | 兼臣','article.desc':'Notas sobre mi proyecto, idiomas y cosas cotidianas en japonés.','article.cta':'Próximamente...',
     'contact.label':'06','contact.heading.sub':'/ Contacto','contact.sub':'Disponible para proyectos. No dudes en escribirme.','contact.name':'Nombre','contact.email':'Email','contact.msg':'Mensaje','contact.send':'Enviar mensaje',
   }
 };

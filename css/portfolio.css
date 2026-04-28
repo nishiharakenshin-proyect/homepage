@@ -136,6 +136,13 @@ section{padding:
 .btn:hover svg{transform:translateX(-2px)}
 footer .btn{color:var(--light);border-color:color-mix(in srgb, var(--light) 30%, transparent)}
 footer .btn:hover{background:var(--green);border-color:var(--green);color:var(--light)}
+.btn.disabled{
+  background:color-mix(in srgb, var(--dark) 8%, var(--light));
+  color:color-mix(in srgb, var(--dark) 50%, transparent);
+  border-color:color-mix(in srgb, var(--dark) 14%, transparent);
+  cursor:not-allowed;pointer-events:none;
+}
+.btn.disabled:hover{background:color-mix(in srgb, var(--dark) 8%, var(--light));color:color-mix(in srgb, var(--dark) 50%, transparent);border-color:color-mix(in srgb, var(--dark) 14%, transparent);transform:none}
 
 /* ---------- Footer / Contact ---------- */
 footer{
