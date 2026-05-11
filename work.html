@@ -63,7 +63,6 @@
       <!-- <span class="label">01</span> -->
     </div>
     <p class="sub" data-i18n="work.sub">Browse website templates. Pick one and I'll customize it to match your brand.<br>Or request a fully custom site from scratch.</p>
-    <p style="margin-top:0;margin-bottom:24px;font-size:11px;color:color-mix(in srgb, var(--dark) 45%, transparent)">※ <span data-i18n="work.notes.currency">All prices are listed in Australian Dollars (AUD).</span></p>
   </section>
 
   <!-- Filters -->
@@ -115,63 +114,27 @@
       <ul>
         <li data-i18n="work.notes.ai">Some images on these demo sites are AI-generated.</li>
         <li data-i18n="work.notes.photo">Photography is available as a separate service (currently Melbourne only). Additional fees apply.</li>
-        <li data-i18n="work.notes.price">The listed price covers template customization. Pricing may vary depending on the scope of additional work.</li>
         <li data-i18n="work.notes.detail">Details such as branding, pages, and functionality will be discussed after your initial inquiry.</li>
       </ul>
     </div>
 
-    <!-- Form -->
-    <form class="form" id="inquiryForm">
-      <!-- Select type (merged: custom + templates) -->
+    <!-- Form (same as top page contact form) -->
+    <form class="form" id="contactForm">
       <div class="field">
-        <label data-i18n="work.inquiry.select">Select type</label>
-        <select id="templateSelect" name="template">
-          <option value="custom" data-i18n="work.inquiry.opt.custom">Custom site from scratch</option>
-        </select>
-      </div>
-      <!-- Image source -->
-      <div class="field">
-        <span style="font-family:var(--m);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:color-mix(in srgb, var(--light) 65%, transparent)" data-i18n="work.inquiry.images">Images</span>
-        <div class="radio-group">
-          <input type="radio" name="imgSrc" id="imgOwn" value="own" checked>
-          <label for="imgOwn" data-i18n="work.inquiry.img.own">I'll prepare my own</label>
-          <input type="radio" name="imgSrc" id="imgPhoto" value="photo">
-          <label for="imgPhoto" data-i18n="work.inquiry.img.photo">Request photography</label>
-          <input type="radio" name="imgSrc" id="imgExisting" value="existing">
-          <label for="imgExisting" data-i18n="work.inquiry.img.existing">Use my existing images</label>
-          <input type="radio" name="imgSrc" id="imgAi" value="ai">
-          <label for="imgAi" data-i18n="work.inquiry.img.ai">AI-adjusted images</label>
-          <input type="radio" name="imgSrc" id="imgNone" value="none">
-          <label for="imgNone" data-i18n="work.inquiry.img.none">No images needed</label>
-        </div>
-      </div>
-      <!-- Timeline -->
-      <div class="field">
-        <span style="font-family:var(--m);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:color-mix(in srgb, var(--light) 65%, transparent)" data-i18n="work.inquiry.timeline">Timeline</span>
-        <div class="radio-group">
-          <input type="radio" name="timeline" id="tlUrgent" value="urgent">
-          <label for="tlUrgent" data-i18n="work.inquiry.tl.urgent">Urgent</label>
-          <input type="radio" name="timeline" id="tl1m" value="1month" checked>
-          <label for="tl1m" data-i18n="work.inquiry.tl.1m">Within 1 month</label>
-          <input type="radio" name="timeline" id="tlFlex" value="flexible">
-          <label for="tlFlex" data-i18n="work.inquiry.tl.flex">Flexible</label>
-        </div>
-      </div>
-      <div class="field">
-        <label data-i18n="work.inquiry.name">Name</label>
+        <label data-i18n="contact.name">Name</label>
         <input type="text" name="name" required>
       </div>
       <div class="field">
-        <label data-i18n="work.inquiry.email">Email</label>
+        <label data-i18n="contact.email">Email</label>
         <input type="email" name="email" required>
       </div>
       <div class="field">
-        <label data-i18n="work.inquiry.msg">Message</label>
-        <textarea name="message"></textarea>
+        <label data-i18n="contact.msg">Message</label>
+        <textarea name="message" required></textarea>
       </div>
       <button class="submit" type="submit">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6v12"/><path d="M4 12h16"/><path d="M14 6l6 6-6 6"/></svg>
-        <span data-i18n="work.inquiry.send">Send inquiry</span>
+        <span data-i18n="contact.send">Send message</span>
       </button>
     </form>
 
@@ -187,10 +150,10 @@
 <script src="js/portfolio.js"></script>
 <script src="js/work.js"></script>
 <script>
-/* ===== Inquiry form → Google Apps Script ===== */
+/* ===== Contact form → Google Apps Script ===== */
 (function(){
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbz0EWvC4NW5cWmuOC56ffxQmbIjFUIZH466E44rA8VY5sZ3jNAldCv_XCFbLu6MbWifVQ/exec';
-  const form = document.getElementById('inquiryForm');
+  const form = document.getElementById('contactForm');
   if (!form) return;
 
   const btnSpan = form.querySelector('.submit span');
@@ -202,17 +165,11 @@
     btn.disabled = true;
     btnSpan.textContent = window.__lang==='jp'?'送信中…': window.__lang==='es'?'Enviando…':'Sending…';
 
-    const imgRadio = form.querySelector('[name="imgSrc"]:checked');
-    const tlRadio  = form.querySelector('[name="timeline"]:checked');
-
     const body = new URLSearchParams({
-      type:     'inquiry',
-      template: form.querySelector('[name="template"]').value,
-      images:   imgRadio  ? imgRadio.value  : '',
-      timeline: tlRadio   ? tlRadio.value   : '',
-      name:     form.querySelector('[name="name"]').value,
-      email:    form.querySelector('[name="email"]').value,
-      message:  form.querySelector('[name="message"]').value
+      type:    'contact',
+      name:    form.querySelector('[name="name"]').value,
+      email:   form.querySelector('[name="email"]').value,
+      message: form.querySelector('[name="message"]').value
     });
 
     fetch(GAS_URL, { method:'POST', mode:'no-cors', body: body })

@@ -69,7 +69,6 @@ templates.forEach((t, i) => {
       <span class="num">No ${num} / ${String(templates.length).padStart(2,'0')}</span>
       <h3>${esc(name)}</h3>
       <span class="genre-tag" data-i18n="work.filter.${genre}">${genre}</span>
-      <span class="price">$${price.toLocaleString()}</span>
       <div class="avail">
         <span class="dot${avail?'':' sold'}"></span>
         <span data-i18n="${avail?'work.available':'work.sold'}">${avail?'Available':'Sold'}</span>
@@ -84,19 +83,15 @@ templates.forEach((t, i) => {
 });
 
 
-/* Populate template selector — first option is custom, then templates */
-const sel = document.getElementById('templateSelect');
-templates.forEach((t,i) => {
-  const opt = document.createElement('option');
-  opt.value = `No ${String(i+1).padStart(2,'0')} — ${t[1]}`;
-  opt.textContent = `No ${String(i+1).padStart(2,'0')} — ${t[1]}`;
-  sel.appendChild(opt);
-});
-
-/* Click card → scroll to inquiry + pre-select template */
+/* Click card → scroll to inquiry section. Pre-fill template name in message. */
 function selectTemplate(idx){
-  const sel = document.getElementById('templateSelect');
-  sel.value = `No ${String(idx+1).padStart(2,'0')} — ${templates[idx][1]}`;
+  const msg = document.querySelector('#contactForm [name="message"]');
+  if (msg) {
+    const label = `No ${String(idx+1).padStart(2,'0')} — ${templates[idx][1]}`;
+    if (!msg.value.includes(label)) {
+      msg.value = (msg.value ? msg.value + '\n' : '') + `Template: ${label}`;
+    }
+  }
   document.getElementById('inquiry').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
